@@ -1,0 +1,14 @@
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\InspurOA.BLL.dll
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\InspurOA.BLL.pdb
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\InspurOA.DAL.dll
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\InspurOA.Models.dll
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\InspurOA.DAL.pdb
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\InspurOA.Models.pdb
+D:\InspurProjects\InspurOA\InspurOA.BLL\obj\Debug\InspurOA.BLL.csprojResolveAssemblyReference.cache
+D:\InspurProjects\InspurOA\InspurOA.BLL\obj\Debug\InspurOA.BLL.dll
+D:\InspurProjects\InspurOA\InspurOA.BLL\obj\Debug\InspurOA.BLL.pdb
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\InspurOA.BLL.dll.config
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\EntityFramework.dll
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\EntityFramework.SqlServer.dll
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\EntityFramework.xml
+D:\InspurProjects\InspurOA\InspurOA.BLL\bin\Debug\EntityFramework.SqlServer.xml

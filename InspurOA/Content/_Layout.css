@@ -1,0 +1,21 @@
+﻿html, body {
+    margin: 0px;
+    height: 100%;
+}
+
+.PageContainer {
+    height: 100%;
+}
+
+footer {
+    position: fixed;
+    left: 0px;
+    bottom: 20px;
+    width: 100%;
+}
+
+    footer div {
+        width: 100%;
+        padding: 10px 20px;
+        text-align: center;
+    }

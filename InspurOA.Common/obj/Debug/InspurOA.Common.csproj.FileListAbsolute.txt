@@ -1,0 +1,7 @@
+D:\InspurProjects\InspurOA\InspurOA.Common\bin\Debug\InspurOA.Common.dll
+D:\InspurProjects\InspurOA\InspurOA.Common\bin\Debug\InspurOA.Common.pdb
+D:\InspurProjects\InspurOA\InspurOA.Common\obj\Debug\InspurOA.Common.dll
+D:\InspurProjects\InspurOA\InspurOA.Common\obj\Debug\InspurOA.Common.pdb
+D:\InspurProjects\InspurOA\InspurOA.Common\bin\Debug\InspurOA.Models.dll
+D:\InspurProjects\InspurOA\InspurOA.Common\bin\Debug\InspurOA.Models.pdb
+D:\InspurProjects\InspurOA\InspurOA.Common\obj\Debug\InspurOA.Common.csprojResolveAssemblyReference.cache

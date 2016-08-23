@@ -1,0 +1,132 @@
+﻿@model IEnumerable<InspurOA.Models.Resume>
+
+@{
+    ViewBag.Title = "简历列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ViewBag.Title</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("上传简历", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PersonalInformation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CareerObjective)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SelfAssessment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkExperience)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectExperience)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Education)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.Certificates)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HonorsandAwards)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SchoolPractice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LanguageSkills)
+                </th>*@
+            @*<th>
+                    @Html.DisplayNameFor(model => model.Training)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProfessionalSkills)
+                </th>*@
+            @*<th>
+                    @Html.DisplayNameFor(model => model.FilePath)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UploadTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ResumeLanguageType)
+                </th>*@
+            @*<th>
+                    @Html.DisplayNameFor(model => model.SourceSite)
+                </th>*@
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PersonalInformation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CareerObjective)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SelfAssessment)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkExperience)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectExperience)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Education)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.Certificates)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HonorsandAwards)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SchoolPractice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LanguageSkills)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Training)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProfessionalSkills)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FilePath)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UploadTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ResumeLanguageType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SourceSite)
+                    </td>*@
+                @*<td>
+                        @Html.ActionLink("Edit", "Edit", new { id=item.Guid }) |
+                        @Html.ActionLink("Details", "Details", new { id=item.Guid }) |
+                        @Html.ActionLink("Delete", "Delete", new { id=item.Guid })
+                    </td>*@
+            </tr>
+        }
+
+    </table>
+</body>
+</html>

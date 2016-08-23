@@ -1,21 +1,48 @@
 ﻿@model IEnumerable<InspurOA.Models.Resume>
 
 @{
-    ViewBag.Title = "简历列表";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "简历管理";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+<style type="text/css">
+    th {
+        text-align: center;
+        border: 2px solid;
+    }
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ViewBag.Title</title>
-</head>
-<body>
-    <p>
-        @Html.ActionLink("上传简历", "Create", null, new { @class = "btn btn-primary" })
-    </p>
+    td {
+        border-left: 1px dashed;
+        border-right: 1px dashed;
+        border-top: 2px solid;
+        border-bottom: 2px solid;
+        font-size: 12px;
+        height: 30px;
+        cursor: pointer;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            $("[data-toggle='popover']").popover();
+        });
+    });
+</script>
+
+<div class="col-sm-9">
+    @Html.ActionLink("上传简历", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+<div class="col-sm-3">
+    <div class="input-group">
+        <input type="text" class="form-control">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button">搜索</button>
+        </span>
+    </div>
+</div>
+<div style="width:100%;height:calc(100% - 100px);overflow:auto;border:1px solid;border-radius:4px;margin-top:3px;">
     <table class="table">
         <tr>
             <th>
@@ -36,97 +63,103 @@
             <th>
                 @Html.DisplayNameFor(model => model.Education)
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Certificates)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.HonorsandAwards)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SchoolPractice)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LanguageSkills)
-                </th>*@
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Training)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ProfessionalSkills)
-                </th>*@
-            @*<th>
-                    @Html.DisplayNameFor(model => model.FilePath)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UploadTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ResumeLanguageType)
-                </th>*@
-            @*<th>
-                    @Html.DisplayNameFor(model => model.SourceSite)
-                </th>*@
         </tr>
 
         @foreach (var item in Model)
-        {
+            {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PersonalInformation)
+                    @if (@Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Length > 50)
+                    {
+                        @Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Substring(0, 50)
+                        <button type="button" class="btn btn-primary btn-xs" title="详细信息"
+                                data-container="body" data-toggle="popover" data-placement="right"
+                                data-content="@Html.DisplayFor(modelItem => item.PersonalInformation)">
+                            ...
+                        </button>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Substring(0, @Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Length)
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CareerObjective)
+                    @if (@Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Length > 50)
+                    {
+                        @Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Substring(0, 50)
+                        <button type="button" class="btn btn-primary btn-xs" title="详细信息"
+                                data-container="body" data-toggle="popover" data-placement="right"
+                                data-content="@Html.DisplayFor(modelItem => item.CareerObjective)">
+                            ...
+                        </button>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Substring(0, @Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Length)
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SelfAssessment)
+                    @if (@Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Length > 50)
+                    {
+                        @Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Substring(0, 50)
+                        <button type="button" class="btn btn-primary btn-xs" title="详细信息"
+                                data-container="body" data-toggle="popover" data-placement="right"
+                                data-content="@Html.DisplayFor(modelItem => item.SelfAssessment)">
+                            ...
+                        </button>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Substring(0, @Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Length)
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.WorkExperience)
+                    @if (@Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Length > 50)
+                    {
+                        @Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Substring(0, 50)
+                        <button type="button" class="btn btn-primary btn-xs" title="详细信息"
+                                data-container="body" data-toggle="popover" data-placement="left"
+                                data-content="@Html.DisplayFor(modelItem => item.WorkExperience)">
+                            ...
+                        </button>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Substring(0, @Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Length)
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectExperience)
+                    @if (@Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Length > 50)
+                    {
+                        @Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Substring(0, 50)
+                        <button type="button" class="btn btn-primary btn-xs" title="详细信息"
+                                data-container="body" data-toggle="popover" data-placement="left"
+                                data-content="@Html.DisplayFor(modelItem => item.ProjectExperience)">
+                            ...
+                        </button>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Substring(0, @Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Length)
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Education)
+                    @if (@Html.DisplayFor(modelItem => item.Education).ToHtmlString().Length > 50)
+                    {
+                        @Html.DisplayFor(modelItem => item.Education).ToHtmlString().Substring(0, 50)
+                        <button type="button" class="btn btn-primary btn-xs" title="详细信息"
+                                data-container="body" data-toggle="popover" data-placement="left"
+                                data-content="@Html.DisplayFor(modelItem => item.Education)">
+                            ...
+                        </button>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Education).ToHtmlString().Substring(0, @Html.DisplayFor(modelItem => item.Education).ToHtmlString().Length)
+                    }
                 </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.Certificates)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HonorsandAwards)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SchoolPractice)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LanguageSkills)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Training)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ProfessionalSkills)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FilePath)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UploadTime)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ResumeLanguageType)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SourceSite)
-                    </td>*@
-                @*<td>
-                        @Html.ActionLink("Edit", "Edit", new { id=item.Guid }) |
-                        @Html.ActionLink("Details", "Details", new { id=item.Guid }) |
-                        @Html.ActionLink("Delete", "Delete", new { id=item.Guid })
-                    </td>*@
             </tr>
         }
 
     </table>
-</body>
-</html>
+</div>

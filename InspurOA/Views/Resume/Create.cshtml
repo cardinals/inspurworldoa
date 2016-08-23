@@ -5,60 +5,52 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ViewBag.Title</title>
-    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <style type="text/css">
-        .form-group {
-            margin-top: 50px;
-            /*margin-bottom: 50px;*/
-        }
-    </style>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#btnSelectDoc").click(function () {
-                $("input[name='file']").click();
-            });
-            $("input[name='file']").change(function () {
-                if (event.target.files.length > 0) {
-                    var fileList = $("#fileList");
-                    for (var i = 0; i < event.target.files.length; i++) {
-                        fileList.add();
-                    }
-                }
-            });
+<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+<style type="text/css">
+    .form-group {
+        margin-top: 50px;
+        /*margin-bottom: 50px;*/
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnSelectDoc").click(function () {
+            $("input[name='file']").click();
         });
-    </script>
-</head>
-<body>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
+        $("input[name='file']").change(function () {
+            if (event.target.files.length > 0) {
+                var fileList = $("#fileList");
+                for (var i = 0; i < event.target.files.length; i++) {
+                    fileList.add();
+                }
+            }
+        });
+    });
+</script>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
 
-    <div style="margin-left:auto;margin-right:auto;max-width:600px;">
-        @using (Html.BeginForm("Upload", "Resume", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
-        {
-            <div class="form-group">
-                <span class="col-md-2"> 语言类型：</span>
+<div style="margin-left:auto;margin-right:auto;max-width:600px;">
+    @using (Html.BeginForm("Upload", "Resume", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+    {
+        <div class="form-group">
+            <span class="col-md-2"> 语言类型：</span>
 
-                <div class="col-md-4">
-                    <select>
-                        <option value="CN"> 中文 </option>
-                        <option value="EN"> English </option>
-                    </select>
-                </div>
-
-                <span class="col-md-2">
-                    来源：
-                </span>
-                <div class="col-md-4">
-                    <input type="radio" name="type" value="ZL" checked="checked" /><span> 智联招聘 </span>
-                    <input type="radio" name="type" value="WY" /><span> 前程无忧 </span>
-                </div>
+            <div class="col-md-4">
+                <select>
+                    <option value="CN"> 中文 </option>
+                    <option value="EN"> English </option>
+                </select>
             </div>
+
+            <span class="col-md-2">
+                来源：
+            </span>
+            <div class="col-md-4">
+                <input type="radio" name="type" value="ZL" checked="checked" /><span> 智联招聘 </span>
+                <input type="radio" name="type" value="WY" /><span> 前程无忧 </span>
+            </div>
+        </div>
             <div class="form-group">
                 <div class="col-md-12">
                     <input type="button" id="btnSelectDoc" value="选择文档..." class="form-control" style="width:100%;height:30px;margin-top:30px;" />
@@ -75,7 +67,5 @@
                 @*@Html.ActionLink("&laquo; 返回列表", "Index", null, new { @class = "col-md-6 btn btn-primary " })*@
                 <input type="submit" id="BtnUpload" class="form-control col-md-6" value="上传" />
             </div>
-        }
-    </div>
-</body>
-</html>
+    }
+</div>

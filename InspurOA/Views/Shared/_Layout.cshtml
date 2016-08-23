@@ -38,17 +38,14 @@
     </div>
     <div class="container PageContainer body-content" >
         @RenderBody()
-        @*<hr />*@
-        <footer>
-            @*<p>&copy; @DateTime.Now.Year - Inspur World HR Resume Management System</p>*@
-            <hr />
-            <div>
-                <p>&copy; @DateTime.Now.Year - 浪潮世科简历信息管理系统</p>
-            </div>
-            
-        </footer>
     </div>
-
+    <footer>
+        @*<p>&copy; @DateTime.Now.Year - Inspur World HR Resume Management System</p>*@
+        <hr />
+        <div>
+            <p>&copy; @DateTime.Now.Year - 浪潮世科简历信息管理系统</p>
+        </div>
+    </footer>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

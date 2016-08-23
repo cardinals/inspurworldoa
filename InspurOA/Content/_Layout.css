@@ -1,16 +1,19 @@
 ﻿html, body {
     margin: 0px;
     height: 100%;
+    overflow:hidden;
 }
 
 .PageContainer {
-    height: 100%;
+    margin-top:50px;
+    height: calc(100% - 50px);
+    overflow:auto;
 }
 
 footer {
     position: fixed;
     left: 0px;
-    bottom: 20px;
+    bottom: 0px;
     width: 100%;
 }
 

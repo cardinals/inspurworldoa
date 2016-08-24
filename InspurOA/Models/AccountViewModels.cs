@@ -35,10 +35,14 @@ namespace InspurOA.Models
 
     public class LoginViewModel
     {
+        ////[Required]
+        //[Display(Name = "邮箱")]
+        //[EmailAddress]
+        //public string Email { get; set; }
+
         [Required]
-        [Display(Name = "邮箱")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name ="用户名")]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

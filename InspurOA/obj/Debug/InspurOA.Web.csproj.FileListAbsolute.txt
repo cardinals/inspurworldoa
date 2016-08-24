@@ -188,3 +188,5 @@ D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\Microsoft.Owin.Security
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.Web.csprojResolveAssemblyReference.cache
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.pdb
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.Migrations.ChangeTableName.resources
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.Web.csproj.GenerateResource.Cache

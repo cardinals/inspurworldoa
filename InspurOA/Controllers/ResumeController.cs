@@ -13,6 +13,7 @@ using System.IO;
 using InspurOA.Common;
 using InspurOA.BLL;
 using System.Configuration;
+using Newtonsoft.Json;
 
 namespace InspurOA.Controllers
 {
@@ -28,7 +29,7 @@ namespace InspurOA.Controllers
         // GET: Resume
         public ActionResult Index()
         {
-            return View(db.ResumeSet.ToList());
+            return View(db.ResumeSet.OrderByDescending(R=>R.UploadTime).ToList());
         }
 
         // GET: Resume/Details/5
@@ -146,7 +147,16 @@ namespace InspurOA.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public String Search(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return null;
+            }
 
+            return JsonConvert.SerializeObject(db.ResumeSet.OrderByDescending(R => R.UploadTime).ToList().Where(t=>t.PersonalInformation.Contains(query)));
+        }
 
         //// GET: Resume/Edit/5
         //public ActionResult Edit(string id)

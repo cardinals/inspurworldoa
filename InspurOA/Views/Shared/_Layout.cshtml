@@ -24,6 +24,7 @@
                     @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
                     
                     <li>@Html.ActionLink("简历管理","Index","Resume")</li>
+                    <li>@Html.ActionLink("简历共享", "Index", "Home")</li>
                     @if (User.IsInRole("Admin"))
                     {
                         <li>@Html.ActionLink("系统管理", "Index", "SystemManage")</li>

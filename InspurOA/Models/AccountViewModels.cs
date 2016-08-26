@@ -9,10 +9,11 @@ namespace InspurOA.Models
         [Display(Name = "邮箱")]
         public string Email { get; set; }
     }
+
     public class RegisterViewModel
     {
         [Required]
-        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
         [Display(Name = "用户名")]
         public string UserName { get; set; }
 
@@ -35,13 +36,8 @@ namespace InspurOA.Models
 
     public class LoginViewModel
     {
-        ////[Required]
-        //[Display(Name = "邮箱")]
-        //[EmailAddress]
-        //public string Email { get; set; }
-
         [Required]
-        [Display(Name ="用户名")]
+        [Display(Name = "用户名")]
         public string UserName { get; set; }
 
         [Required]
@@ -51,6 +47,32 @@ namespace InspurOA.Models
 
         [Display(Name = "记住密码?")]
         public bool RememberMe { get; set; }
+    }
+
+    public class RoleViewModel
+    {
+        public string Id { get; set; }
+
+        [Required]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+        [Display(Name = "角色ID")]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "角色名称")]
+        public string RoleName { get; set; }
+
+        [Required]
+        [Display(Name = "角色权限")]
+        public List<PermissionViewModel> PermissionViewModelList { get; set; }
+    }
+
+    public class PermissionViewModel
+    {
+        public Permission Permission { get; set; }
+
+        public bool IsChecked { get; set; }
     }
 
     //public class ExternalLoginListViewModel

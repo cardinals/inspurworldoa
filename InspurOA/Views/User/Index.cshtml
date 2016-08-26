@@ -1,0 +1,90 @@
+﻿@model IEnumerable<InspurOA.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "用户管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>用户管理</h2>
+
+<p>
+    @Html.ActionLink("添加", "Create", null, new { @class = "btn btn-primary" })
+    <input class="btn btn-primary" name="BtnDelete" type="button" value="删除" />
+</p>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            用户名
+        </th>
+        <th>
+            电子邮件
+        </th>
+        <th>
+            电话号码
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <input type="checkbox" value="@Html.DisplayFor(modelItem => item.Id)" />
+            </td>
+            <td data-content="content">
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td data-content="content">
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td data-content="content">
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+        </tr>
+    }
+
+</table>
+<style type="text/css">
+    tr {
+        cursor: pointer;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("td[data-content='content']").click(function () {
+            var itemId = $("input[type='checkbox']", $(this).parent("tr")).val();
+            window.location.href = "User/Details?id=" + itemId;
+        });
+
+        $("input[name='BtnDelete']").click(function () {
+            var checkedList = $("input[type='checkbox']");
+            var selectedIds = [];
+            for (var i = 0; i < checkedList.length; i++) {
+                if (checkedList[i].checked) {
+                    selectedIds.push(checkedList[i].value);
+                }
+            }
+
+            if (selectedIds.length > 0) {
+                if (confirm("确认删除?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "../User/Delete",
+                        data: { 'ids': selectedIds },
+                        dataType: "json",
+                        success: function (result) {
+                            location.reload();
+                        },
+                        error: function (ex) {
+                            location.reload();
+                            //alert(ex.responseText);
+                        }
+                    });
+                }
+            }
+            else {
+                alert("请选择要删除的列表项！");
+            }
+        });
+    });
+</script>

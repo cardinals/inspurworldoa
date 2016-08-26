@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace InspurOA.DAL
 {
-    public class ResumeDAL:DbContext 
+    public class ResumeDbContext : DbContext 
     {
-        public ResumeDAL() : base("ConnectionString")
+        public ResumeDbContext() : base("ConnectionString")
         {
         }
 

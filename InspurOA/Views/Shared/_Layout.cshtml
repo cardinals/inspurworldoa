@@ -6,42 +6,45 @@
     <title>@ViewBag.Title - InspurWorldOA</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+
     <link href="~/Content/_Layout.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 @Html.ActionLink("Inspur World", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
+            <div>
                 <ul class="nav navbar-nav">
-                    @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
-                    
-                    <li>@Html.ActionLink("简历管理","Index","Resume")</li>
+                    <li>@Html.ActionLink("简历管理", "Index", "Resume")</li>
                     <li>@Html.ActionLink("简历共享", "Index", "Home")</li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li>@Html.ActionLink("系统管理", "Index", "SystemManage")</li>
-                    }
-
-                    <li>@Html.ActionLink("关于", "About", "Home")</li>
-                    <li>@Html.ActionLink("联系我们", "Contact", "Home")</li>
+                    @*@if (User.IsInRole("Admin"))
+                    {*@
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                系统管理
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("用户管理", "Index", "User")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("角色管理", "Index", "Role")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("权限管理", "Index", "Permission")</li>
+                            </ul>
+                        </li>
+                    @*}*@
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
-    </div>
-    <div class="container PageContainer body-content" >
+    </nav>
+    <div class="container PageContainer body-content">
         @RenderBody()
     </div>
     <footer>
-        @*<p>&copy; @DateTime.Now.Year - Inspur World HR Resume Management System</p>*@
         <hr />
         <div>
             <p>&copy; @DateTime.Now.Year - 浪潮世科简历信息管理系统</p>

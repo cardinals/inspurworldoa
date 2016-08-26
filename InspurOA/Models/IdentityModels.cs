@@ -21,8 +21,42 @@ namespace InspurOA.Models
         }
     }
 
+    public class URole : IdentityRole
+    {
+        public string RoleName { get; set; }
+    }
+
+    public class Permission
+    {
+        public string PermissionId { get; set; }
+
+        public string PermissionDescription { get; set; }
+    }
+
+    public class RolePermission
+    {
+        public string RoleId { get; set; }
+
+        public string PermissionId { get; set; }
+    }
+
+    public class UserPermission
+    {
+        public string UserId { get; set; }
+
+        public string PermissionId { get; set; }
+    }
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<URole> URoles { get; set; }
+
+        public DbSet<Permission> Permissions { get; set; }
+
+        public DbSet<RolePermission> RolePermissions { get; set; }
+
+        public DbSet<UserPermission> UserPermissions { get; set; }
+
         public ApplicationDbContext()
             : base("ConnectionString", throwIfV1Schema: false)
         {
@@ -56,7 +90,7 @@ namespace InspurOA.Models
 
             modelBuilder.Entity<IdentityUserRole>()
                 .HasKey(r => new { r.UserId, r.RoleId })
-                .ToTable("UserRoles");
+                .ToTable("UserRole");
 
             modelBuilder.Entity<IdentityUserLogin>()
                 .HasKey(l => new { l.LoginProvider, l.ProviderKey, l.UserId })
@@ -65,8 +99,20 @@ namespace InspurOA.Models
             modelBuilder.Entity<IdentityUserClaim>()
                 .ToTable("UserClaims");
 
-            var role = modelBuilder.Entity<IdentityRole>()
-                .ToTable("Roles");
+            modelBuilder.Entity<Permission>()
+                .HasKey(p => new { p.PermissionId })
+                .ToTable("Permission");
+
+            modelBuilder.Entity<RolePermission>()
+                .HasKey(RP => new { RP.RoleId, RP.PermissionId })
+                .ToTable("RolePermission");
+
+            modelBuilder.Entity<UserPermission>()
+                .HasKey(UP => new { UP.UserId, UP.PermissionId })
+                .ToTable("UserPermission");
+
+            var role = modelBuilder.Entity<URole>()
+                .ToTable("RoleInfo");
             role.Property(r => r.Name)
                 .IsRequired()
                 .HasMaxLength(256)

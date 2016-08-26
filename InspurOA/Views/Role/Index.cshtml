@@ -1,0 +1,85 @@
+﻿@model IEnumerable<InspurOA.Models.URole>
+
+@{
+    ViewBag.Title = "角色管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>角色管理</h2>
+<p>
+    @Html.ActionLink("添加角色", "Create", null, new { @class = "btn btn-primary" })
+    <input class="btn btn-primary" name="BtnDelete" type="button" value="删除" />
+</p>
+<hr />
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Name)*@
+            角色ID
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.RoleName)*@
+            角色名称
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <input type="checkbox" value="@Html.DisplayFor(modelItem => item.Id)" />
+            </td>
+            <td data-content="content">
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td data-content="content">
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+        </tr>
+    }
+</table>
+<style type="text/css">
+    tr {
+        cursor: pointer;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("td[data-content='content']").click(function () {
+            var itemId = $("input[type='checkbox']", $(this).parent("tr")).val();
+            window.location.href = "Role/Edit?id=" + itemId;
+        });
+
+        $("input[name='BtnDelete']").click(function () {
+            var checkedList = $("input[type='checkbox']");
+            var selectedIds = [];
+            for (var i = 0; i < checkedList.length; i++) {
+                if (checkedList[i].checked) {
+                    selectedIds.push(checkedList[i].value);
+                }
+            }
+
+            if (selectedIds.length > 0) {
+                if (confirm("确认删除?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "../Role/Delete",
+                        data: { 'ids': selectedIds },
+                        dataType: "json",
+                        success: function (result) {
+                            location.reload();
+                        },
+                        error: function (ex) {
+                            location.reload();
+                            //alert(ex.responseText);
+                        }
+                    });
+                }
+            }
+            else {
+                alert("请选择要删除的列表项！");
+            }
+        });
+    });
+</script>

@@ -84,6 +84,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -217,14 +218,16 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Controllers\ResumeController.cs" />
-    <Compile Include="Controllers\SystemManageController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201608241141332_ChangeTableName.cs" />
-    <Compile Include="Migrations\201608241141332_ChangeTableName.Designer.cs">
-      <DependentUpon>201608241141332_ChangeTableName.cs</DependentUpon>
+    <Compile Include="Migrations\201608261121129_Update-Table.cs" />
+    <Compile Include="Migrations\201608261121129_Update-Table.Designer.cs">
+      <DependentUpon>201608261121129_Update-Table.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -300,7 +303,16 @@
     <Content Include="Views\Resume\Details.cshtml" />
     <Content Include="Views\Resume\Edit.cshtml" />
     <Content Include="Views\Resume\Index.cshtml" />
-    <Content Include="Views\SystemManage\Index.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Role\Index.cshtml" />
+    <Content Include="Views\Role\Create.cshtml" />
+    <Content Include="Views\User\Create.cshtml" />
+    <Content Include="Views\User\Details.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\Role\Edit.cshtml" />
+    <Content Include="Views\Permission\Create.cshtml" />
+    <Content Include="Views\Permission\Edit.cshtml" />
+    <Content Include="Views\Permission\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -336,8 +348,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608241141332_ChangeTableName.resx">
-      <DependentUpon>201608241141332_ChangeTableName.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201608261121129_Update-Table.resx">
+      <DependentUpon>201608261121129_Update-Table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

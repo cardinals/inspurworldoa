@@ -8,7 +8,7 @@ namespace InspurOA.BLL
 {
     public class ResumeBLL
     {
-        ResumeDAL dal = new ResumeDAL();
+        ResumeDbContext dal = new ResumeDbContext();
 
         public List<Resume> GetResumeList()
         {

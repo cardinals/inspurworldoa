@@ -24,7 +24,7 @@ namespace InspurOA.Controllers
         private object unknow = Type.Missing;
         private string localResumeFolderPath = ConfigurationManager.AppSettings["LocalResumeFolderPath"].ToString();
 
-        private ResumeDAL db = new ResumeDAL();
+        private ResumeDbContext db = new ResumeDbContext();
 
         // GET: Resume
         public ActionResult Index()

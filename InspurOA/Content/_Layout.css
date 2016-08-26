@@ -1,13 +1,50 @@
 ﻿html, body {
     margin: 0px;
     height: 100%;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .PageContainer {
     height: calc(100% - 50px);
-    overflow:auto;
+    overflow: auto;
 }
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.table th {
+    border: 2px double;
+    text-align: center;
+}
+
+.table td {
+    border: 2px solid;
+    text-align: center;
+}
+
+.form-xs {
+    max-width: 300px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.form-md {
+    max-width: 500px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.form-lg {
+    max-width: 1000px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+
+
+
 
 footer {
     position: fixed;

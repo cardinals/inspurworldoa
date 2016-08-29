@@ -12,12 +12,12 @@ namespace InspurOA.Controllers
 {
     public class PermissionController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext dbContext = new ApplicationDbContext();
 
         // GET: Permissions
         public ActionResult Index()
         {
-            return View(db.Permissions.ToList());
+            return View(dbContext.Permissions.ToList());
         }
 
         // GET: Permissions/Details/5
@@ -27,7 +27,7 @@ namespace InspurOA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Permission permission = db.Permissions.Find(id);
+            Permission permission = dbContext.Permissions.Find(id);
             if (permission == null)
             {
                 return HttpNotFound();
@@ -51,8 +51,8 @@ namespace InspurOA.Controllers
             if (ModelState.IsValid)
             {
                 permission.PermissionId = Guid.NewGuid().ToString();
-                db.Permissions.Add(permission);
-                db.SaveChanges();
+                dbContext.Permissions.Add(permission);
+                dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +66,7 @@ namespace InspurOA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Permission permission = db.Permissions.Find(id);
+            Permission permission = dbContext.Permissions.Find(id);
             if (permission == null)
             {
                 return HttpNotFound();
@@ -83,44 +83,80 @@ namespace InspurOA.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(permission).State = EntityState.Modified;
-                db.SaveChanges();
+                dbContext.Entry(permission).State = EntityState.Modified;
+                dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(permission);
         }
 
         // GET: Permissions/Delete/5
-        public ActionResult Delete(string id)
+        [HttpPost]
+        public ActionResult Delete(string[] ids)
         {
-            if (id == null)
+            if (ids == null || ids.Length == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Permission permission = db.Permissions.Find(id);
-            if (permission == null)
-            {
-                return HttpNotFound();
-            }
-            return View(permission);
-        }
 
-        // POST: Permissions/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
-        {
-            Permission permission = db.Permissions.Find(id);
-            db.Permissions.Remove(permission);
-            db.SaveChanges();
+            foreach (string id in ids)
+            {
+                using (var transcation = dbContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        Permission permission = dbContext.Permissions.Find(id);
+                        if (permission != null)
+                        {
+                            dbContext.Permissions.Remove(permission);
+                        }
+
+                        dbContext.SaveChanges();
+
+                        IQueryable<RolePermission> RolePermissions = dbContext.RolePermissions.Where(t => t.PermissionId == id);
+                        foreach (var rp in RolePermissions)
+                        {
+                            dbContext.RolePermissions.Remove(rp);
+                        }
+
+                        dbContext.SaveChanges();
+
+                        IQueryable<UserPermission> UserPermissions = dbContext.UserPermissions.Where(t => t.PermissionId == id);
+                        foreach (var up in UserPermissions)
+                        {
+                            dbContext.UserPermissions.Remove(up);
+                        }
+
+                        dbContext.SaveChanges();
+
+                        transcation.Commit();
+                    }
+                    catch
+                    {
+                        transcation.Rollback();
+                    }
+                }
+            }
+
             return RedirectToAction("Index");
         }
+
+        //// POST: Permissions/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(string id)
+        //{
+        //    Permission permission = dbContext.Permissions.Find(id);
+        //    dbContext.Permissions.Remove(permission);
+        //    dbContext.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                dbContext.Dispose();
             }
             base.Dispose(disposing);
         }

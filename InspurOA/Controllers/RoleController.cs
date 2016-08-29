@@ -29,10 +29,10 @@ namespace InspurOA.Controllers
         public ActionResult Create()
         {
             RoleViewModel model = new RoleViewModel();
-            model.PermissionViewModelList = new List<PermissionViewModel>();
+            model.PermissionViewModelList = new List<PermissionItemViewModel>();
             foreach (var item in dbContext.Permissions.ToList())
             {
-                model.PermissionViewModelList.Add(new PermissionViewModel() { Permission = item, IsChecked = false });
+                model.PermissionViewModelList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = false });
             }
 
             return View(model);
@@ -106,18 +106,18 @@ namespace InspurOA.Controllers
                 roleViewModel.Id = id;
                 roleViewModel.Name = Role.Name;
                 roleViewModel.RoleName = Role.RoleName;
-                roleViewModel.PermissionViewModelList = new List<PermissionViewModel>();
+                roleViewModel.PermissionViewModelList = new List<PermissionItemViewModel>();
 
                 IQueryable<RolePermission> rolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == id);
                 foreach (var item in dbContext.Permissions.ToList())
                 {
                     if (rolePermissions.Any(t => t.PermissionId == item.PermissionId))
                     {
-                        roleViewModel.PermissionViewModelList.Add(new PermissionViewModel() { Permission = item, IsChecked = true });
+                        roleViewModel.PermissionViewModelList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = true });
                     }
                     else
                     {
-                        roleViewModel.PermissionViewModelList.Add(new PermissionViewModel() { Permission = item, IsChecked = false });
+                        roleViewModel.PermissionViewModelList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = false });
                     }
                 }
 

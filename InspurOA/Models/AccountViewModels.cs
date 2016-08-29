@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace InspurOA.Models
 {
@@ -30,8 +31,11 @@ namespace InspurOA.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "确认密码")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        public string RoleId { get; set; }
     }
 
     public class LoginViewModel
@@ -65,10 +69,10 @@ namespace InspurOA.Models
 
         [Required]
         [Display(Name = "角色权限")]
-        public List<PermissionViewModel> PermissionViewModelList { get; set; }
+        public List<PermissionItemViewModel> PermissionViewModelList { get; set; }
     }
 
-    public class PermissionViewModel
+    public class PermissionItemViewModel
     {
         public Permission Permission { get; set; }
 

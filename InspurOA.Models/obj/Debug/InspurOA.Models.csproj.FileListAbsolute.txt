@@ -51,3 +51,4 @@ D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.WebPages.Razor.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\obj\Debug\InspurOA.Models.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\obj\Debug\InspurOA.Models.pdb
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\obj\Debug\InspurOA.Models.csprojResolveAssemblyReference.cache

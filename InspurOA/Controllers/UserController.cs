@@ -1,5 +1,6 @@
 ﻿using InspurOA.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,18 @@ namespace InspurOA.Controllers
         // GET: UserController/Create
         public ActionResult Create()
         {
+            List<SelectListItem> UserRoles = new List<SelectListItem>();
+            foreach (var UserRole in dbContext.URoles.ToList())
+            {
+                SelectListItem selectListItem = new SelectListItem();
+                selectListItem.Selected = false;
+                selectListItem.Text = UserRole.RoleName;
+                selectListItem.Value = UserRole.Id;
+                UserRoles.Add(selectListItem);
+            }
+
+            ViewData["Roles"] = UserRoles;
+
             return View();
         }
 
@@ -58,8 +71,12 @@ namespace InspurOA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+                string userID = Guid.NewGuid().ToString();
+                var user = new ApplicationUser {Id= userID, UserName = model.UserName, Email = model.Email };
+
+                IdentityRole Role = dbContext.Roles.Find(model.RoleId);
                 var result = await UserManager.CreateAsync(user, model.Password);
+                await UserManager.AddToRoleAsync(userID, Role.Name);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "User");
@@ -68,6 +85,26 @@ namespace InspurOA.Controllers
                 AddErrors(result);
             }
 
+            List<SelectListItem> UserRoles = new List<SelectListItem>();
+            foreach (var UserRole in dbContext.URoles.ToList())
+            {
+                SelectListItem selectListItem = new SelectListItem();
+
+                if (UserRole.Id.Equals(model.RoleId))
+                {
+                    selectListItem.Selected = true;
+                }
+                else
+                {
+                    selectListItem.Selected = false;
+                }
+
+                selectListItem.Text = UserRole.RoleName;
+                selectListItem.Value = UserRole.Id;
+                UserRoles.Add(selectListItem);
+            }
+
+            ViewData["Roles"] = UserRoles;
             return View(model);
         }
 
@@ -124,7 +161,7 @@ namespace InspurOA.Controllers
                 {
                     var user = dbContext.Users.Find(idArray[i]);
                     if (user != null)
-                    { 
+                    {
                         dbContext.Users.Remove(user);
                     }
                 }

@@ -88,6 +88,7 @@
     <Compile Include="Enum\ResumeLanguageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resume.cs" />
+    <Compile Include="User\ApplicationUser.cs" />
     <Compile Include="User\CreateUserModelView.cs" />
   </ItemGroup>
   <ItemGroup>

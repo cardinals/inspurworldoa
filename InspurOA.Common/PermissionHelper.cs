@@ -1,4 +1,5 @@
 ﻿using InspurOA.DAL;
+using InspurOA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,7 @@ namespace InspurOA.Common
     public class PermissionHelper
     {
         static ApplicationDbContext dbContext = ApplicationDbContext.Create();
+
+        public static List<Permission> Get
     }
 }

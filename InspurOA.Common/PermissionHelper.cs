@@ -12,6 +12,6 @@ namespace InspurOA.Common
     {
         static ApplicationDbContext dbContext = ApplicationDbContext.Create();
 
-        public static List<Permission> Get
+
     }
 }

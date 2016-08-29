@@ -39,6 +39,6 @@ namespace InspurOA.Common
             }
         }
 
-        public static List<SelectListViewModel>
+
     }
 }

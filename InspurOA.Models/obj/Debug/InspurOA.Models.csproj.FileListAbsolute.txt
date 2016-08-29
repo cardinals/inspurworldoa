@@ -32,7 +32,10 @@ D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\EntityFram
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\EntityFramework.SqlServer.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.AspNet.Identity.Core.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.Owin.dll
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.Owin.Security.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.Web.Infrastructure.dll
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Owin.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.Helpers.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.Mvc.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.Razor.dll
@@ -43,6 +46,8 @@ D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\EntityFram
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\EntityFramework.SqlServer.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.AspNet.Identity.Core.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.Owin.xml
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\Microsoft.Owin.Security.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.Helpers.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.Mvc.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.Razor.xml
@@ -51,4 +56,3 @@ D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\bin\Debug\System.Web.WebPages.Razor.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\obj\Debug\InspurOA.Models.dll
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\obj\Debug\InspurOA.Models.pdb
-D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA.Models\obj\Debug\InspurOA.Models.csprojResolveAssemblyReference.cache

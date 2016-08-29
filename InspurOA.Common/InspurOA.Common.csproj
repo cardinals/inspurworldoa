@@ -30,6 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,8 +44,13 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResumeHelper.cs" />
+    <Compile Include="RoleHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\InspurOA.DAL\InspurOA.DAL.csproj">
+      <Project>{e670b00b-0d58-49a2-a2a0-f52a5d18ab92}</Project>
+      <Name>InspurOA.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InspurOA.Models\InspurOA.Models.csproj">
       <Project>{D0189AE5-C1B4-4885-94F7-7CD879949323}</Project>
       <Name>InspurOA.Models</Name>

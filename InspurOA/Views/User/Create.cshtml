@@ -1,4 +1,4 @@
-﻿@model InspurOA.Models.RegisterViewModel
+﻿@model InspurOA.Models.UserCreateViewModel
 
 @{
     ViewBag.Title = "添加用户";
@@ -54,7 +54,7 @@
             <label class="col-md-2 control-label">角色</label>
             @*@Html.LabelFor(m => m.RoleViewModelList, new { @class = "col-md-2 control-label" })*@
             <div class="col-md-10">
-                <select name="RoleId" id="RoleId" class="form-control">
+                <select name="RoleName" id="RoleName" class="form-control">
                     @foreach (var item in UserRoles)
                     {
                         if (item.Selected)
@@ -69,7 +69,20 @@
                 </select>            
             </div>
         </div>
-    }
+    }   
+    <div class="form-group">
+            <table class="table-responsive">
+                @foreach (var item in Model.PermissionViewModelList)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="Permission" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-default form-control" value="添加" />

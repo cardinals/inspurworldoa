@@ -7,7 +7,9 @@ namespace InspurOA
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            filters.Add(new InspurAuthotizeAttribute());
             filters.Add(new HandleErrorAttribute());
+
         }
     }
 }

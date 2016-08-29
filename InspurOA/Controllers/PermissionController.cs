@@ -7,9 +7,12 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using InspurOA.Models;
+using InspurOA;
+using InspurOA.DAL;
 
 namespace InspurOA.Controllers
 {
+    [InspurAuthotize(Roles = "Admin")]
     public class PermissionController : Controller
     {
         private ApplicationDbContext dbContext = new ApplicationDbContext();

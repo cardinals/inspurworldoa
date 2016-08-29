@@ -1,4 +1,5 @@
-﻿using InspurOA.Models;
+﻿using InspurOA.DAL;
+using InspurOA.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Activities.Statements;
@@ -9,6 +10,7 @@ using System.Web.Mvc;
 
 namespace InspurOA.Controllers
 {
+    [InspurAuthotize(Roles = "Admin")]
     public class RoleController : Controller
     {
         ApplicationDbContext dbContext = new ApplicationDbContext();

@@ -11,7 +11,7 @@ namespace InspurOA.Models
         public string Email { get; set; }
     }
 
-    public class RegisterViewModel
+    public class UserCreateViewModel
     {
         [Required]
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
@@ -35,7 +35,18 @@ namespace InspurOA.Models
         public string ConfirmPassword { get; set; }
 
         [Required]
-        public string RoleId { get; set; }
+        public string RoleName { get; set; }
+    }
+
+    public class UserDetailViewModel
+    {
+        public string UserName { get; set; }
+
+        public string Email { get; set; }
+
+        public string RoleName { get; set; }
+
+        public List<string> Permissions { get; set; }
     }
 
     public class LoginViewModel

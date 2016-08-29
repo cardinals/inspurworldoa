@@ -148,7 +148,7 @@ namespace InspurOA.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(UserCreateViewModel model)
         {
             if (ModelState.IsValid)
             {

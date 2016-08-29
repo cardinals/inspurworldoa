@@ -90,7 +90,6 @@ D:\InspurProjects\InspurOA\InspurOA\bin\Microsoft.Office.Interop.Word.dll
 D:\InspurProjects\InspurOA\InspurOA\bin\stdole.dll
 D:\InspurProjects\InspurOA\InspurOA\bin\InspurOA.BLL.pdb
 D:\InspurProjects\InspurOA\InspurOA\bin\InspurOA.Common.pdb
-D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.Web.csprojResolveAssemblyReference.cache
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\ApplicationInsights.config
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\roslyn\csc.exe
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
@@ -186,7 +185,8 @@ D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\Microsoft.Owin.Security
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\Microsoft.Owin.Security.Google.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\Microsoft.Owin.Security.Twitter.xml
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.dll
-D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.pdb
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.Web.csprojResolveAssemblyReference.cache
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.Migrations.UpdateTable.resources
 D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.Web.csproj.GenerateResource.Cache
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.dll
+D:\InspurProjects\InspurWorld\inspurworldoa\InspurOA\obj\Debug\InspurOA.pdb

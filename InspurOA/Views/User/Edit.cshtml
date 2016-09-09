@@ -1,4 +1,4 @@
-﻿@model InspurOA.Models.ApplicationUser
+﻿@model InspurOA.Models.UserCreateViewModel
 
 @{
     ViewBag.Title = "修改用户信息";
@@ -17,7 +17,7 @@
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.UserId)
 
         <div class="form-group">
             @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -40,10 +40,9 @@
             var UserRoles = ViewData["Roles"] as List<SelectListItem>;
 
             <div class="form-group">
-                <label class="col-md-2 control-label">角色</label>
-                @*@Html.LabelFor(m => m.RoleViewModelList, new { @class = "col-md-2 control-label" })*@
+                @Html.LabelFor(m => m.RoleCode, new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
-                    <select name="RoleName" id="RoleName" class="form-control">
+                    <select name="RoleCode" id="RoleCode" class="form-control">
                         @foreach (var item in UserRoles)
                         {
                             if (item.Selected)
@@ -59,9 +58,6 @@
                 </div>
             </div>
         }
-
-
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="保存" class="btn btn-default form-control" />

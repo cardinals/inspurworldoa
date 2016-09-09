@@ -1,16 +1,19 @@
-﻿using InspurOA.DAL;
+﻿using InspurOA.Authorization;
+using InspurOA.DAL;
+using InspurOA.Identity.EntityFramework;
 using InspurOA.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Activities.Statements;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace InspurOA.Controllers
 {
-    [InspurAuthotize(Roles = "Admin")]
+    [InspurAuthorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         ApplicationDbContext dbContext = new ApplicationDbContext();
@@ -18,7 +21,7 @@ namespace InspurOA.Controllers
         // GET: Role
         public ActionResult Index()
         {
-            return View(dbContext.URoles.ToList());
+            return View(dbContext.Roles.ToList());
         }
 
         // GET: Role/Details/5
@@ -30,70 +33,131 @@ namespace InspurOA.Controllers
         // GET: Role/Create
         public ActionResult Create()
         {
-            RoleViewModel model = new RoleViewModel();
-            model.PermissionViewModelList = new List<PermissionItemViewModel>();
+            List<PermissionItemViewModel> PermissionList = new List<PermissionItemViewModel>();
             foreach (var item in dbContext.Permissions.ToList())
             {
-                model.PermissionViewModelList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = false });
+                PermissionList.Add(new PermissionItemViewModel() { IsChecked = false, Permission = item });
             }
 
-            return View(model);
+            ViewData["Permissions"] = PermissionList;
+            return View();
         }
 
-        // POST: Role/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(RoleViewModel model, FormCollection collection)
         {
-            RoleViewModel model = new RoleViewModel();
-            model.Name = collection.Get("Name");
-            model.RoleName = collection.Get("RoleName");
+            string PermissionStr = collection.Get("Permissions");
+            string[] permissionIdArray = { };
+            if (!string.IsNullOrWhiteSpace(PermissionStr))
+            {
+                permissionIdArray = PermissionStr.Split(',');
+            }
+
+            List<PermissionItemViewModel> PermissionList = new List<PermissionItemViewModel>();
+            foreach (var item in dbContext.Permissions.ToList())
+            {
+                if (permissionIdArray.Contains(item.PermissionId))
+                {
+                    PermissionList.Add(new PermissionItemViewModel() { IsChecked = true, Permission = item });
+                }
+                else
+                {
+                    PermissionList.Add(new PermissionItemViewModel() { IsChecked = false, Permission = item });
+                }
+            }
 
             if (!ModelState.IsValid)
             {
+                ViewData["Permissions"] = PermissionList;
                 return View(model);
             }
 
             string newRoleId = Guid.NewGuid().ToString();
-            URole role = new URole() { Id = newRoleId, Name = model.Name, RoleName = model.RoleName };
-            string permissionStr = collection.Get("Permission");
-            if (!string.IsNullOrWhiteSpace(permissionStr))
+            var role = new InspurIdentityRole() { RoleId = newRoleId, RoleCode = model.RoleCode, RoleName = model.RoleName, RoleDescription = model.RoleDescription };
+            using (var transcation = dbContext.Database.BeginTransaction())
             {
-                using (var transcation = dbContext.Database.BeginTransaction())
+                try
                 {
-                    try
+                    dbContext.Roles.Add(role);
+                    dbContext.SaveChanges();
+
+                    foreach (var permissionId in permissionIdArray)
                     {
-                        string[] permissions = permissionStr.Split(',');
-                        dbContext.URoles.Add(role);
-                        dbContext.SaveChanges();
+                        var RP = new InspurIdentityRolePermission();
+                        RP.RoleId = role.RoleId;
+                        RP.PermissionId = permissionId;
 
-                        foreach (var permission in permissions)
-                        {
-                            RolePermission RP = new RolePermission();
-                            RP.RoleId = role.Id;
-                            RP.PermissionId = permission;
-
-                            dbContext.RolePermissions.Add(RP);
-                        }
-
-                        dbContext.SaveChanges();
-                        transcation.Commit();
+                        dbContext.RolePermissions.Add(RP);
                     }
-                    catch
-                    {
-                        transcation.Rollback();
-                    }
+
+                    dbContext.SaveChanges();
+                    transcation.Commit();
                 }
-            }
-            else
-            {
-                dbContext.URoles.Add(role);
-                dbContext.SaveChanges();
+                catch
+                {
+                    transcation.Rollback();
+                }
             }
 
             return RedirectToAction("Index");
         }
 
+        // POST: Role/Create
+        //[HttpPost]
+        //public ActionResult Create(FormCollection collection)
+        //{
+        //    RoleViewModel model = new RoleViewModel();
+        //    model.RoleCode = collection.Get("RoleCode");
+        //    model.RoleName = collection.Get("RoleName");
+        //    model.RoleDescription = collection.Get("RoleDescription");
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(model);
+        //    }
+
+        //    string newRoleId = Guid.NewGuid().ToString();
+        //    Role role = new Role() { RoleId = newRoleId, RoleCode = model.RoleCode, RoleName = model.RoleName, RoleDescription = model.RoleDescription };
+        //    string permissionStr = collection.Get("Permission");
+        //    if (!string.IsNullOrWhiteSpace(permissionStr))
+        //    {
+        //        using (var transcation = dbContext.Database.BeginTransaction())
+        //        {
+        //            try
+        //            {
+        //                string[] permissionIdArray = permissionStr.Split(',');
+        //                dbContext.Roles.Add(role);
+        //                dbContext.SaveChanges();
+
+        //                foreach (var permissionId in permissionIdArray)
+        //                {
+        //                    RolePermission RP = new RolePermission();
+        //                    RP.RoleId = role.RoleId;
+        //                    RP.PermissionId = permissionId;
+
+        //                    dbContext.RolePermissions.Add(RP);
+        //                }
+
+        //                dbContext.SaveChanges();
+        //                transcation.Commit();
+        //            }
+        //            catch
+        //            {
+        //                transcation.Rollback();
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        dbContext.Roles.Add(role);
+        //        dbContext.SaveChanges();
+        //    }
+
+        //    return RedirectToAction("Index");
+        //}
+
         // GET: Role/Edit/5
+
         public ActionResult Edit(string id)
         {
             try
@@ -104,25 +168,27 @@ namespace InspurOA.Controllers
                 }
 
                 var roleViewModel = new RoleViewModel();
-                var Role = dbContext.URoles.Find(id);
-                roleViewModel.Id = id;
-                roleViewModel.Name = Role.Name;
+                var Role = dbContext.Roles.Find(id);
+                roleViewModel.RoleId = id;
+                roleViewModel.RoleCode = Role.RoleCode;
                 roleViewModel.RoleName = Role.RoleName;
-                roleViewModel.PermissionViewModelList = new List<PermissionItemViewModel>();
+                roleViewModel.RoleDescription = Role.RoleDescription;
+                List<PermissionItemViewModel> permissionList = new List<PermissionItemViewModel>();
 
-                IQueryable<RolePermission> rolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == id);
+                IQueryable<InspurIdentityRolePermission> rolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == id);
                 foreach (var item in dbContext.Permissions.ToList())
                 {
                     if (rolePermissions.Any(t => t.PermissionId == item.PermissionId))
                     {
-                        roleViewModel.PermissionViewModelList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = true });
+                        permissionList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = true });
                     }
                     else
                     {
-                        roleViewModel.PermissionViewModelList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = false });
+                        permissionList.Add(new PermissionItemViewModel() { Permission = item, IsChecked = false });
                     }
                 }
 
+                ViewData["Permissions"] = permissionList;
                 return View(roleViewModel);
             }
             catch (Exception ex)
@@ -131,76 +197,79 @@ namespace InspurOA.Controllers
             }
         }
 
-        // POST: Role/Edit/5
+        // POST: Role/Edit
         [HttpPost]
-        public ActionResult Edit(string id, FormCollection collection)
+        public ActionResult Edit(RoleViewModel model, FormCollection collection)
         {
-            try
+            var Role = dbContext.Roles.FirstOrDefault(t => t.RoleId == model.RoleId);
+            if (Role == null)
             {
+                return RedirectToAction("Index");
+            }
 
-                string roleName = collection.Get("RoleName");
-                var Role = dbContext.URoles.Find(id);
+            string PermissionStr = collection.Get("Permissions");
+            string[] permissionIdArray = { };
+            if (!string.IsNullOrWhiteSpace(PermissionStr))
+            {
+                permissionIdArray = PermissionStr.Split(',');
+            }
 
-                if (Role == null)
+            List<PermissionItemViewModel> PermissionList = new List<PermissionItemViewModel>();
+            foreach (var item in dbContext.Permissions.ToList())
+            {
+                if (permissionIdArray.Contains(item.PermissionId))
                 {
-                    return RedirectToAction("Index");
-                }
-
-                if (string.IsNullOrWhiteSpace(roleName))
-                {
-                    return View(Role);
-                }
-
-                string permissionStr = collection.Get("Permission");
-                if (!string.IsNullOrWhiteSpace(permissionStr))
-                {
-                    using (var transcation = dbContext.Database.BeginTransaction())
-                    {
-                        try
-                        {
-                            string[] permissions = permissionStr.Split(',');
-
-                            Role.RoleName = roleName;
-                            dbContext.SaveChanges();
-
-                            var RolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == id);
-                            foreach (var RP in RolePermissions)
-                            {
-                                dbContext.RolePermissions.Remove(RP);
-                            }
-
-                            dbContext.SaveChanges();
-
-                            foreach (var permission in permissions)
-                            {
-                                RolePermission RP = new RolePermission();
-                                RP.RoleId = Role.Id;
-                                RP.PermissionId = permission;
-
-                                dbContext.RolePermissions.Add(RP);
-                            }
-
-                            dbContext.SaveChanges();
-                            transcation.Commit();
-                        }
-                        catch
-                        {
-                            transcation.Rollback();
-                        }
-                    }
+                    PermissionList.Add(new PermissionItemViewModel() { IsChecked = true, Permission = item });
                 }
                 else
                 {
-                    Role.RoleName = roleName;
-                    dbContext.SaveChanges();
+                    PermissionList.Add(new PermissionItemViewModel() { IsChecked = false, Permission = item });
                 }
+            }
 
-                return RedirectToAction("Index");
-            }
-            catch (Exception e)
+            if (!ModelState.IsValid)
             {
-                return View();
+                ViewData["Permissions"] = PermissionList;
+                return View(model);
             }
+
+            using (var transcation = dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    Role.RoleCode = model.RoleCode;
+                    Role.RoleName = model.RoleName;
+                    Role.RoleDescription = model.RoleDescription;
+                    dbContext.Entry(Role).State = EntityState.Modified;
+                    dbContext.SaveChanges();
+
+                    var RolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == model.RoleId);
+                    foreach (var RP in RolePermissions)
+                    {
+                        dbContext.RolePermissions.Remove(RP);
+                    }
+
+                    dbContext.SaveChanges();
+
+                    foreach (var permissionId in permissionIdArray)
+                    {
+                        var RP = new InspurIdentityRolePermission();
+                        RP.RoleId = Role.RoleId;
+                        RP.PermissionId = permissionId;
+
+                        dbContext.RolePermissions.Add(RP);
+                    }
+
+                    dbContext.SaveChanges();
+                    transcation.Commit();
+                }
+                catch
+                {
+                    transcation.Rollback();
+                }
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: Role/Delete/5
@@ -224,8 +293,8 @@ namespace InspurOA.Controllers
                 {
                     using (var transcation = dbContext.Database.BeginTransaction())
                     {
-                        var role = dbContext.URoles.Find(id);
-                        dbContext.URoles.Remove(role);
+                        var role = dbContext.Roles.Find(id);
+                        dbContext.Roles.Remove(role);
                         dbContext.SaveChanges();
 
                         var RolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == id);
@@ -235,23 +304,16 @@ namespace InspurOA.Controllers
                         }
 
                         dbContext.SaveChanges();
-
-                        
-                        
-
                         transcation.Commit();
                     }
                 }
-
-
-
             }
             catch
             {
                 return View();
             }
 
-           return  RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
     }
 }

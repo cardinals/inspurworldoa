@@ -117,10 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Target" xml:space="preserve">
-    <value>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</value>
+  <data name="DbValidationFailed" xml:space="preserve">
+    <value>Database Validation failed.</value>
+    <comment>Preface for db validation error msg</comment>
   </data>
-  <data name="DefaultSchema" xml:space="preserve">
-    <value>dbo</value>
+  <data name="DuplicateEmail" xml:space="preserve">
+    <value>Email {0} is already taken.</value>
+    <comment>error for duplicate email</comment>
+  </data>
+  <data name="DuplicateUserName" xml:space="preserve">
+    <value>User name {0} is already taken.</value>
+    <comment>error for duplicate usernames</comment>
+  </data>
+  <data name="EntityFailedValidation" xml:space="preserve">
+    <value>Entity Type {0} failed validation.</value>
+    <comment>error message for when db validation fails</comment>
+  </data>
+  <data name="ExternalLoginExists" xml:space="preserve">
+    <value>A user with that external login already exists.</value>
+    <comment>Error when a login alreaady linked</comment>
+  </data>
+  <data name="IdentityV1SchemaError" xml:space="preserve">
+    <value>The model backing the 'ApplicationDbContext' context has changed since the database was created. This could have happened because the model used by ASP.NET Identity Framework has changed or the model being used in your application has changed. To resolve this issue, you need to update your database. Consider using Code First Migrations to update the database (http://go.microsoft.com/fwlink/?LinkId=301867).  Before you update your database using Code First Migrations, please disable the schema consistency check for ASP.NET Identity by setting throwIfV1Schema = false in the constructor of your ApplicationDbContext in your application.
+        public ApplicationDbContext() : base("ApplicationServices", throwIfV1Schema:false)</value>
+    <comment>Error when v1 schema is detected</comment>
+  </data>
+  <data name="IncorrectType" xml:space="preserve">
+    <value>Incorrect type, expected type of {0}.</value>
+    <comment>error when passing in entity type</comment>
+  </data>
+  <data name="PropertyCannotBeEmpty" xml:space="preserve">
+    <value>{0} cannot be null or empty.</value>
+    <comment>Error when something cannot be null or empty</comment>
+  </data>
+  <data name="RoleAlreadyExists" xml:space="preserve">
+    <value>Role {0} already exists.</value>
+    <comment>error when a duplicate role is created</comment>
+  </data>
+  <data name="RoleIsNotEmpty" xml:space="preserve">
+    <value>Role is not empty.</value>
+    <comment>error when deleting a non empty role</comment>
+  </data>
+  <data name="RoleNotFound" xml:space="preserve">
+    <value>Role {0} does not exist.</value>
+    <comment>error when a role does not exist</comment>
+  </data>
+  <data name="UserAlreadyInRole" xml:space="preserve">
+    <value>User already in role.</value>
+    <comment>Error when a user is already in a role</comment>
+  </data>
+  <data name="UserIdNotFound" xml:space="preserve">
+    <value>The UserId cannot be found.</value>
+    <comment>No user with this id found</comment>
+  </data>
+  <data name="UserLoginAlreadyExists" xml:space="preserve">
+    <value>UserLogin already exists for loginProvider: {0} with providerKey: {1}</value>
+    <comment>Error when a login is already associated</comment>
+  </data>
+  <data name="UserNameNotFound" xml:space="preserve">
+    <value>User {0} does not exist.</value>
+    <comment>error when a user does not exist</comment>
+  </data>
+  <data name="UserNotInRole" xml:space="preserve">
+    <value>User is not in role.</value>
+    <comment>Error when a user is not in the role</comment>
+  </data>
+  <data name="ValueCannotBeNullOrEmpty" xml:space="preserve">
+    <value>Value cannot be null or empty.</value>
+    <comment>Null or empty error message</comment>
   </data>
 </root>

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InspurOA.Models;
 using InspurOA.DAL;
-using Microsoft.AspNet.Identity.EntityFramework;
+using InspurOA.Identity.EntityFramework;
 
 namespace InspurOA.Common
 {
@@ -13,25 +13,24 @@ namespace InspurOA.Common
     {
         static ApplicationDbContext dbContext = ApplicationDbContext.Create();
 
-        public static URole GetRoleByUserId(string UserId)
+        public static InspurIdentityRole GetRoleByUserId(string UserId)
         {
-            IdentityUserRole userRole = dbContext.UserRoles.FirstOrDefault(t => t.UserId == UserId);
+            var userRole = dbContext.UserRoles.FirstOrDefault(t => t.UserId == UserId);
             if (userRole != null)
             {
-                return dbContext.URoles.First(t => t.Id == userRole.RoleId);
+                return dbContext.Roles.First(t => t.RoleId == userRole.RoleId);
             }
             else
             {
                 return null;
             }
         }
-
-        public static string GetRoleNameByUserId(string UserId)
+        public static string GetRoleIdByUserId(string UserId)
         {
-            URole uRole = GetRoleByUserId(UserId);
-            if (uRole != null)
+            var role = GetRoleByUserId(UserId);
+            if (role != null)
             {
-                return uRole.Name;
+                return role.RoleId;
             }
             else
             {
@@ -39,6 +38,72 @@ namespace InspurOA.Common
             }
         }
 
+        public static string GetRoleCodeByUserId(string UserId)
+        {
+            var uRole = GetRoleByUserId(UserId);
+            if (uRole != null)
+            {
+                return uRole.RoleCode;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public static string GetRoleNameByUserId(string UserId)
+        {
+            var uRole = GetRoleByUserId(UserId);
+            if (uRole != null)
+            {
+                return uRole.RoleName;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public static bool isRole(string UserId, string RoleCode)
+        {
+            var role = dbContext.Roles.FirstOrDefault(t => t.RoleCode == RoleCode);
+            if (role != null)
+            {
+                return isUserInRole(UserId, role.RoleId);
+            }
+
+            return false;
+        }
+
+        public static bool isUserInRole(string UserId, string RoleId)
+        {
+            var UserRole = dbContext.UserRoles.FirstOrDefault(t => t.UserId == UserId && t.RoleId == RoleId);
+            if (UserRole == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public static bool AddUserToRole(InspurUser user, string RoleCode)
+        {
+            var role = dbContext.Roles.FirstOrDefault(t => t.RoleCode == RoleCode);
+            if (role == null)
+            {
+                return false;
+            }
+            else
+            {
+
+            }
+
+
+
+            return false;
+        }
 
     }
 }

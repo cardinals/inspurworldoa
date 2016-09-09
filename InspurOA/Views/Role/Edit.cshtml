@@ -1,4 +1,5 @@
-﻿@model InspurOA.Models.RoleViewModel
+﻿@using InspurOA.Models;
+@model InspurOA.Models.RoleViewModel
 @{
     ViewBag.Title = "修改角色";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -11,15 +12,16 @@
 @using (Html.BeginForm("Edit", "Role", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal form-md">
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })        
-        @Html.HiddenFor(model => model.Id)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.RoleId)
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RoleCode, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DisplayFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.RoleCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RoleCode, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
@@ -30,24 +32,39 @@
             </div>
         </div>
         <div class="form-group">
-            <table class="table-responsive">
-                @foreach (var item in Model.PermissionViewModelList)
-                {
-                    <tr>
-                        <td>
-                            @if (item.IsChecked)
-                            {
-                                <input type="checkbox" name="Permission" checked="checked" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="Permission" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
-                            }
-                        </td>
-                    </tr>
-                }
-            </table>
+            @Html.LabelFor(model => model.RoleDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RoleDescription, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RoleDescription, "", new { @class = "text-danger" })
+            </div>
         </div>
+        @if (ViewData["Permissions"] != null)
+        {
+            var PermissionList = ViewData["Permissions"] as List<PermissionItemViewModel>;
+            <div class="form-group">
+                @Html.LabelFor(model => model.Permissions, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.ValidationMessageFor(model => model.Permissions, "", new { @class = "text-danger" })
+                    <table class="table-responsive">
+                        @foreach (var item in PermissionList)
+                    {
+                            <tr>
+                                <td>
+                                    @if (item.IsChecked)
+                                    {
+                                        <input type="checkbox" name="Permissions" checked="checked" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="Permissions" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        }
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="保存" class="btn btn-default form-control" />

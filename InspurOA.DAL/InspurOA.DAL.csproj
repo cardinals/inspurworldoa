@@ -66,6 +66,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\InspurOA.Identity.EntityFramework\InspurOA.Identity.EntityFramework.csproj">
+      <Project>{D03DE150-3FBC-4967-86A5-658CE83FB54E}</Project>
+      <Name>InspurOA.Identity.EntityFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InspurOA.Models\InspurOA.Models.csproj">
       <Project>{d0189ae5-c1b4-4885-94f7-7cd879949323}</Project>
       <Name>InspurOA.Models</Name>

@@ -11,7 +11,7 @@ namespace InspurOA.Models
         public string Email { get; set; }
     }
 
-    public class UserCreateViewModel
+    public class RegisterViewModel
     {
         [Required]
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
@@ -33,25 +33,6 @@ namespace InspurOA.Models
         [Display(Name = "确认密码")]
         [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
-        [Required]
-        public string RoleName { get; set; }
-    }
-
-    public class UserDetailViewModel
-    {
-        public string Id { get; set; }
-
-        [Display(Name = "用户名")]
-        public string UserName { get; set; }
-
-        [Display(Name = "邮箱")]
-        public string Email { get; set; }
-
-        [Display(Name = "角色")]
-        public string RoleName { get; set; }
-
-        public List<string> Permissions { get; set; }
     }
 
     public class LoginViewModel
@@ -69,31 +50,29 @@ namespace InspurOA.Models
         public bool RememberMe { get; set; }
     }
 
-    public class RoleViewModel
-    {
-        public string Id { get; set; }
+    //public class RoleViewModel
+    //{
+    //    public string Id { get; set; }
 
-        [Required]
-        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
-        [Display(Name = "角色ID")]
-        public string Name { get; set; }
+    //    [Required]
+    //    [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+    //    [Display(Name = "角色ID")]
+    //    public string RoleCode { get; set; }
 
-        [Required]
-        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
-        [Display(Name = "角色名称")]
-        public string RoleName { get; set; }
+    //    [Required]
+    //    [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+    //    [Display(Name = "角色名称")]
+    //    public string RoleName { get; set; }
 
-        [Required]
-        [Display(Name = "角色权限")]
-        public List<PermissionItemViewModel> PermissionViewModelList { get; set; }
-    }
+    //    [Required]
+    //    [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+    //    [Display(Name = "角色描述")]
+    //    public string RoleDescription { get; set; }
 
-    public class PermissionItemViewModel
-    {
-        public Permission Permission { get; set; }
-
-        public bool IsChecked { get; set; }
-    }
+    //    [Required]
+    //    [Display(Name = "角色权限")]
+    //    public List<PermissionItemViewModel> PermissionViewModelList { get; set; }
+    //}
 
     //public class ExternalLoginListViewModel
     //{

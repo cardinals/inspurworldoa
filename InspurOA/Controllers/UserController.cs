@@ -1,4 +1,7 @@
-﻿using InspurOA.Models;
+﻿using InspurOA.Authorization;
+using InspurOA.Common;
+using InspurOA.DAL;
+using InspurOA.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -11,6 +14,7 @@ using System.Web.Mvc;
 
 namespace InspurOA.Controllers
 {
+    //[InspurAuthorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private ApplicationUserManager _userManager;
@@ -42,55 +46,73 @@ namespace InspurOA.Controllers
                 return RedirectToAction("index");
             }
 
+            UserDetailViewModel userDetailViewModel = new UserDetailViewModel();
             var user = dbContext.Users.Find(id);
+            if (user != null)
+            {
+                userDetailViewModel.Id = id;
+                userDetailViewModel.UserName = user.UserName;
+                userDetailViewModel.Email = user.Email;
+            }
 
-            return View(user);
+            userDetailViewModel.RoleCode = RoleHelper.GetRoleCodeByUserId(id);
+
+            return View(userDetailViewModel);
         }
 
         // GET: UserController/Create
         public ActionResult Create()
         {
-            List<SelectListItem> UserRoles = new List<SelectListItem>();
-            foreach (var UserRole in dbContext.URoles.ToList())
+            List<SelectListItem> Roles = new List<SelectListItem>();
+            foreach (var role in dbContext.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
                 selectListItem.Selected = false;
-                selectListItem.Text = UserRole.RoleName;
-                selectListItem.Value = UserRole.Id;
-                UserRoles.Add(selectListItem);
+                selectListItem.Text = role.RoleName;
+                selectListItem.Value = role.RoleCode;
+                Roles.Add(selectListItem);
             }
 
-            ViewData["Roles"] = UserRoles;
+            ViewData["Roles"] = Roles;
 
             return View();
         }
 
         // POST: UserController/Create
         [HttpPost]
-        public async Task<ActionResult> Create(RegisterViewModel model)
+        public async Task<ActionResult> Create(UserCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                string userID = Guid.NewGuid().ToString();
-                var user = new ApplicationUser {Id= userID, UserName = model.UserName, Email = model.Email };
-
-                IdentityRole Role = dbContext.Roles.Find(model.RoleId);
-                var result = await UserManager.CreateAsync(user, model.Password);
-                await UserManager.AddToRoleAsync(userID, Role.Name);
-                if (result.Succeeded)
+                if (dbContext.Roles.Any(t => t.RoleCode == model.RoleCode))
                 {
-                    return RedirectToAction("Index", "User");
-                }
+                    var user = new InspurUser { UserName = model.UserName, Email = model.Email };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        InspurUser TUser = dbContext.Users.First(t => t.UserName == model.UserName);
+                        if (TUser != null)
+                        {
+                            await UserManager.AddToRoleAsync(TUser.Id, model.RoleCode);
+                        }
 
-                AddErrors(result);
+                        return RedirectToAction("Index", "User");
+                    }
+
+                    AddErrors(result);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "所选角色不存在！");
+                }
             }
 
-            List<SelectListItem> UserRoles = new List<SelectListItem>();
-            foreach (var UserRole in dbContext.URoles.ToList())
+            List<SelectListItem> Roles = new List<SelectListItem>();
+            foreach (var role in dbContext.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
 
-                if (UserRole.Id.Equals(model.RoleId))
+                if (role.RoleCode.Equals(model.RoleCode))
                 {
                     selectListItem.Selected = true;
                 }
@@ -99,12 +121,12 @@ namespace InspurOA.Controllers
                     selectListItem.Selected = false;
                 }
 
-                selectListItem.Text = UserRole.RoleName;
-                selectListItem.Value = UserRole.Id;
-                UserRoles.Add(selectListItem);
+                selectListItem.Text = role.RoleName;
+                selectListItem.Value = role.RoleCode;
+                Roles.Add(selectListItem);
             }
 
-            ViewData["Roles"] = UserRoles;
+            ViewData["Roles"] = Roles;
             return View(model);
         }
 
@@ -117,6 +139,27 @@ namespace InspurOA.Controllers
             }
 
             var user = dbContext.Users.Find(id);
+            string RoleCode = RoleHelper.GetRoleCodeByUserId(id);
+
+            List<SelectListItem> UserRoles = new List<SelectListItem>();
+            foreach (var role in dbContext.Roles.ToList())
+            {
+                SelectListItem selectListItem = new SelectListItem();
+                selectListItem.Text = role.RoleName;
+                selectListItem.Value = role.RoleCode;
+                if (role.RoleCode.Equals(RoleCode))
+                {
+                    selectListItem.Selected = true;
+                }
+                else
+                {
+                    selectListItem.Selected = false;
+                }
+
+                UserRoles.Add(selectListItem);
+            }
+
+            ViewData["Roles"] = UserRoles;
 
             return View(user);
         }
@@ -137,29 +180,20 @@ namespace InspurOA.Controllers
             }
         }
 
-
         // POST: UserController/Delete/5
         [HttpPost]
-        public void Delete(string ids)
+        public void Delete(string[] ids)
         {
             try
             {
-                //if (ids == null || ids.Length == 0)
-                //{
-                //    return;
-                //    /*return RedirectToAction("Index");*/
-                //}
-
-                if (string.IsNullOrWhiteSpace(ids))
+                if (ids == null || ids.Length == 0)
                 {
                     return;
                 }
 
-                string[] idArray = ids.Split(',');
-
-                for (int i = 0; i < idArray.Length; i++)
+                for (int i = 0; i < ids.Length; i++)
                 {
-                    var user = dbContext.Users.Find(idArray[i]);
+                    var user = dbContext.Users.Find(ids[i]);
                     if (user != null)
                     {
                         dbContext.Users.Remove(user);
@@ -170,12 +204,8 @@ namespace InspurOA.Controllers
             }
             catch (Exception e)
             {
-                //RedirectToAction("index");
             }
-
-            //return View("Index", dbContext.Users.ToList());
         }
-
 
         private void AddErrors(IdentityResult result)
         {
@@ -184,6 +214,5 @@ namespace InspurOA.Controllers
                 ModelState.AddModelError("", error);
             }
         }
-
     }
 }

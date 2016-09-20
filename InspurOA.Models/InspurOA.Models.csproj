@@ -46,8 +46,20 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -85,17 +97,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountViewModels.cs" />
+    <Compile Include="Common\SelectListViewModel.cs" />
     <Compile Include="Enum\ResumeLanguageType.cs" />
+    <Compile Include="ManageViewModels.cs" />
+    <Compile Include="Permission\PermissionItemViewModel.cs" />
+    <Compile Include="Permission\PermissionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IdentityModels.cs" />
     <Compile Include="Resume.cs" />
-    <Compile Include="User\ApplicationUser.cs" />
-    <Compile Include="User\CreateUserModelView.cs" />
+    <Compile Include="Role\RoleViewModel.cs" />
+    <Compile Include="User\UserCreateViewModel.cs" />
+    <Compile Include="User\UserDetailViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\InspurOA.Identity.Core\InspurOA.Identity.Core.csproj">
+      <Project>{4BB85640-4864-4A83-9747-AC645A513126}</Project>
+      <Name>InspurOA.Identity.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InspurOA.Identity.EntityFramework\InspurOA.Identity.EntityFramework.csproj">
+      <Project>{D03DE150-3FBC-4967-86A5-658CE83FB54E}</Project>
+      <Name>InspurOA.Identity.EntityFramework</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using InspurOA.Authorization;
+using System.Web;
 using System.Web.Mvc;
 
 namespace InspurOA
@@ -7,7 +8,9 @@ namespace InspurOA
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            filters.Add(new InspurAuthorizeAttribute());
             filters.Add(new HandleErrorAttribute());
+
         }
     }
 }

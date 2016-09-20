@@ -7,9 +7,14 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using InspurOA.Models;
+using InspurOA;
+using InspurOA.DAL;
+using InspurOA.Authorization;
+using InspurOA.Identity.EntityFramework;
 
 namespace InspurOA.Controllers
 {
+    [InspurAuthorize(Roles = "Admin")]
     public class PermissionController : Controller
     {
         private ApplicationDbContext dbContext = new ApplicationDbContext();
@@ -27,7 +32,8 @@ namespace InspurOA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Permission permission = dbContext.Permissions.Find(id);
+
+            var permission = dbContext.Permissions.Find(id);
             if (permission == null)
             {
                 return HttpNotFound();
@@ -41,22 +47,23 @@ namespace InspurOA.Controllers
             return View();
         }
 
-        // POST: Permissions/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PermissionDescription")] Permission permission)
+        public ActionResult Create(PermissionViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var permission = new InspurIdentityPermission();
                 permission.PermissionId = Guid.NewGuid().ToString();
+                permission.PermissionCode = model.PermissionCode;
+                permission.PermissionDescription = model.PermissionDescription;
                 dbContext.Permissions.Add(permission);
                 dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(permission);
+            return View(model);
         }
 
         // GET: Permissions/Edit/5
@@ -66,7 +73,7 @@ namespace InspurOA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Permission permission = dbContext.Permissions.Find(id);
+            var permission = dbContext.Permissions.Find(id);
             if (permission == null)
             {
                 return HttpNotFound();
@@ -79,15 +86,19 @@ namespace InspurOA.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PermissionId,PermissionDescription")] Permission permission)
+        public ActionResult Edit(PermissionViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var permission = new InspurIdentityPermission();
+                permission.PermissionId = model.PermissionId;
+                permission.PermissionCode = model.PermissionCode;
+                permission.PermissionDescription = model.PermissionDescription;
                 dbContext.Entry(permission).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(permission);
+            return View(model);
         }
 
         // GET: Permissions/Delete/5
@@ -105,7 +116,7 @@ namespace InspurOA.Controllers
                 {
                     try
                     {
-                        Permission permission = dbContext.Permissions.Find(id);
+                        var permission = dbContext.Permissions.Find(id);
                         if (permission != null)
                         {
                             dbContext.Permissions.Remove(permission);
@@ -113,22 +124,13 @@ namespace InspurOA.Controllers
 
                         dbContext.SaveChanges();
 
-                        IQueryable<RolePermission> RolePermissions = dbContext.RolePermissions.Where(t => t.PermissionId == id);
+                        IQueryable<InspurIdentityRolePermission> RolePermissions = dbContext.RolePermissions.Where(t => t.PermissionId == id);
                         foreach (var rp in RolePermissions)
                         {
                             dbContext.RolePermissions.Remove(rp);
                         }
 
                         dbContext.SaveChanges();
-
-                        IQueryable<UserPermission> UserPermissions = dbContext.UserPermissions.Where(t => t.PermissionId == id);
-                        foreach (var up in UserPermissions)
-                        {
-                            dbContext.UserPermissions.Remove(up);
-                        }
-
-                        dbContext.SaveChanges();
-
                         transcation.Commit();
                     }
                     catch

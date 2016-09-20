@@ -156,7 +156,6 @@ namespace InspurOA.Common
                     resume.ProfessionalSkills = propertyValue;
                     break;
                 default:
-
                     break;
             }
         }

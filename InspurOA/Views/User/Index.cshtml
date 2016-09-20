@@ -1,4 +1,4 @@
-﻿@model IEnumerable<InspurOA.Models.ApplicationUser>
+﻿@model IEnumerable<InspurOA.Models.InspurUser>
 
 @{
     ViewBag.Title = "用户管理";
@@ -8,7 +8,7 @@
 <h2>用户管理</h2>
 
 <p>
-    @Html.ActionLink("添加", "Create", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("添加", "Create", null, new { @class = "btn btn-primary" }) |
     <input class="btn btn-primary" name="BtnDelete" type="button" value="删除" />
 </p>
 <table class="table">

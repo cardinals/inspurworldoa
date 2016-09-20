@@ -1,4 +1,4 @@
-﻿@model IEnumerable<InspurOA.Models.URole>
+﻿@model IEnumerable<InspurOA.Models.Role>
 
 @{
     ViewBag.Title = "角色管理";
@@ -15,12 +15,13 @@
     <tr>
         <th></th>
         <th>
-            @*@Html.DisplayNameFor(model => model.Name)*@
-            角色ID
+            角色代号
         </th>
         <th>
-            @*@Html.DisplayNameFor(model => model.RoleName)*@
             角色名称
+        </th>
+        <th>
+            角色描述
         </th>
     </tr>
 
@@ -28,13 +29,16 @@
     {
         <tr>
             <td>
-                <input type="checkbox" value="@Html.DisplayFor(modelItem => item.Id)" />
+                <input type="checkbox" value="@Html.DisplayFor(modelItem => item.RoleId)" />
             </td>
             <td data-content="content">
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.RoleCode)
             </td>
             <td data-content="content">
                 @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td data-content="content">
+                @Html.DisplayFor(modelItem => item.RoleDescription)
             </td>
         </tr>
     }

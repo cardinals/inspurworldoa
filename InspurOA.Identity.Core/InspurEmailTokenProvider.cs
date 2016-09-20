@@ -12,7 +12,7 @@ namespace InspurOA.Identity.Core
     ///     TokenProvider that generates tokens from the user's security stamp and notifies a user via their email
     /// </summary>
     /// <typeparam name="TUser"></typeparam>
-    public class InspurEmailTokenProvider<TUser> : InspurEmailTokenProvider<TUser, string> where TUser : class, IUser<string>
+    public class InspurEmailTokenProvider<TUser> : InspurEmailTokenProvider<TUser, string> where TUser : class, IInspurUser<string>
     {
     }
 
@@ -22,7 +22,7 @@ namespace InspurOA.Identity.Core
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public class InspurEmailTokenProvider<TUser, TKey> : InspurTotpSecurityStampBasedTokenProvider<TUser, TKey>
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         private string _body;

@@ -14,7 +14,7 @@ using Microsoft.AspNet.Identity.Owin;
 namespace InspurOA.Identity.Owin
 {
     public class InspurSignInManager<TUser, TKey> : IDisposable
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         /// <summary>
@@ -175,10 +175,10 @@ namespace InspurOA.Identity.Owin
             {
                 return InspurSignInStatus.Failure;
             }
-            if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
-            {
-                return InspurSignInStatus.LockedOut;
-            }
+            //if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
+            //{
+            //    return InspurSignInStatus.LockedOut;
+            //}
             if (await InspurUserManager.VerifyTwoFactorTokenAsync(user.Id, provider, code).WithCurrentCulture())
             {
                 // When token is verified correctly, clear the access failed count used for lockout
@@ -197,17 +197,17 @@ namespace InspurOA.Identity.Owin
         /// <param name="loginInfo"></param>
         /// <param name="isPersistent"></param>
         /// <returns></returns>
-        public async Task<InspurSignInStatus> ExternalSignInAsync(ExternalLoginInfo loginInfo, bool isPersistent)
+        public async Task<InspurSignInStatus> ExternalSignInAsync(InspurExternalLoginInfo loginInfo, bool isPersistent)
         {
             var user = await InspurUserManager.FindAsync(loginInfo.Login).WithCurrentCulture();
             if (user == null)
             {
                 return InspurSignInStatus.Failure;
             }
-            if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
-            {
-                return InspurSignInStatus.LockedOut;
-            }
+            //if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
+            //{
+            //    return InspurSignInStatus.LockedOut;
+            //}
             return await SignInOrTwoFactor(user, isPersistent).WithCurrentCulture();
         }
 
@@ -246,23 +246,23 @@ namespace InspurOA.Identity.Owin
             {
                 return InspurSignInStatus.Failure;
             }
-            if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
-            {
-                return InspurSignInStatus.LockedOut;
-            }
+            //if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
+            //{
+            //    return InspurSignInStatus.LockedOut;
+            //}
             if (await InspurUserManager.CheckPasswordAsync(user, password).WithCurrentCulture())
             {
-                await InspurUserManager.ResetAccessFailedCountAsync(user.Id).WithCurrentCulture();
+                //await InspurUserManager.ResetAccessFailedCountAsync(user.Id).WithCurrentCulture();
                 return await SignInOrTwoFactor(user, isPersistent).WithCurrentCulture();
             }
             if (shouldLockout)
             {
                 // If lockout is requested, increment access failed count which might lock out the user
                 await InspurUserManager.AccessFailedAsync(user.Id).WithCurrentCulture();
-                if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
-                {
-                    return InspurSignInStatus.LockedOut;
-                }
+                //if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
+                //{
+                //    return InspurSignInStatus.LockedOut;
+                //}
             }
             return InspurSignInStatus.Failure;
         }

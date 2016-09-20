@@ -15,7 +15,7 @@ namespace InspurOA.Identity.Owin
     ///     Token provider that uses an IDataProtector to generate encrypted tokens based off of the security stamp
     /// </summary>
     public class InspurDataProtectorTokenProvider<TUser> : InspurDataProtectorTokenProvider<TUser, string>
-        where TUser : class, IUser<string>
+        where TUser : class, IInspurUser<string>
     {
         /// <summary>
         ///     Constructor
@@ -30,7 +30,7 @@ namespace InspurOA.Identity.Owin
     ///     Token provider that uses an IDataProtector to generate encrypted tokens based off of the security stamp
     /// </summary>
     public class InspurDataProtectorTokenProvider<TUser, TKey> : IInspurUserTokenProvider<TUser, TKey>
-        where TUser : class, IUser<TKey> where TKey : IEquatable<TKey>
+        where TUser : class, IInspurUser<TKey> where TKey : IEquatable<TKey>
     {
         /// <summary>
         ///     Constructor

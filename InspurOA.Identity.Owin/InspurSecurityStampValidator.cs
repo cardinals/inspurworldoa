@@ -31,7 +31,7 @@ namespace InspurOA.Identity.Owin
         public static Func<CookieValidateIdentityContext, Task> OnValidateIdentity<TManager, TUser>(
             TimeSpan validateInterval, Func<TManager, TUser, Task<ClaimsIdentity>> regenerateIdentity)
             where TManager : InspurUserManager<TUser, string>
-            where TUser : class, IUser<string>
+            where TUser : class, IInspurUser<string>
         {
             return OnValidateIdentity(validateInterval, regenerateIdentity, id => id.GetUserId());
         }
@@ -53,7 +53,7 @@ namespace InspurOA.Identity.Owin
             TimeSpan validateInterval, Func<TManager, TUser, Task<ClaimsIdentity>> regenerateIdentityCallback,
             Func<ClaimsIdentity, TKey> getUserIdCallback)
             where TManager : InspurUserManager<TUser, TKey>
-            where TUser : class, IUser<TKey>
+            where TUser : class, IInspurUser<TKey>
             where TKey : IEquatable<TKey>
         {
             if (getUserIdCallback == null)

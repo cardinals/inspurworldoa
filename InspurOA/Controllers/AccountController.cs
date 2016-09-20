@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using InspurOA.Models;
 using System.Collections.Generic;
 using InspurOA.Identity.Owin;
+using InspurOA.Identity.Owin.Extensions;
 
 namespace InspurOA.Controllers
 {
@@ -290,47 +291,47 @@ namespace InspurOA.Controllers
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
-        ////
-        //// GET: /Account/SendCode
-        //[AllowAnonymous]
-        //public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
-        //{
-        //    var userId = await SignInManager.GetVerifiedUserIdAsync();
-        //    if (userId == null)
-        //    {
-        //        return View("Error");
-        //    }
-        //    var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
-        //    var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-        //    return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        //}
+        //////
+        ////// GET: /Account/SendCode
+        ////[AllowAnonymous]
+        ////public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
+        ////{
+        ////    var userId = await SignInManager.GetVerifiedUserIdAsync();
+        ////    if (userId == null)
+        ////    {
+        ////        return View("Error");
+        ////    }
+        ////    var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
+        ////    var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
+        ////    return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
+        ////}
 
-        ////
-        //// POST: /Account/SendCode
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> SendCode(SendCodeViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View();
-        //    }
+        //////
+        ////// POST: /Account/SendCode
+        ////[HttpPost]
+        ////[AllowAnonymous]
+        ////[ValidateAntiForgeryToken]
+        ////public async Task<ActionResult> SendCode(SendCodeViewModel model)
+        ////{
+        ////    if (!ModelState.IsValid)
+        ////    {
+        ////        return View();
+        ////    }
 
-        //    // Generate the token and send it
-        //    if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
-        //    {
-        //        return View("Error");
-        //    }
-        //    return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
-        //}
+        ////    // Generate the token and send it
+        ////    if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+        ////    {
+        ////        return View("Error");
+        ////    }
+        ////    return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+        ////}
 
         //
         // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
+            var loginInfo = await AuthenticationManager.InspurGetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
                 return RedirectToAction("Login");
@@ -370,7 +371,7 @@ namespace InspurOA.Controllers
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
+                var info = await AuthenticationManager.InspurGetExternalLoginInfoAsync();
                 if (info == null)
                 {
                     return View("ExternalLoginFailure");

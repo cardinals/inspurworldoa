@@ -17,7 +17,7 @@ namespace InspurOA.Identity.Core
      ///     Validates users before they are saved
      /// </summary>
      /// <typeparam name="TUser"></typeparam>
-    public class InspurUserValidator<TUser> : InspurUserValidator<TUser, string> where TUser : class, IUser<string>
+    public class InspurUserValidator<TUser> : InspurUserValidator<TUser, string> where TUser : class, IInspurUser<string>
     {
         /// <summary>
         ///     Constructor
@@ -35,7 +35,7 @@ namespace InspurOA.Identity.Core
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public class InspurUserValidator<TUser, TKey> : IIdentityValidator<TUser>
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         /// <summary>
@@ -92,19 +92,19 @@ namespace InspurOA.Identity.Core
         {
             if (string.IsNullOrWhiteSpace(user.UserName))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.PropertyTooShort, "Name"));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.PropertyTooShort, "Name"));
             }
             else if (AllowOnlyAlphanumericUserNames && !Regex.IsMatch(user.UserName, @"^[A-Za-z0-9@_\.]+$"))
             {
                 // If any characters are not letters or digits, its an illegal user name
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.InvalidUserName, user.UserName));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.InvalidUserName, user.UserName));
             }
             else
             {
                 var owner = await Manager.FindByNameAsync(user.UserName).WithCurrentCulture();
                 if (owner != null && !EqualityComparer<TKey>.Default.Equals(owner.Id, user.Id))
                 {
-                    errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateName, user.UserName));
+                    errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.DuplicateName, user.UserName));
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace InspurOA.Identity.Core
             var email = await Manager.GetEmailStore().GetEmailAsync(user).WithCurrentCulture();
             if (string.IsNullOrWhiteSpace(email))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.PropertyTooShort, "Email"));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.PropertyTooShort, "Email"));
                 return;
             }
             try
@@ -124,13 +124,13 @@ namespace InspurOA.Identity.Core
             }
             catch (FormatException)
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.InvalidEmail, email));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.InvalidEmail, email));
                 return;
             }
             var owner = await Manager.FindByEmailAsync(email).WithCurrentCulture();
             if (owner != null && !EqualityComparer<TKey>.Default.Equals(owner.Id, user.Id))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateEmail, email));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.DuplicateEmail, email));
             }
         }
     }

@@ -15,13 +15,13 @@ namespace InspurOA.Identity.Core
          ///     InspurUserManager for users where the primary key for the User is of type string
          /// </summary>
          /// <typeparam name="TUser"></typeparam>
-    public class InspurUserManager<TUser> : InspurUserManager<TUser, string> where TUser : class, IUser<string>
+    public class InspurUserManager<TUser> : InspurUserManager<TUser, string> where TUser : class, IInspurUser<string>
     {
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="store"></param>
-        public InspurUserManager(IUserStore<TUser> store)
+        public InspurUserManager(IInspurUserStore<TUser> store)
             : base(store)
         {
         }
@@ -33,7 +33,7 @@ namespace InspurOA.Identity.Core
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public class InspurUserManager<TUser, TKey> : IDisposable
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         private readonly Dictionary<string, IInspurUserTokenProvider<TUser, TKey>> _factors =
@@ -50,7 +50,7 @@ namespace InspurOA.Identity.Core
         ///     Constructor
         /// </summary>
         /// <param name="store">The IUserStore is responsible for commiting changes via the UpdateAsync/CreateAsync methods</param>
-        public InspurUserManager(IUserStore<TUser, TKey> store)
+        public InspurUserManager(IInspurUserStore<TUser, TKey> store)
         {
             if (store == null)
             {
@@ -66,7 +66,7 @@ namespace InspurOA.Identity.Core
         /// <summary>
         ///     Persistence abstraction that the InspurUserManager operates against
         /// </summary>
-        protected internal IUserStore<TUser, TKey> Store { get; set; }
+        protected internal IInspurUserStore<TUser, TKey> Store { get; set; }
 
         /// <summary>
         ///     Used to hash/verify passwords
@@ -194,19 +194,19 @@ namespace InspurOA.Identity.Core
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserTwoFactorStore<TUser, TKey>;
+                return Store is IInspurUserTwoFactorStore<TUser, TKey>;
             }
         }
 
         /// <summary>
-        ///     Returns true if the store is an IUserPasswordStore
+        ///     Returns true if the store is an IInspurUserPasswordStore
         /// </summary>
         public virtual bool SupportsUserPassword
         {
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserPasswordStore<TUser, TKey>;
+                return Store is IInspurUserPasswordStore<TUser, TKey>;
             }
         }
 
@@ -218,79 +218,79 @@ namespace InspurOA.Identity.Core
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserSecurityStampStore<TUser, TKey>;
+                return Store is IInspurUserSecurityStampStore<TUser, TKey>;
             }
         }
 
         /// <summary>
-        ///     Returns true if the store is an IUserRoleStore
+        ///     Returns true if the store is an IInspurUserRoleStore
         /// </summary>
         public virtual bool SupportsUserRole
         {
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserRoleStore<TUser, TKey>;
+                return Store is IInspurUserRoleStore<TUser, TKey>;
             }
         }
 
         /// <summary>
-        ///     Returns true if the store is an IUserLoginStore
+        ///     Returns true if the store is an IInspurUserLoginStore
         /// </summary>
         public virtual bool SupportsUserLogin
         {
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserLoginStore<TUser, TKey>;
+                return Store is IInspurUserLoginStore<TUser, TKey>;
             }
         }
 
         /// <summary>
-        ///     Returns true if the store is an IUserEmailStore
+        ///     Returns true if the store is an IInspurUserEmailStore
         /// </summary>
         public virtual bool SupportsUserEmail
         {
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserEmailStore<TUser, TKey>;
+                return Store is IInspurUserEmailStore<TUser, TKey>;
             }
         }
 
         /// <summary>
-        ///     Returns true if the store is an IUserPhoneNumberStore
+        ///     Returns true if the store is an IInspurUserPhoneNumberStore
         /// </summary>
         public virtual bool SupportsUserPhoneNumber
         {
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserPhoneNumberStore<TUser, TKey>;
+                return Store is IInspurUserPhoneNumberStore<TUser, TKey>;
             }
         }
 
         /// <summary>
-        ///     Returns true if the store is an IUserClaimStore
+        ///     Returns true if the store is an IInspurUserClaimStore
         /// </summary>
         public virtual bool SupportsUserClaim
         {
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserClaimStore<TUser, TKey>;
+                return Store is IInspurUserClaimStore<TUser, TKey>;
             }
         }
 
         /// <summary>
-        ///     Returns true if the store is an IUserLockoutStore
+        ///     Returns true if the store is an IInspurUserLockoutStore
         /// </summary>
         public virtual bool SupportsUserLockout
         {
             get
             {
                 ThrowIfDisposed();
-                return Store is IUserLockoutStore<TUser, TKey>;
+                return Store is IInspurUserLockoutStore<TUser, TKey>;
             }
         }
 
@@ -302,7 +302,7 @@ namespace InspurOA.Identity.Core
             get
             {
                 ThrowIfDisposed();
-                return Store is IQueryableUserStore<TUser, TKey>;
+                return Store is IInspurQueryableUserStore<TUser, TKey>;
             }
         }
 
@@ -313,10 +313,10 @@ namespace InspurOA.Identity.Core
         {
             get
             {
-                var queryableStore = Store as IQueryableUserStore<TUser, TKey>;
+                var queryableStore = Store as IInspurQueryableUserStore<TUser, TKey>;
                 if (queryableStore == null)
                 {
-                    throw new NotSupportedException(Resources.StoreNotIQueryableUserStore);
+                    throw new NotSupportedException(InspurResources.StoreNotIQueryableUserStore);
                 }
                 return queryableStore.Users;
             }
@@ -437,13 +437,13 @@ namespace InspurOA.Identity.Core
             return Store.FindByNameAsync(userName);
         }
 
-        // IUserPasswordStore methods
-        private IUserPasswordStore<TUser, TKey> GetPasswordStore()
+        // IInspurUserPasswordStore methods
+        private IInspurUserPasswordStore<TUser, TKey> GetPasswordStore()
         {
-            var cast = Store as IUserPasswordStore<TUser, TKey>;
+            var cast = Store as IInspurUserPasswordStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserPasswordStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserPasswordStore);
             }
             return cast;
         }
@@ -520,7 +520,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await passwordStore.HasPasswordAsync(user).WithCurrentCulture();
@@ -539,13 +539,13 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             var hash = await passwordStore.GetPasswordHashAsync(user).WithCurrentCulture();
             if (hash != null)
             {
-                return new IdentityResult(Resources.UserAlreadyHasPassword);
+                return new IdentityResult(InspurResources.UserAlreadyHasPassword);
             }
             var result = await UpdatePassword(passwordStore, user, password).WithCurrentCulture();
             if (!result.Succeeded)
@@ -570,7 +570,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (await VerifyPasswordAsync(passwordStore, user, currentPassword).WithCurrentCulture())
@@ -582,7 +582,7 @@ namespace InspurOA.Identity.Core
                 }
                 return await UpdateAsync(user).WithCurrentCulture();
             }
-            return IdentityResult.Failed(Resources.PasswordMismatch);
+            return IdentityResult.Failed(InspurResources.PasswordMismatch);
         }
 
         /// <summary>
@@ -597,7 +597,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await passwordStore.SetPasswordHashAsync(user, null).WithCurrentCulture();
@@ -605,7 +605,7 @@ namespace InspurOA.Identity.Core
             return await UpdateAsync(user).WithCurrentCulture();
         }
 
-        protected virtual async Task<IdentityResult> UpdatePassword(IUserPasswordStore<TUser, TKey> passwordStore,
+        protected virtual async Task<IdentityResult> UpdatePassword(IInspurUserPasswordStore<TUser, TKey> passwordStore,
             TUser user, string newPassword)
         {
             var result = await PasswordValidator.ValidateAsync(newPassword).WithCurrentCulture();
@@ -626,7 +626,7 @@ namespace InspurOA.Identity.Core
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        protected virtual async Task<bool> VerifyPasswordAsync(IUserPasswordStore<TUser, TKey> store, TUser user,
+        protected virtual async Task<bool> VerifyPasswordAsync(IInspurUserPasswordStore<TUser, TKey> store, TUser user,
             string password)
         {
             var hash = await store.GetPasswordHashAsync(user).WithCurrentCulture();
@@ -634,12 +634,12 @@ namespace InspurOA.Identity.Core
         }
 
         // IUserSecurityStampStore methods
-        private IUserSecurityStampStore<TUser, TKey> GetSecurityStore()
+        private IInspurUserSecurityStampStore<TUser, TKey> GetSecurityStore()
         {
-            var cast = Store as IUserSecurityStampStore<TUser, TKey>;
+            var cast = Store as IInspurUserSecurityStampStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserSecurityStampStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserSecurityStampStore);
             }
             return cast;
         }
@@ -656,7 +656,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await securityStore.GetSecurityStampAsync(user).WithCurrentCulture();
@@ -674,7 +674,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await securityStore.SetSecurityStampAsync(user, NewSecurityStamp()).WithCurrentCulture();
@@ -705,13 +705,13 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             // Make sure the token is valid and the stamp matches
             if (!await VerifyUserTokenAsync(userId, "ResetPassword", token).WithCurrentCulture())
             {
-                return IdentityResult.Failed(Resources.InvalidToken);
+                return IdentityResult.Failed(InspurResources.InvalidToken);
             }
             var passwordStore = GetPasswordStore();
             var result = await UpdatePassword(passwordStore, user, newPassword).WithCurrentCulture();
@@ -736,13 +736,13 @@ namespace InspurOA.Identity.Core
             return Guid.NewGuid().ToString();
         }
 
-        // IUserLoginStore methods
-        private IUserLoginStore<TUser, TKey> GetLoginStore()
+        // IInspurUserLoginStore methods
+        private IInspurUserLoginStore<TUser, TKey> GetLoginStore()
         {
-            var cast = Store as IUserLoginStore<TUser, TKey>;
+            var cast = Store as IInspurUserLoginStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserLoginStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserLoginStore);
             }
             return cast;
         }
@@ -751,7 +751,7 @@ namespace InspurOA.Identity.Core
         ///     Returns the user associated with this login
         /// </summary>
         /// <returns></returns>
-        public virtual Task<TUser> FindAsync(UserLoginInfo login)
+        public virtual Task<TUser> FindAsync(InspurUserLoginInfo login)
         {
             ThrowIfDisposed();
             return GetLoginStore().FindAsync(login);
@@ -763,7 +763,7 @@ namespace InspurOA.Identity.Core
         /// <param name="userId"></param>
         /// <param name="login"></param>
         /// <returns></returns>
-        public virtual async Task<IdentityResult> RemoveLoginAsync(TKey userId, UserLoginInfo login)
+        public virtual async Task<IdentityResult> RemoveLoginAsync(TKey userId, InspurUserLoginInfo login)
         {
             ThrowIfDisposed();
             var loginStore = GetLoginStore();
@@ -774,7 +774,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await loginStore.RemoveLoginAsync(user, login).WithCurrentCulture();
@@ -788,7 +788,7 @@ namespace InspurOA.Identity.Core
         /// <param name="userId"></param>
         /// <param name="login"></param>
         /// <returns></returns>
-        public virtual async Task<IdentityResult> AddLoginAsync(TKey userId, UserLoginInfo login)
+        public virtual async Task<IdentityResult> AddLoginAsync(TKey userId, InspurUserLoginInfo login)
         {
             ThrowIfDisposed();
             var loginStore = GetLoginStore();
@@ -799,13 +799,13 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             var existingUser = await FindAsync(login).WithCurrentCulture();
             if (existingUser != null)
             {
-                return IdentityResult.Failed(Resources.ExternalLoginExists);
+                return IdentityResult.Failed(InspurResources.ExternalLoginExists);
             }
             await loginStore.AddLoginAsync(user, login).WithCurrentCulture();
             return await UpdateAsync(user).WithCurrentCulture();
@@ -816,26 +816,26 @@ namespace InspurOA.Identity.Core
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public virtual async Task<IList<UserLoginInfo>> GetLoginsAsync(TKey userId)
+        public virtual async Task<IList<InspurUserLoginInfo>> GetLoginsAsync(TKey userId)
         {
             ThrowIfDisposed();
             var loginStore = GetLoginStore();
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await loginStore.GetLoginsAsync(user).WithCurrentCulture();
         }
 
-        // IUserClaimStore methods
-        private IUserClaimStore<TUser, TKey> GetClaimStore()
+        // IInspurUserClaimStore methods
+        private IInspurUserClaimStore<TUser, TKey> GetClaimStore()
         {
-            var cast = Store as IUserClaimStore<TUser, TKey>;
+            var cast = Store as IInspurUserClaimStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserClaimStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserClaimStore);
             }
             return cast;
         }
@@ -857,7 +857,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await claimStore.AddClaimAsync(user, claim).WithCurrentCulture();
@@ -877,7 +877,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await claimStore.RemoveClaimAsync(user, claim).WithCurrentCulture();
@@ -896,18 +896,18 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await claimStore.GetClaimsAsync(user).WithCurrentCulture();
         }
 
-        private IUserRoleStore<TUser, TKey> GetUserRoleStore()
+        private IInspurUserRoleStore<TUser, TKey> GetUserRoleStore()
         {
-            var cast = Store as IUserRoleStore<TUser, TKey>;
+            var cast = Store as IInspurUserRoleStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserRoleStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserRoleStore);
             }
             return cast;
         }
@@ -925,13 +925,13 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             var userRoles = await userRoleStore.GetRolesAsync(user).WithCurrentCulture();
             if (userRoles.Contains(role))
             {
-                return new IdentityResult(Resources.UserAlreadyInRole);
+                return new IdentityResult(InspurResources.UserAlreadyInRole);
             }
             await userRoleStore.AddToRoleAsync(user, role).WithCurrentCulture();
             return await UpdateAsync(user).WithCurrentCulture();
@@ -954,7 +954,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             var userRoles = await userRoleStore.GetRolesAsync(user).WithCurrentCulture();
@@ -962,7 +962,7 @@ namespace InspurOA.Identity.Core
             {
                 if (userRoles.Contains(r))
                 {
-                    return new IdentityResult(Resources.UserAlreadyInRole);
+                    return new IdentityResult(InspurResources.UserAlreadyInRole);
                 }
                 await userRoleStore.AddToRoleAsync(user, r).WithCurrentCulture();
             }
@@ -986,7 +986,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
 
@@ -996,7 +996,7 @@ namespace InspurOA.Identity.Core
             {
                 if (!userRoles.Contains(role))
                 {
-                    return new IdentityResult(Resources.UserNotInRole);
+                    return new IdentityResult(InspurResources.UserNotInRole);
                 }
                 await userRoleStore.RemoveFromRoleAsync(user, role).WithCurrentCulture();
             }
@@ -1018,12 +1018,12 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (!await userRoleStore.IsInRoleAsync(user, role).WithCurrentCulture())
             {
-                return new IdentityResult(Resources.UserNotInRole);
+                return new IdentityResult(InspurResources.UserNotInRole);
             }
             await userRoleStore.RemoveFromRoleAsync(user, role).WithCurrentCulture();
             return await UpdateAsync(user).WithCurrentCulture();
@@ -1041,7 +1041,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await userRoleStore.GetRolesAsync(user).WithCurrentCulture();
@@ -1060,19 +1060,19 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await userRoleStore.IsInRoleAsync(user, role).WithCurrentCulture();
         }
 
-        // IUserEmailStore methods
-        internal IUserEmailStore<TUser, TKey> GetEmailStore()
+        // IInspurUserEmailStore methods
+        internal IInspurUserEmailStore<TUser, TKey> GetEmailStore()
         {
-            var cast = Store as IUserEmailStore<TUser, TKey>;
+            var cast = Store as IInspurUserEmailStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserEmailStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserEmailStore);
             }
             return cast;
         }
@@ -1089,7 +1089,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetEmailAsync(user).WithCurrentCulture();
@@ -1108,7 +1108,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await store.SetEmailAsync(user, email).WithCurrentCulture();
@@ -1157,12 +1157,12 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (!await VerifyUserTokenAsync(userId, "Confirmation", token).WithCurrentCulture())
             {
-                return IdentityResult.Failed(Resources.InvalidToken);
+                return IdentityResult.Failed(InspurResources.InvalidToken);
             }
             await store.SetEmailConfirmedAsync(user, true).WithCurrentCulture();
             return await UpdateAsync(user).WithCurrentCulture();
@@ -1180,19 +1180,19 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetEmailConfirmedAsync(user).WithCurrentCulture();
         }
 
-        // IUserPhoneNumberStore methods
-        internal IUserPhoneNumberStore<TUser, TKey> GetPhoneNumberStore()
+        // IInspurUserPhoneNumberStore methods
+        internal IInspurUserPhoneNumberStore<TUser, TKey> GetPhoneNumberStore()
         {
-            var cast = Store as IUserPhoneNumberStore<TUser, TKey>;
+            var cast = Store as IInspurUserPhoneNumberStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserPhoneNumberStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserPhoneNumberStore);
             }
             return cast;
         }
@@ -1209,7 +1209,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetPhoneNumberAsync(user).WithCurrentCulture();
@@ -1228,7 +1228,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await store.SetPhoneNumberAsync(user, phoneNumber).WithCurrentCulture();
@@ -1251,7 +1251,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (await VerifyChangePhoneNumberTokenAsync(userId, token, phoneNumber).WithCurrentCulture())
@@ -1261,7 +1261,7 @@ namespace InspurOA.Identity.Core
                 await UpdateSecurityStampInternal(user).WithCurrentCulture();
                 return await UpdateAsync(user).WithCurrentCulture();
             }
-            return IdentityResult.Failed(Resources.InvalidToken);
+            return IdentityResult.Failed(InspurResources.InvalidToken);
         }
 
         /// <summary>
@@ -1276,7 +1276,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetPhoneNumberConfirmedAsync(user).WithCurrentCulture();
@@ -1335,12 +1335,12 @@ namespace InspurOA.Identity.Core
             ThrowIfDisposed();
             if (UserTokenProvider == null)
             {
-                throw new NotSupportedException(Resources.NoTokenProvider);
+                throw new NotSupportedException(InspurResources.NoTokenProvider);
             }
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             // Make sure the token is valid
@@ -1358,12 +1358,12 @@ namespace InspurOA.Identity.Core
             ThrowIfDisposed();
             if (UserTokenProvider == null)
             {
-                throw new NotSupportedException(Resources.NoTokenProvider);
+                throw new NotSupportedException(InspurResources.NoTokenProvider);
             }
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await UserTokenProvider.GenerateAsync(purpose, this, user).WithCurrentCulture();
@@ -1399,7 +1399,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             var results = new List<string>();
@@ -1426,12 +1426,12 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (!_factors.ContainsKey(twoFactorProvider))
             {
-                throw new NotSupportedException(String.Format(CultureInfo.CurrentCulture, Resources.NoTwoFactorProvider,
+                throw new NotSupportedException(String.Format(CultureInfo.CurrentCulture, InspurResources.NoTwoFactorProvider,
                     twoFactorProvider));
             }
             // Make sure the token is valid
@@ -1451,12 +1451,12 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (!_factors.ContainsKey(twoFactorProvider))
             {
-                throw new NotSupportedException(String.Format(CultureInfo.CurrentCulture, Resources.NoTwoFactorProvider,
+                throw new NotSupportedException(String.Format(CultureInfo.CurrentCulture, InspurResources.NoTwoFactorProvider,
                     twoFactorProvider));
             }
             return await _factors[twoFactorProvider].GenerateAsync(twoFactorProvider, this, user).WithCurrentCulture();
@@ -1476,12 +1476,12 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (!_factors.ContainsKey(twoFactorProvider))
             {
-                throw new NotSupportedException(String.Format(CultureInfo.CurrentCulture, Resources.NoTwoFactorProvider,
+                throw new NotSupportedException(String.Format(CultureInfo.CurrentCulture, InspurResources.NoTwoFactorProvider,
                     twoFactorProvider));
             }
             await _factors[twoFactorProvider].NotifyAsync(token, this, user).WithCurrentCulture();
@@ -1489,12 +1489,12 @@ namespace InspurOA.Identity.Core
         }
 
         // IUserFactorStore methods
-        internal IUserTwoFactorStore<TUser, TKey> GetUserTwoFactorStore()
+        internal IInspurUserTwoFactorStore<TUser, TKey> GetUserTwoFactorStore()
         {
-            var cast = Store as IUserTwoFactorStore<TUser, TKey>;
+            var cast = Store as IInspurUserTwoFactorStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserTwoFactorStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserTwoFactorStore);
             }
             return cast;
         }
@@ -1511,7 +1511,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetTwoFactorEnabledAsync(user).WithCurrentCulture();
@@ -1530,7 +1530,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await store.SetTwoFactorEnabledAsync(user, enabled).WithCurrentCulture();
@@ -1582,13 +1582,13 @@ namespace InspurOA.Identity.Core
             }
         }
 
-        // IUserLockoutStore methods
-        internal IUserLockoutStore<TUser, TKey> GetUserLockoutStore()
+        // IInspurUserLockoutStore methods
+        internal IInspurUserLockoutStore<TUser, TKey> GetUserLockoutStore()
         {
-            var cast = Store as IUserLockoutStore<TUser, TKey>;
+            var cast = Store as IInspurUserLockoutStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(Resources.StoreNotIUserLockoutStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserLockoutStore);
             }
             return cast;
         }
@@ -1605,7 +1605,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (!await store.GetLockoutEnabledAsync(user).WithCurrentCulture())
@@ -1629,7 +1629,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             await store.SetLockoutEnabledAsync(user, enabled).WithCurrentCulture();
@@ -1648,7 +1648,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetLockoutEnabledAsync(user).WithCurrentCulture();
@@ -1666,7 +1666,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetLockoutEndDateAsync(user).WithCurrentCulture();
@@ -1685,12 +1685,12 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             if (!await store.GetLockoutEnabledAsync(user).WithCurrentCulture())
             {
-                return IdentityResult.Failed(Resources.LockoutNotEnabled);
+                return IdentityResult.Failed(InspurResources.LockoutNotEnabled);
             }
             await store.SetLockoutEndDateAsync(user, lockoutEnd).WithCurrentCulture();
             return await UpdateAsync(user).WithCurrentCulture();
@@ -1710,7 +1710,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             // If this puts the user over the threshold for lockout, lock them out and reset the access failed count
@@ -1737,7 +1737,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
 
@@ -1762,7 +1762,7 @@ namespace InspurOA.Identity.Core
             var user = await FindByIdAsync(userId).WithCurrentCulture();
             if (user == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, Resources.UserIdNotFound,
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
                     userId));
             }
             return await store.GetAccessFailedCountAsync(user).WithCurrentCulture();

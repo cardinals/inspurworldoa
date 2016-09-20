@@ -72,7 +72,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\AuthenticationManagerExtensions.cs" />
     <Compile Include="InspurDataProtectorTokenProvider.cs" />
+    <Compile Include="InspurExternalLoginInfo.cs" />
     <Compile Include="InspurSecurityStampValidator.cs" />
     <Compile Include="InspurSignInManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,9 +94,7 @@
       <Name>InspurOA.Identity.EntityFramework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

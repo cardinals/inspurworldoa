@@ -10,7 +10,7 @@ namespace InspurOA.Identity.Core
     /// <summary>
     ///     Interface to generate user tokens
     /// </summary>
-    public interface IInspurUserTokenProvider<TUser, TKey> where TUser : class, IUser<TKey> where TKey : IEquatable<TKey>
+    public interface IInspurUserTokenProvider<TUser, TKey> where TUser : class, IInspurUser<TKey> where TKey : IEquatable<TKey>
     {
         /// <summary>
         ///     Generate a token for a user with a specific purpose

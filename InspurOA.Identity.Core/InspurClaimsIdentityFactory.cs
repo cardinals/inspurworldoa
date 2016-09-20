@@ -23,7 +23,7 @@ namespace InspurOA.Identity.Core
     ///     Creates a ClaimsIdentity from a User
     /// </summary>
     /// <typeparam name="TUser"></typeparam>
-    public class InspurClaimsIdentityFactory<TUser> : InspurClaimsIdentityFactory<TUser, string> where TUser : class, IUser<string>
+    public class InspurClaimsIdentityFactory<TUser> : InspurClaimsIdentityFactory<TUser, string> where TUser : class, IInspurUser<string>
     {
     }
 
@@ -33,7 +33,7 @@ namespace InspurOA.Identity.Core
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public class InspurClaimsIdentityFactory<TUser, TKey> : IInspurClaimsIdentityFactory<TUser, TKey>
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         internal const string IdentityProviderClaimType =

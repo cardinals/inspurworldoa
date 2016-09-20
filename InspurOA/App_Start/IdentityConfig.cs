@@ -17,35 +17,36 @@ using InspurOA.Identity.Owin;
 
 namespace InspurOA
 {
-    //public class EmailService : IIdentityMessageService
-    //{
-    //    public Task SendAsync(IdentityMessage message)
-    //    {
-    //        // Plug in your email service here to send an email.
-    //        return Task.FromResult(0);
-    //    }
-    //}
+    public class EmailService : IIdentityMessageService
+    {
+        public Task SendAsync(IdentityMessage message)
+        {
+            // Plug in your email service here to send an email.
+            return Task.FromResult(0);
+        }
+    }
 
-    //public class SmsService : IIdentityMessageService
-    //{
-    //    public Task SendAsync(IdentityMessage message)
-    //    {
-    //        // Plug in your SMS service here to send a text message.
-    //        return Task.FromResult(0);
-    //    }
-    //}
+    public class SmsService : IIdentityMessageService
+    {
+        public Task SendAsync(IdentityMessage message)
+        {
+            // Plug in your SMS service here to send a text message.
+            return Task.FromResult(0);
+        }
+    }
 
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
     public class ApplicationUserManager : InspurUserManager<InspurUser>
     {
-        public ApplicationUserManager(IUserStore<InspurUser> store)
+        public ApplicationUserManager(IInspurUserStore<InspurUser> store)
             : base(store)
         {
         }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
-            var manager = new ApplicationUserManager(new InspurUserStore<InspurUser>(context.Get<ApplicationDbContext>()));
+            IInspurUserStore<InspurUser> store = new InspurUserStore<InspurUser>(context.Get<ApplicationDbContext>());
+            var manager = new ApplicationUserManager(store);
             // Configure validation logic for usernames
             manager.InspurUserValidator = new InspurUserValidator<InspurUser>(manager)
             {

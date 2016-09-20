@@ -47,16 +47,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\InspurIdentityExtensions.cs" />
     <Compile Include="IInspurClaimsIdentityFactory.cs" />
+    <Compile Include="IInspurQueryableRoleStore.cs" />
+    <Compile Include="IInspurQueryableUserStore.cs" />
     <Compile Include="IInspurRole.cs" />
+    <Compile Include="IInspurRoleStore.cs" />
+    <Compile Include="IInspurUser.cs" />
+    <Compile Include="IInspurUserClaimStore.cs" />
+    <Compile Include="IInspurUserEmailStore.cs" />
+    <Compile Include="IInspurUserLockoutStore.cs" />
+    <Compile Include="IInspurUserLoginStore.cs" />
+    <Compile Include="IInspurUserPasswordStore.cs" />
+    <Compile Include="IInspurUserPhoneNumberStore.cs" />
+    <Compile Include="IInspurUserRoleStore.cs" />
+    <Compile Include="IInspurUserSecurityStampStore.cs" />
+    <Compile Include="IInspurUserStore.cs" />
     <Compile Include="IInspurUserTokenProvider.cs" />
+    <Compile Include="IInspurUserTwoFactorStore.cs" />
+    <Compile Include="InspurAsyncHelper.cs" />
     <Compile Include="InspurClaimsIdentityFactory.cs" />
+    <Compile Include="InspurDefaultAuthenticationTypes.cs" />
     <Compile Include="InspurEmailTokenProvider.cs" />
     <Compile Include="InspurPhoneNumberTokenProvider.cs" />
+    <Compile Include="InspurResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspurResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="InspurTotpSecurityStampBasedTokenProvider.cs" />
+    <Compile Include="InspurUserLoginInfo.cs" />
     <Compile Include="InspurUserValidator.cs" />
     <Compile Include="IInspurPermission.cs" />
-    <Compile Include="IPermissionStore.cs" />
+    <Compile Include="IInspurPermissionStore.cs" />
     <Compile Include="IInspurRolePermissionStore.cs" />
     <Compile Include="Resources.Designer.cs" />
     <Compile Include="Rfc6238AuthenticationService.cs" />
@@ -68,6 +91,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="InspurResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspurResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

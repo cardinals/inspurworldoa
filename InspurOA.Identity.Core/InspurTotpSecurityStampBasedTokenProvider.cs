@@ -14,7 +14,7 @@ namespace InspurOA.Identity.Core
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public class InspurTotpSecurityStampBasedTokenProvider<TUser, TKey> : IInspurUserTokenProvider<TUser, TKey>
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         /// <summary>

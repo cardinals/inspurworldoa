@@ -13,7 +13,7 @@ namespace InspurOA.Identity.Core
     /// </summary>
     /// <typeparam name="TUser"></typeparam>
     public class InspurPhoneNumberTokenProvider<TUser> : InspurPhoneNumberTokenProvider<TUser, string>
-        where TUser : class, IUser<string>
+        where TUser : class, IInspurUser<string>
     {
     }
 
@@ -23,7 +23,7 @@ namespace InspurOA.Identity.Core
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public class InspurPhoneNumberTokenProvider<TUser, TKey> : InspurTotpSecurityStampBasedTokenProvider<TUser, TKey>
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         private string _body;

@@ -364,7 +364,8 @@ namespace InspurOA.Identity.EntityFramework
 
             // Needed to ensure subclasses share the same table
             var user = modelBuilder.Entity<TUser>()
-                .ToTable("UserInfo");
+                .ToTable("UserInfo")
+                .HasKey(u => u.Id);
             //user.HasMany(u => u.Roles).WithRequired().HasForeignKey(ur => ur.UserId);
             //user.HasMany(u => u.Claims).WithRequired().HasForeignKey(uc => uc.UserId);
             //user.HasMany(u => u.Logins).WithRequired().HasForeignKey(ul => ul.UserId);
@@ -388,7 +389,8 @@ namespace InspurOA.Identity.EntityFramework
             //    .ToTable("AspNetUserClaims");
 
             var role = modelBuilder.Entity<TRole>()
-                .ToTable("RoleInfo");
+                .ToTable("RoleInfo")
+                .HasKey(r => r.RoleId);
             role.Property(r => r.RoleName)
                 .IsRequired()
                 .HasMaxLength(256)
@@ -401,7 +403,8 @@ namespace InspurOA.Identity.EntityFramework
             .ToTable("RolePermissions");
 
             var permission = modelBuilder.Entity<TPermission>()
-                 .ToTable("PermissionInfo");
+                 .ToTable("PermissionInfo")
+                 .HasKey(p => p.PermissionId);
             permission.Property(p => p.PermissionCode)
                 .IsRequired()
                 .HasMaxLength(256)

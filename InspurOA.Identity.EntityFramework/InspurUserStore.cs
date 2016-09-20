@@ -1,4 +1,5 @@
 ﻿using InspurOA.Identity.Core;
+using InspurOA.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,11 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.EntityFramework
 {
-    public class InspurUserStore<TUser> : 
+    public class InspurUserStore<TUser> :
         InspurUserStore<TUser, InspurIdentityRole, InspurIdentityPermission, string, InspurIdentityUserRole, InspurIdentityRolePermission>,
-        IUserStore<TUser> 
+        IInspurUserStore<TUser>
         where TUser : InspurIdentityUser
     {
-
         public InspurUserStore(DbContext context) : base(context)
         {
 
@@ -30,8 +30,12 @@ namespace InspurOA.Identity.EntityFramework
     }
 
     public class InspurUserStore<TUser, TRole, TPermission, TKey, TUserRole, TRolePermission> :
-        IUserRoleStore<TUser, TKey>,
-        IRolePermissionStore<TUser, TPermission, TKey>
+        IInspurUserRoleStore<TUser, TKey>,
+        IInspurRolePermissionStore<TUser, TPermission, TKey>,
+        IInspurUserPasswordStore<TUser, TKey>,
+        IInspurUserEmailStore<TUser, TKey>,
+        IInspurUserPhoneNumberStore<TUser, TKey>,
+        IInspurUserTwoFactorStore<TUser, TKey>
         where TKey : IEquatable<TKey>
         where TUser : InspurIdentityUser<TKey>
         where TRole : InspurIdentityRole<TKey, TUserRole, TRolePermission>
@@ -54,7 +58,7 @@ namespace InspurOA.Identity.EntityFramework
             {
                 throw new ArgumentNullException("context");
             }
-
+            AutoSaveChanges = true;
             Context = context;
             _userStore = new EntityStore<TUser>(context);
             _roleStore = new EntityStore<TRole>(context);
@@ -196,6 +200,145 @@ namespace InspurOA.Identity.EntityFramework
         public Task<bool> HasPasswordAsync(TUser user)
         {
             return Task.FromResult(user.PasswordHash != null);
+        }
+
+        /// <summary>
+        ///     Set the user's phone number
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        public virtual Task SetPhoneNumberAsync(TUser user, string phoneNumber)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            user.PhoneNumber = phoneNumber;
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        ///     Get a user's phone number
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public virtual Task<string> GetPhoneNumberAsync(TUser user)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            return Task.FromResult(user.PhoneNumber);
+        }
+
+        /// <summary>
+        ///     Returns whether the user phoneNumber is confirmed
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public virtual Task<bool> GetPhoneNumberConfirmedAsync(TUser user)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            return Task.FromResult(user.PhoneNumberConfirmed);
+        }
+
+        /// <summary>
+        ///     Set PhoneNumberConfirmed on the user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="confirmed"></param>
+        /// <returns></returns>
+        public virtual Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            user.PhoneNumberConfirmed = confirmed;
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        ///     Set whether two factor authentication is enabled for the user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="enabled"></param>
+        /// <returns></returns>
+        public virtual Task SetTwoFactorEnabledAsync(TUser user, bool enabled)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            user.TwoFactorEnabled = enabled;
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        ///     Gets whether two factor authentication is enabled for the user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public virtual Task<bool> GetTwoFactorEnabledAsync(TUser user)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            return Task.FromResult(user.TwoFactorEnabled);
+        }
+
+        /// <summary>
+        ///     Find a user by email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public virtual Task<TUser> FindByEmailAsync(string email)
+        {
+            ThrowIfDisposed();
+            return GetUserAggregateAsync(u => u.Email.ToUpper() == email.ToUpper());
+        }
+
+        /// <summary>
+        ///     Returns whether the user email is confirmed
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public virtual Task<bool> GetEmailConfirmedAsync(TUser user)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            return Task.FromResult(user.EmailConfirmed);
+        }
+
+        /// <summary>
+        ///     Set IsConfirmed on the user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="confirmed"></param>
+        /// <returns></returns>
+        public virtual Task SetEmailConfirmedAsync(TUser user, bool confirmed)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            user.EmailConfirmed = confirmed;
+            return Task.FromResult(0);
         }
 
         /// <summary>

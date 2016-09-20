@@ -2,13 +2,14 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using InspurOA.Identity.Core;
 
 namespace InspurOA.Models
 {
     public class IndexViewModel
     {
         public bool HasPassword { get; set; }
-        public IList<UserLoginInfo> Logins { get; set; }
+        //public IList<InspurUserLoginInfo> Logins { get; set; }
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
@@ -16,7 +17,7 @@ namespace InspurOA.Models
 
     public class ManageLoginsViewModel
     {
-        public IList<UserLoginInfo> CurrentLogins { get; set; }
+        public IList<InspurUserLoginInfo> CurrentLogins { get; set; }
         public IList<AuthenticationDescription> OtherLogins { get; set; }
     }
 

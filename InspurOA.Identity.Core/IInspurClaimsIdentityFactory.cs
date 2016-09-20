@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace InspurOA.Identity.Core
 {
     /// <summary>
-    ///     Interface for creating a ClaimsIdentity from an IUser
+    ///     Interface for creating a ClaimsIdentity from an IInspurUser
     /// </summary>
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
     public interface IInspurClaimsIdentityFactory<TUser, TKey>
-        where TUser : class, IUser<TKey>
+        where TUser : class, IInspurUser<TKey>
         where TKey : IEquatable<TKey>
     {
         /// <summary>
@@ -31,7 +31,7 @@ namespace InspurOA.Identity.Core
     ///     Interface for creating a ClaimsIdentity from a user
     /// </summary>
     /// <typeparam name="TUser"></typeparam>
-    public interface IInspurClaimsIdentityFactory<TUser> where TUser : class, IUser
+    public interface IInspurClaimsIdentityFactory<TUser> where TUser : class, IInspurUser
     {
         /// <summary>
         ///     Create a ClaimsIdentity from an user using a UserManager
@@ -40,6 +40,6 @@ namespace InspurOA.Identity.Core
         /// <param name="user"></param>
         /// <param name="authenticationType"></param>
         /// <returns></returns>
-        Task<ClaimsIdentity> CreateAsync(UserManager<TUser> manager, TUser user, string authenticationType);
+        Task<ClaimsIdentity> CreateAsync(InspurUserManager<TUser> manager, TUser user, string authenticationType);
     }
 }

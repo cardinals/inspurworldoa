@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.Core
 {
-    public interface IRolePermissionStore<TUser, TPermission, in TKey>:
-        IUserStore<TUser,TKey>
+    public interface IInspurRolePermissionStore<TUser, TPermission, in TKey>:
+        IInspurUserStore<TUser,TKey>
         where TPermission : class, IPermission<TKey>
-        where TUser : class, IUser<TKey>        
+        where TUser : class, IInspurUser<TKey>        
     {
         Task AddPermissionToRoleAsync(IList<TPermission> permissionList, string roleName);
 

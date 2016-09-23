@@ -21,7 +21,7 @@ namespace InspurOA.Identity.EntityFramework
     }
 
     public class InspurIdentityPermission<TKey> :
-        IPermission<TKey>
+        IInspurPermission<TKey>
     {
         public TKey PermissionId { get; set; }
 

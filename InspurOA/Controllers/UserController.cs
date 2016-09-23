@@ -1,6 +1,7 @@
 ﻿using InspurOA.Authorization;
 using InspurOA.Common;
 using InspurOA.DAL;
+using InspurOA.Identity.Core;
 using InspurOA.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using InspurOA.Identity.Owin.Extensions;
 
 namespace InspurOA.Controllers
 {
@@ -18,6 +20,7 @@ namespace InspurOA.Controllers
     public class UserController : Controller
     {
         private ApplicationUserManager _userManager;
+        private ApplicationUserRoleManager _userRoleManager;
         private ApplicationDbContext dbContext = ApplicationDbContext.Create();
 
         public ApplicationUserManager UserManager
@@ -32,14 +35,26 @@ namespace InspurOA.Controllers
             }
         }
 
+        public ApplicationUserRoleManager UserRoleManager
+        {
+            get
+            {
+                return _userRoleManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserRoleManager>();
+            }
+            private set
+            {
+                _userRoleManager = value;
+            }
+        }
+
         // GET: UserController
         public ActionResult Index()
         {
-            return View(dbContext.Users.ToList());
+            return View(UserManager.Users.ToList());
         }
 
         // GET: UserController/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -47,7 +62,7 @@ namespace InspurOA.Controllers
             }
 
             UserDetailViewModel userDetailViewModel = new UserDetailViewModel();
-            var user = dbContext.Users.Find(id);
+            var user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
                 userDetailViewModel.Id = id;
@@ -55,7 +70,7 @@ namespace InspurOA.Controllers
                 userDetailViewModel.Email = user.Email;
             }
 
-            userDetailViewModel.RoleCode = RoleHelper.GetRoleCodeByUserId(id);
+            userDetailViewModel.RoleCode = RoleHelper.GetRoleNameByUserId(id);
 
             return View(userDetailViewModel);
         }
@@ -84,16 +99,16 @@ namespace InspurOA.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (dbContext.Roles.Any(t => t.RoleCode == model.RoleCode))
+                if (dbContext.Roles.Any(t => t.RoleCode.Equals(model.RoleCode)))
                 {
                     var user = new InspurUser { UserName = model.UserName, Email = model.Email };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        InspurUser TUser = dbContext.Users.First(t => t.UserName == model.UserName);
+                        InspurUser TUser = UserManager.Users.First(t => t.UserName.Equals(model.UserName));
                         if (TUser != null)
                         {
-                            await UserManager.AddToRoleAsync(TUser.Id, model.RoleCode);
+                            await UserRoleManager.AddToRoleAsync(TUser.Id, model.RoleCode);
                         }
 
                         return RedirectToAction("Index", "User");
@@ -160,21 +175,42 @@ namespace InspurOA.Controllers
             }
 
             ViewData["Roles"] = UserRoles;
+            UserCreateViewModel model = new UserCreateViewModel() { UserId = user.Id, UserName = user.UserName, Email = user.Email };
 
-            return View(user);
+            return View(model);
         }
 
         // POST: UserController/Edit/5
         [HttpPost]
-        public ActionResult Edit(string id, FormCollection collection)
+        public async Task<ActionResult> Edit(string id, FormCollection collection)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
             try
             {
-                // TODO: Add update logic here
+                if (!string.IsNullOrWhiteSpace(id))
+                {
+                    var user = await UserManager.FindByIdAsync(id);
 
-                return RedirectToAction("Index");
+                    if (user != null)
+                    {
+                        user.UserName = collection.Get("UserName");
+                        user.Email = collection.Get("Email");
+
+                        var result = await UserManager.UpdateAsync(user);
+                        if (result.Succeeded)
+                        {
+                            await UserRoleManager.AddToRoleAsync(id, collection.Get("RoleCode"));
+                        }
+                    }
+                }
+
+                return RedirectToAction("Index", "User");
             }
-            catch
+            catch (Exception e)
             {
                 return View();
             }

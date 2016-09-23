@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using InspurOA.Identity.Core;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,13 +10,12 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.Core
 {
-    public class InspurUserManager
-    {
-    }    /// <summary>
-         ///     InspurUserManager for users where the primary key for the User is of type string
-         /// </summary>
-         /// <typeparam name="TUser"></typeparam>
-    public class InspurUserManager<TUser> : InspurUserManager<TUser, string> where TUser : class, IInspurUser<string>
+    /// <summary>
+    ///     InspurUserManager for users where the primary key for the User is of type string
+    /// </summary>
+    /// <typeparam name="TUser"></typeparam>
+    public class InspurUserManager<TUser> : InspurUserManager<TUser, string>
+        where TUser : class, IInspurUser<string>
     {
         /// <summary>
         ///     Constructor
@@ -230,21 +230,22 @@ namespace InspurOA.Identity.Core
             get
             {
                 ThrowIfDisposed();
-                return Store is IInspurUserRoleStore<TUser, TKey>;
+                //return Store is IInspurUserRoleStore<TUser, TKey>;
+                return true;
             }
         }
 
-        /// <summary>
-        ///     Returns true if the store is an IInspurUserLoginStore
-        /// </summary>
-        public virtual bool SupportsUserLogin
-        {
-            get
-            {
-                ThrowIfDisposed();
-                return Store is IInspurUserLoginStore<TUser, TKey>;
-            }
-        }
+        ///// <summary>
+        /////     Returns true if the store is an IInspurUserLoginStore
+        ///// </summary>
+        //public virtual bool SupportsUserLogin
+        //{
+        //    get
+        //    {
+        //        ThrowIfDisposed();
+        //        return Store is IInspurUserLoginStore<TUser, TKey>;
+        //    }
+        //}
 
         /// <summary>
         ///     Returns true if the store is an IInspurUserEmailStore
@@ -902,169 +903,16 @@ namespace InspurOA.Identity.Core
             return await claimStore.GetClaimsAsync(user).WithCurrentCulture();
         }
 
-        private IInspurUserRoleStore<TUser, TKey> GetUserRoleStore()
+        private IInspurUserStore<TUser, TKey> GetUserStore()
         {
-            var cast = Store as IInspurUserRoleStore<TUser, TKey>;
+            var cast = Store as IInspurUserStore<TUser, TKey>;
             if (cast == null)
             {
-                throw new NotSupportedException(InspurResources.StoreNotIUserRoleStore);
+                throw new NotSupportedException(InspurResources.StoreNotIUserStore);
             }
             return cast;
         }
-
-        /// <summary>
-        ///     Add a user to a role
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        public virtual async Task<IdentityResult> AddToRoleAsync(TKey userId, string role)
-        {
-            ThrowIfDisposed();
-            var userRoleStore = GetUserRoleStore();
-            var user = await FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            var userRoles = await userRoleStore.GetRolesAsync(user).WithCurrentCulture();
-            if (userRoles.Contains(role))
-            {
-                return new IdentityResult(InspurResources.UserAlreadyInRole);
-            }
-            await userRoleStore.AddToRoleAsync(user, role).WithCurrentCulture();
-            return await UpdateAsync(user).WithCurrentCulture();
-        }
-
-        /// <summary>
-        /// Method to add user to multiple roles
-        /// </summary>
-        /// <param name="userId">user id</param>
-        /// <param name="roles">list of role names</param>
-        /// <returns></returns>
-        public virtual async Task<IdentityResult> AddToRolesAsync(TKey userId, params string[] roles)
-        {
-            ThrowIfDisposed();
-            var userRoleStore = GetUserRoleStore();
-            if (roles == null)
-            {
-                throw new ArgumentNullException("roles");
-            }
-            var user = await FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            var userRoles = await userRoleStore.GetRolesAsync(user).WithCurrentCulture();
-            foreach (var r in roles)
-            {
-                if (userRoles.Contains(r))
-                {
-                    return new IdentityResult(InspurResources.UserAlreadyInRole);
-                }
-                await userRoleStore.AddToRoleAsync(user, r).WithCurrentCulture();
-            }
-            return await UpdateAsync(user).WithCurrentCulture();
-        }
-
-        /// <summary>
-        /// Remove user from multiple roles
-        /// </summary>
-        /// <param name="userId">user id</param>
-        /// <param name="roles">list of role names</param>
-        /// <returns></returns>
-        public virtual async Task<IdentityResult> RemoveFromRolesAsync(TKey userId, params string[] roles)
-        {
-            ThrowIfDisposed();
-            var userRoleStore = GetUserRoleStore();
-            if (roles == null)
-            {
-                throw new ArgumentNullException("roles");
-            }
-            var user = await FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-
-            // Remove user to each role using UserRoleStore
-            var userRoles = await userRoleStore.GetRolesAsync(user).WithCurrentCulture();
-            foreach (var role in roles)
-            {
-                if (!userRoles.Contains(role))
-                {
-                    return new IdentityResult(InspurResources.UserNotInRole);
-                }
-                await userRoleStore.RemoveFromRoleAsync(user, role).WithCurrentCulture();
-            }
-
-            // Call update once when all roles are removed
-            return await UpdateAsync(user).WithCurrentCulture();
-        }
-
-        /// <summary>
-        ///     Remove a user from a role.
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        public virtual async Task<IdentityResult> RemoveFromRoleAsync(TKey userId, string role)
-        {
-            ThrowIfDisposed();
-            var userRoleStore = GetUserRoleStore();
-            var user = await FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            if (!await userRoleStore.IsInRoleAsync(user, role).WithCurrentCulture())
-            {
-                return new IdentityResult(InspurResources.UserNotInRole);
-            }
-            await userRoleStore.RemoveFromRoleAsync(user, role).WithCurrentCulture();
-            return await UpdateAsync(user).WithCurrentCulture();
-        }
-
-        /// <summary>
-        ///     Returns the roles for the user
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public virtual async Task<IList<string>> GetRolesAsync(TKey userId)
-        {
-            ThrowIfDisposed();
-            var userRoleStore = GetUserRoleStore();
-            var user = await FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            return await userRoleStore.GetRolesAsync(user).WithCurrentCulture();
-        }
-
-        /// <summary>
-        ///     Returns true if the user is in the specified role
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> IsInRoleAsync(TKey userId, string role)
-        {
-            ThrowIfDisposed();
-            var userRoleStore = GetUserRoleStore();
-            var user = await FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            return await userRoleStore.IsInRoleAsync(user, role).WithCurrentCulture();
-        }
+     
 
         // IInspurUserEmailStore methods
         internal IInspurUserEmailStore<TUser, TKey> GetEmailStore()

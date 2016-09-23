@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
+//using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using InspurOA.Models;
 using System.Collections.Generic;
 using InspurOA.Identity.Owin;
 using InspurOA.Identity.Owin.Extensions;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace InspurOA.Controllers
 {

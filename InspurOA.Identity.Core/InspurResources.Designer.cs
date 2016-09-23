@@ -70,11 +70,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An unknown failure has occured..
+        /// </summary>
+        internal static string DefaultError1 {
+            get {
+                return ResourceManager.GetString("DefaultError1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email &apos;{0}&apos; is already taken..
         /// </summary>
         internal static string DuplicateEmail {
             get {
                 return ResourceManager.GetString("DuplicateEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email &apos;{0}&apos; is already taken..
+        /// </summary>
+        internal static string DuplicateEmail1 {
+            get {
+                return ResourceManager.GetString("DuplicateEmail1", resourceCulture);
             }
         }
         
@@ -88,11 +106,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name {0} is already taken..
+        /// </summary>
+        internal static string DuplicateName1 {
+            get {
+                return ResourceManager.GetString("DuplicateName1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A user with that external login already exists..
         /// </summary>
         internal static string ExternalLoginExists {
             get {
                 return ResourceManager.GetString("ExternalLoginExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A user with that external login already exists..
+        /// </summary>
+        internal static string ExternalLoginExists1 {
+            get {
+                return ResourceManager.GetString("ExternalLoginExists1", resourceCulture);
             }
         }
         
@@ -106,11 +142,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email &apos;{0}&apos; is invalid..
+        /// </summary>
+        internal static string InvalidEmail1 {
+            get {
+                return ResourceManager.GetString("InvalidEmail1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid token..
         /// </summary>
         internal static string InvalidToken {
             get {
                 return ResourceManager.GetString("InvalidToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid token..
+        /// </summary>
+        internal static string InvalidToken1 {
+            get {
+                return ResourceManager.GetString("InvalidToken1", resourceCulture);
             }
         }
         
@@ -124,11 +178,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User name {0} is invalid, can only contain letters or digits..
+        /// </summary>
+        internal static string InvalidUserName1 {
+            get {
+                return ResourceManager.GetString("InvalidUserName1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lockout is not enabled for this user..
         /// </summary>
         internal static string LockoutNotEnabled {
             get {
                 return ResourceManager.GetString("LockoutNotEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lockout is not enabled for this user..
+        /// </summary>
+        internal static string LockoutNotEnabled1 {
+            get {
+                return ResourceManager.GetString("LockoutNotEnabled1", resourceCulture);
             }
         }
         
@@ -142,11 +214,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No IUserTokenProvider is registered..
+        /// </summary>
+        internal static string NoTokenProvider1 {
+            get {
+                return ResourceManager.GetString("NoTokenProvider1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No IUserTwoFactorProvider for &apos;{0}&apos; is registered..
         /// </summary>
         internal static string NoTwoFactorProvider {
             get {
                 return ResourceManager.GetString("NoTwoFactorProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No IUserTwoFactorProvider for &apos;{0}&apos; is registered..
+        /// </summary>
+        internal static string NoTwoFactorProvider1 {
+            get {
+                return ResourceManager.GetString("NoTwoFactorProvider1", resourceCulture);
             }
         }
         
@@ -160,11 +250,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incorrect password..
+        /// </summary>
+        internal static string PasswordMismatch1 {
+            get {
+                return ResourceManager.GetString("PasswordMismatch1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Passwords must have at least one digit (&apos;0&apos;-&apos;9&apos;)..
         /// </summary>
         internal static string PasswordRequireDigit {
             get {
                 return ResourceManager.GetString("PasswordRequireDigit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords must have at least one digit (&apos;0&apos;-&apos;9&apos;)..
+        /// </summary>
+        internal static string PasswordRequireDigit1 {
+            get {
+                return ResourceManager.GetString("PasswordRequireDigit1", resourceCulture);
             }
         }
         
@@ -178,11 +286,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Passwords must have at least one lowercase (&apos;a&apos;-&apos;z&apos;)..
+        /// </summary>
+        internal static string PasswordRequireLower1 {
+            get {
+                return ResourceManager.GetString("PasswordRequireLower1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Passwords must have at least one non letter or digit character..
         /// </summary>
         internal static string PasswordRequireNonLetterOrDigit {
             get {
                 return ResourceManager.GetString("PasswordRequireNonLetterOrDigit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords must have at least one non letter or digit character..
+        /// </summary>
+        internal static string PasswordRequireNonLetterOrDigit1 {
+            get {
+                return ResourceManager.GetString("PasswordRequireNonLetterOrDigit1", resourceCulture);
             }
         }
         
@@ -196,11 +322,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Passwords must have at least one uppercase (&apos;A&apos;-&apos;Z&apos;)..
+        /// </summary>
+        internal static string PasswordRequireUpper1 {
+            get {
+                return ResourceManager.GetString("PasswordRequireUpper1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Passwords must be at least {0} characters..
         /// </summary>
         internal static string PasswordTooShort {
             get {
                 return ResourceManager.GetString("PasswordTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords must be at least {0} characters..
+        /// </summary>
+        internal static string PasswordTooShort1 {
+            get {
+                return ResourceManager.GetString("PasswordTooShort1", resourceCulture);
             }
         }
         
@@ -214,11 +358,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} cannot be null or empty..
+        /// </summary>
+        internal static string PropertyTooShort1 {
+            get {
+                return ResourceManager.GetString("PropertyTooShort1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Role {0} does not exist..
         /// </summary>
         internal static string RoleNotFound {
             get {
                 return ResourceManager.GetString("RoleNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role {0} does not exist..
+        /// </summary>
+        internal static string RoleNotFound1 {
+            get {
+                return ResourceManager.GetString("RoleNotFound1", resourceCulture);
             }
         }
         
@@ -232,11 +394,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurQueryableRoleStore&lt;TRole&gt;..
+        /// </summary>
+        internal static string StoreNotIQueryableRoleStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIQueryableRoleStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Store does not implement IQueryableUserStore&lt;TUser&gt;..
         /// </summary>
         internal static string StoreNotIQueryableUserStore {
             get {
                 return ResourceManager.GetString("StoreNotIQueryableUserStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurQueryableUserStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIQueryableUserStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIQueryableUserStore1", resourceCulture);
             }
         }
         
@@ -250,11 +430,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserClaimStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserClaimStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserClaimStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Store does not implement IUserConfirmationStore&lt;TUser&gt;..
         /// </summary>
         internal static string StoreNotIUserConfirmationStore {
             get {
                 return ResourceManager.GetString("StoreNotIUserConfirmationStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserConfirmationStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserConfirmationStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserConfirmationStore1", resourceCulture);
             }
         }
         
@@ -268,11 +466,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserEmailStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserEmailStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserEmailStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Store does not implement IUserLockoutStore&lt;TUser&gt;..
         /// </summary>
         internal static string StoreNotIUserLockoutStore {
             get {
                 return ResourceManager.GetString("StoreNotIUserLockoutStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserLockoutStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserLockoutStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserLockoutStore1", resourceCulture);
             }
         }
         
@@ -286,11 +502,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserLoginStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserLoginStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserLoginStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Store does not implement IUserPasswordStore&lt;TUser&gt;..
         /// </summary>
         internal static string StoreNotIUserPasswordStore {
             get {
                 return ResourceManager.GetString("StoreNotIUserPasswordStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserPasswordStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserPasswordStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserPasswordStore1", resourceCulture);
             }
         }
         
@@ -304,11 +538,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IUserPhoneNumberStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserPhoneNumberStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserPhoneNumberStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Store does not implement IUserRoleStore&lt;TUser&gt;..
         /// </summary>
         internal static string StoreNotIUserRoleStore {
             get {
                 return ResourceManager.GetString("StoreNotIUserRoleStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserRoleStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserRoleStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserRoleStore1", resourceCulture);
             }
         }
         
@@ -322,11 +574,47 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IUserSecurityStampStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserSecurityStampStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserSecurityStampStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string StoreNotIUserStore {
+            get {
+                return ResourceManager.GetString("StoreNotIUserStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IInspurUserStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Store does not implement IUserTwoFactorStore&lt;TUser&gt;..
         /// </summary>
         internal static string StoreNotIUserTwoFactorStore {
             get {
                 return ResourceManager.GetString("StoreNotIUserTwoFactorStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IUserTwoFactorStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIUserTwoFactorStore1 {
+            get {
+                return ResourceManager.GetString("StoreNotIUserTwoFactorStore1", resourceCulture);
             }
         }
         
@@ -340,11 +628,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User already has a password set..
+        /// </summary>
+        internal static string UserAlreadyHasPassword1 {
+            get {
+                return ResourceManager.GetString("UserAlreadyHasPassword1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User already in role..
         /// </summary>
         internal static string UserAlreadyInRole {
             get {
                 return ResourceManager.GetString("UserAlreadyInRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User already in role..
+        /// </summary>
+        internal static string UserAlreadyInRole1 {
+            get {
+                return ResourceManager.GetString("UserAlreadyInRole1", resourceCulture);
             }
         }
         
@@ -358,6 +664,15 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UserId not found..
+        /// </summary>
+        internal static string UserIdNotFound1 {
+            get {
+                return ResourceManager.GetString("UserIdNotFound1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User {0} does not exist..
         /// </summary>
         internal static string UserNameNotFound {
@@ -367,11 +682,29 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User {0} does not exist..
+        /// </summary>
+        internal static string UserNameNotFound1 {
+            get {
+                return ResourceManager.GetString("UserNameNotFound1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User is not in role..
         /// </summary>
         internal static string UserNotInRole {
             get {
                 return ResourceManager.GetString("UserNotInRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User is not in role..
+        /// </summary>
+        internal static string UserNotInRole1 {
+            get {
+                return ResourceManager.GetString("UserNotInRole1", resourceCulture);
             }
         }
     }

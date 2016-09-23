@@ -3,6 +3,10 @@ using System.Linq;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
+using InspurOA;
+using InspurOA.Identity.Core;
+using InspurOA.Models;
+using InspurOA.Common;
 
 namespace InspurOA.Authorization
 {
@@ -16,6 +20,7 @@ namespace InspurOA.Authorization
         private string[] _rolesSplit = new string[0];
         private string _permissions;
         private string[] _permissionsSplit = new string[0];
+
 
         public string Users
         {
@@ -65,12 +70,12 @@ namespace InspurOA.Authorization
                 return false;
             }
 
-            if (_rolesSplit.Length > 0 && !_rolesSplit.Any(user.IsInRole))
+            if (_rolesSplit.Length > 0 && !InspurAuthorizeHelper.IsAuthorizedByRoles(user.Identity.Name, _rolesSplit))
             {
                 return false;
             }
 
-            if (_permissionsSplit.Length > 0 && !_permissionsSplit.Any())
+            if (_permissionsSplit.Length > 0 && !InspurAuthorizeHelper.IsAuthorizedByPermissions(user.Identity.Name, _permissionsSplit))
             {
                 return false;
             }

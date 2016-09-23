@@ -66,6 +66,9 @@
     <Compile Include="InspurIdentityUser.cs" />
     <Compile Include="InspurIdentityUserRole.cs" />
     <Compile Include="InspurPermissionStore.cs" />
+    <Compile Include="InspurRolePermissionStore.cs" />
+    <Compile Include="InspurRoleStore.cs" />
+    <Compile Include="InspurUserRoleStore.cs" />
     <Compile Include="InspurUserStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

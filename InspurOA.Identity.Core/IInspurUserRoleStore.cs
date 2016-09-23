@@ -6,50 +6,37 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.Core
 {
-    /// <summary>
-    ///     Interface that maps users to their roles
-    /// </summary>
-    /// <typeparam name="TUser"></typeparam>
-    public interface IInspurUserRoleStore<TUser> : IInspurUserRoleStore<TUser, string> where TUser : class, IInspurUser<string>
+    public interface IInspurUserRoleStore<TUser, TUserRole> : IInspurUserRoleStore<TUser, TUserRole, string>
+        where TUser : class, IInspurUser<string>
+        where TUserRole : class, IInspurUserRole<string>
     {
+
     }
 
-    /// <summary>
-    ///     Interface that maps users to their roles
-    /// </summary>
-    /// <typeparam name="TUser"></typeparam>
-    /// <typeparam name="TKey"></typeparam>
-    public interface IInspurUserRoleStore<TUser, in TKey> : IInspurUserStore<TUser, TKey> where TUser : class, IInspurUser<TKey>
+    public interface IInspurUserRoleStore<TUser, TUserRole, in TKey> : IDisposable
+        where TUser : class, IInspurUser<TKey>
+        where TUserRole : class, IInspurUserRole<TKey>
     {
-        /// <summary>
-        ///     Adds a user to a role
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        Task AddToRoleAsync(TUser user, string roleName);
+        //Task CreateAsync(TUserRole userRole);
 
-        /// <summary>
-        ///     Removes the role for the user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        Task RemoveFromRoleAsync(TUser user, string roleName);
+        //Task UpdateAsync(TUserRole userRole);
 
-        /// <summary>
-        ///     Returns the roles for this user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        Task<IList<string>> GetRolesAsync(TUser user);
+        //Task DeleteAsync(TUserRole userRole);
 
-        /// <summary>
-        ///     Returns true if a user is in the role
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        Task<bool> IsInRoleAsync(TUser user, string roleName);
+        Task<IList<TUserRole>> FindUserRolesByUserId(TKey userId);
+
+        Task<IList<TUserRole>> FindUserRolesByRoleId(TKey roleId);
+
+        Task<bool> IsUserRoleExisted(TKey userId, TKey roleId);
+
+        Task AddToRoleAsync(TUser user, string roleCode, bool onlyAllowSingleRoles = true);
+
+        Task RemoveFromRoleAsync(TUser user, string roleCode);
+
+        Task<IList<TUserRole>> GetUserRolesAsync(TUser user);
+
+        Task<IList<string>> GetRoleCodesAsync(TUser user);
+
+        Task<bool> IsInRoleAsync(TUser user, string roleCode);
     }
 }

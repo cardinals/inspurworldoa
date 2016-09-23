@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InspurOA.Identity.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace InspurOA.Identity.EntityFramework
     {
     }
 
-    public class InspurIdentityUserRole<TKey>
+    public class InspurIdentityUserRole<TKey>: IInspurUserRole<TKey>
     {
         public TKey UserId { get; set; }
 

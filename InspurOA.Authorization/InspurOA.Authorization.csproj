@@ -75,6 +75,24 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InspurOA.Common\InspurOA.Common.csproj">
+      <Project>{F324C1A2-CEC2-49B1-B14F-3126A783022F}</Project>
+      <Name>InspurOA.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InspurOA.Identity.Core\InspurOA.Identity.Core.csproj">
+      <Project>{4BB85640-4864-4A83-9747-AC645A513126}</Project>
+      <Name>InspurOA.Identity.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InspurOA.Identity.EntityFramework\InspurOA.Identity.EntityFramework.csproj">
+      <Project>{d03de150-3fbc-4967-86a5-658ce83fb54e}</Project>
+      <Name>InspurOA.Identity.EntityFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InspurOA.Models\InspurOA.Models.csproj">
+      <Project>{d0189ae5-c1b4-4885-94f7-7cd879949323}</Project>
+      <Name>InspurOA.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

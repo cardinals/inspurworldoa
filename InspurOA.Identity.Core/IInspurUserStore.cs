@@ -57,6 +57,5 @@ namespace InspurOA.Identity.Core
         /// <param name="userName"></param>
         /// <returns></returns>
         Task<TUser> FindByNameAsync(string userName);
-
     }
 }

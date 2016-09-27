@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.Core
 {
-    public class InspurUserRoleManager<TUser, TRole, TUserRole> : InspurUserRoleManager<TUser, TRole, TUserRole, string>
-           where TUser : class, IInspurUser<string>
-        where TRole : class, IInspurRole<string>
-        where TUserRole : class, IInspurUserRole<string>
-    {
-        public InspurUserRoleManager(
-            IInspurUserStore<TUser, string> userStore,
-            IInspurRoleStore<TRole, string> roleStore, 
-            IInspurUserRoleStore<TUser, TUserRole, string> store)
-            : base(userStore, roleStore, store)
-        {
-        }
-    }
+    //public class InspurUserRoleManager<TUser, TRole, TUserRole> : InspurUserRoleManager<TUser, TRole, TUserRole>
+    //       where TUser : class, IInspurUser<string>
+    //    where TRole : class, IInspurRole<string>
+    //    where TUserRole : class, IInspurUserRole<string>
+    //{
+    //    public InspurUserRoleManager(
+    //        IInspurUserStore<TUser, string> userStore,
+    //        IInspurRoleStore<TRole, string> roleStore, 
+    //        IInspurUserRoleStore<TUser, TUserRole, string> store)
+    //        : base(userStore, roleStore, store)
+    //    {
+    //    }
+    //}
 
     /// <summary>
     /// 
@@ -29,12 +29,11 @@ namespace InspurOA.Identity.Core
     /// <typeparam name="TUser">The type of the user.</typeparam>
     /// <typeparam name="TRole">The type of the role.</typeparam>
     /// <typeparam name="TUserRole">The type of the user role.</typeparam>
-    /// <typeparam name="TKey">The type of the key.</typeparam>
-    public class InspurUserRoleManager<TUser, TRole, TUserRole, TKey> : IDisposable
-        where TUser : class, IInspurUser<TKey>
-        where TRole : class, IInspurRole<TKey>
-        where TUserRole : class, IInspurUserRole<TKey>
-        where TKey : IEquatable<TKey>
+    /// <typeparam name="string">The type of the key.</typeparam>
+    public class InspurUserRoleManager<TUser, TRole, TUserRole> : IDisposable
+        where TUser : class, IInspurUser<string>
+        where TRole : class, IInspurRole<string>
+        where TUserRole : class, IInspurUserRole<string>
     {
         /// <summary>
         /// The disposed
@@ -42,16 +41,16 @@ namespace InspurOA.Identity.Core
         private bool _disposed;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InspurUserRoleManager{TUser, TRole, TUserRole, TKey}"/> class.
+        /// Initializes a new instance of the <see cref="InspurUserRoleManager{TUser, TRole, TUserRole, string}"/> class.
         /// </summary>
         /// <param name="userStore">The userstore.</param>
         /// <param name="roleStore">The role store.</param>
         /// <param name="store">The store.</param>
         /// <exception cref="ArgumentNullException">store</exception>
         public InspurUserRoleManager(
-            IInspurUserStore<TUser, TKey> userStore, 
-            IInspurRoleStore<TRole, TKey> roleStore, 
-            IInspurUserRoleStore<TUser, TUserRole, TKey> store)
+            IInspurUserStore<TUser, string> userStore,
+            IInspurRoleStore<TRole, string> roleStore,
+            IInspurUserRoleStore<TUser, TUserRole, string> store)
         {
             if (userStore == null)
             {
@@ -79,7 +78,7 @@ namespace InspurOA.Identity.Core
         /// <value>
         /// The user store.
         /// </value>
-        protected internal IInspurUserStore<TUser, TKey> UserStore { get; set; }
+        protected internal IInspurUserStore<TUser, string> UserStore { get; set; }
 
         /// <summary>
         /// Gets or sets the role store.
@@ -87,7 +86,7 @@ namespace InspurOA.Identity.Core
         /// <value>
         /// The role store.
         /// </value>
-        protected internal IInspurRoleStore<TRole, TKey> RoleStore { get; set; }
+        protected internal IInspurRoleStore<TRole, string> RoleStore { get; set; }
 
         /// <summary>
         /// Gets or sets the store.
@@ -95,7 +94,7 @@ namespace InspurOA.Identity.Core
         /// <value>
         /// The store.
         /// </value>
-        protected internal IInspurUserRoleStore<TUser, TUserRole, TKey> Store { get; set; }
+        protected internal IInspurUserRoleStore<TUser, TUserRole, string> Store { get; set; }
 
         /// <summary>
         ///     Returns true if the store is an IInspurUserRoleStore
@@ -105,7 +104,21 @@ namespace InspurOA.Identity.Core
             get
             {
                 ThrowIfDisposed();
-                return Store is IInspurUserRoleStore<TUser, TUserRole, TKey>;
+                return Store is IInspurUserRoleStore<TUser, TUserRole, string>;
+            }
+        }
+
+        public virtual IQueryable<TUserRole> UserRoles
+        {
+            get
+            {
+                var queryableStore = Store as IInspurQueryableUserRoleStore<TUser, TUserRole, string>;
+                if (queryableStore == null)
+                {
+                    throw new NotSupportedException(InspurResources.StoreNotIQueryableUserRoleStore);
+                }
+
+                return queryableStore.UserRoles;
             }
         }
 
@@ -116,21 +129,16 @@ namespace InspurOA.Identity.Core
         /// <param name="role">The role.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual async Task<IdentityResult> AddToRoleAsync(TKey userId, string roleCode)
+        public virtual async Task<IdentityResult> AddToRoleAsync(string userId, string roleCode)
         {
             ThrowIfDisposed();
-            var user = await UserStore.FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound, userId));
-            }
-            var userRoleCodes = await Store.GetRoleCodesAsync(user).WithCurrentCulture();
+            var userRoleCodes = await Store.GetRoleCodesAsync(userId).WithCurrentCulture();
             if (userRoleCodes.Contains(roleCode))
             {
                 return new IdentityResult(InspurResources.UserAlreadyInRole);
             }
 
-            await Store.AddToRoleAsync(user, roleCode).WithCurrentCulture();
+            await Store.AddToRoleAsync(userId, roleCode).WithCurrentCulture();
             return IdentityResult.Success;
         }
 
@@ -142,20 +150,15 @@ namespace InspurOA.Identity.Core
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">roles</exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual async Task<IdentityResult> AddToRolesAsync(TKey userId, params string[] roleCodes)
+        public virtual async Task<IdentityResult> AddToRolesAsync(string userId, params string[] roleCodes)
         {
             ThrowIfDisposed();
             if (roleCodes == null || roleCodes.Length == 0)
             {
                 throw new ArgumentNullException("roles");
             }
-            var user = await UserStore.FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            var userRoleCodes = await Store.GetRoleCodesAsync(user).WithCurrentCulture();
+
+            var userRoleCodes = await Store.GetRoleCodesAsync(userId).WithCurrentCulture();
             foreach (var code in roleCodes)
             {
                 if (userRoleCodes.Contains(code))
@@ -163,7 +166,7 @@ namespace InspurOA.Identity.Core
                     return new IdentityResult(InspurResources.UserAlreadyInRole);
                 }
 
-                await Store.AddToRoleAsync(user, code).WithCurrentCulture();
+                await Store.AddToRoleAsync(userId, code).WithCurrentCulture();
             }
             return IdentityResult.Success;
         }
@@ -176,32 +179,25 @@ namespace InspurOA.Identity.Core
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">roles</exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual async Task<IdentityResult> RemoveFromRolesAsync(TKey userId, params string[] roles)
+        public virtual async Task<IdentityResult> RemoveFromRolesAsync(string userId, params string[] roles)
         {
             ThrowIfDisposed();
-            if (roles == null)
+            if (roles == null || roles.Length == 0)
             {
                 throw new ArgumentNullException("roles");
             }
-            var user = await UserStore.FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
 
-            // Remove user to each role using UserRoleStore
-            var userRoleCodes = await Store.GetRoleCodesAsync(user).WithCurrentCulture();
+            var userRoleCodes = await Store.GetRoleCodesAsync(userId).WithCurrentCulture();
             foreach (var role in roles)
             {
                 if (!userRoleCodes.Contains(role))
                 {
                     return new IdentityResult(InspurResources.UserNotInRole);
                 }
-                await Store.RemoveFromRoleAsync(user, role).WithCurrentCulture();
+
+                await Store.RemoveFromRoleAsync(userId, role).WithCurrentCulture();
             }
 
-            // Call update once when all roles are removed
             return IdentityResult.Success;
         }
 
@@ -212,20 +208,22 @@ namespace InspurOA.Identity.Core
         /// <param name="roleCode">The role code.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual async Task<IdentityResult> RemoveFromRoleAsync(TKey userId, string roleCode)
+        public virtual async Task<IdentityResult> RemoveFromRoleAsync(string userId, string roleCode)
         {
             ThrowIfDisposed();
-            var user = await UserStore.FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            if (!await Store.IsInRoleAsync(user, roleCode).WithCurrentCulture())
+            if (!await Store.IsInRoleAsync(userId, roleCode).WithCurrentCulture())
             {
                 return new IdentityResult(InspurResources.UserNotInRole);
             }
-            await Store.RemoveFromRoleAsync(user, roleCode).WithCurrentCulture();
+
+            await Store.RemoveFromRoleAsync(userId, roleCode).WithCurrentCulture();
+            return IdentityResult.Success;
+        }
+
+        public virtual async Task<IdentityResult> RemoveFromRoleInfoAsync(string userId)
+        {
+            ThrowIfDisposed();
+            await Store.RemoveUserFromUserRoleAsync(userId).WithCurrentCulture();
             return IdentityResult.Success;
         }
 
@@ -235,16 +233,10 @@ namespace InspurOA.Identity.Core
         /// <param name="userId">The user identifier.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual async Task<IList<string>> GetRoleCodesAsync(TKey userId)
+        public virtual async Task<IList<string>> GetRoleCodesAsync(string userId)
         {
             ThrowIfDisposed();
-            var user = await UserStore.FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            return await Store.GetRoleCodesAsync(user).WithCurrentCulture();
+            return await Store.GetRoleCodesAsync(userId).WithCurrentCulture();
         }
 
         /// <summary>
@@ -254,27 +246,10 @@ namespace InspurOA.Identity.Core
         /// <param name="roleCode">The role code.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual async Task<bool> IsInRoleAsync(TKey userId, string roleCode)
+        public virtual async Task<bool> IsInRoleAsync(string userId, string roleCode)
         {
             ThrowIfDisposed();
-            var user = await UserStore.FindByIdAsync(userId).WithCurrentCulture();
-            if (user == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, InspurResources.UserIdNotFound,
-                    userId));
-            }
-            return await Store.IsInRoleAsync(user, roleCode).WithCurrentCulture();
-        }
-
-        /// <summary>
-        /// Determines whether [is authorized by role asynchronous] [the specified user name].
-        /// </summary>
-        /// <param name="userName">Name of the user.</param>
-        /// <param name="roleCode">The role code.</param>
-        /// <returns></returns>
-        public async Task<bool> IsAuthorizedByRoleAsync(string userName, string roleCode)
-        {
-            return await IsAuthorizedByRolesAsync(userName, new string[] { roleCode });
+            return await Store.IsInRoleAsync(userId, roleCode).WithCurrentCulture();
         }
 
         /// <summary>
@@ -290,7 +265,7 @@ namespace InspurOA.Identity.Core
             ThrowIfDisposed();
             if (String.IsNullOrWhiteSpace(userName))
             {
-                throw new ArgumentNullException("userName");
+                return await Task.FromResult(false);
             }
 
             if (roleCodes == null || roleCodes.Length == 0)

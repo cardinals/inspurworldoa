@@ -113,6 +113,35 @@ namespace InspurOA
         }
     }
 
+    public class ApplicationRoleManager : InspurRoleManager<InspurIdentityRole>
+    {
+        public ApplicationRoleManager(IInspurRoleStore<InspurIdentityRole> store)
+            : base(store)
+        {
+
+        }
+
+        public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
+        {
+            return new ApplicationRoleManager(new InspurRoleStore(context.Get<ApplicationDbContext>()));
+        }
+    }
+
+
+    public class ApplicationPermissionManager : InspurPermissionManager<InspurIdentityPermission>
+    {
+        public ApplicationPermissionManager(IInspurPermissionStore<InspurIdentityPermission> store)
+            : base(store)
+        {
+
+        }
+
+        public static ApplicationPermissionManager Create(IdentityFactoryOptions<ApplicationPermissionManager> options, IOwinContext context)
+        {
+            return new ApplicationPermissionManager(new InspurPermissionStore(context.Get<ApplicationDbContext>()));
+        }
+    }
+
     public class ApplicationUserRoleManager : InspurUserRoleManager<InspurUser, InspurIdentityRole, InspurIdentityUserRole>
     {
         public ApplicationUserRoleManager(
@@ -121,16 +150,14 @@ namespace InspurOA
             IInspurUserRoleStore<InspurUser, InspurIdentityUserRole> store
             ) : base(userStore, roleStore, store)
         {
-
         }
-    }
 
-    public class ApplicationRoleManager : InspurRoleManager<InspurIdentityRole>
-    {
-        public ApplicationRoleManager(IInspurRoleStore<InspurIdentityRole> store)
-            : base(store)
+        public static ApplicationUserRoleManager Create(IdentityFactoryOptions<ApplicationUserRoleManager> options, IOwinContext context)
         {
-
+            return new ApplicationUserRoleManager(
+                new InspurUserStore<InspurUser>(context.Get<ApplicationDbContext>()),
+                new InspurRoleStore(context.Get<ApplicationDbContext>()),
+                new InspurUserRoleStore<InspurUser>(context.Get<ApplicationDbContext>()));
         }
     }
 
@@ -142,14 +169,12 @@ namespace InspurOA
             : base(roleStore, store)
         {
         }
-    }
 
-    public class ApplicationPermissionManager : InspurPermissionManager<InspurIdentityPermission>
-    {
-        public ApplicationPermissionManager(IInspurPermissionStore<InspurIdentityPermission> store)
-            : base(store)
+        public static ApplicationRolePermissionManager Create(IdentityFactoryOptions<ApplicationRolePermissionManager> options, IOwinContext context)
         {
-
+            return new ApplicationRolePermissionManager(
+                new InspurRoleStore(context.Get<ApplicationDbContext>()),
+                new InspurRolePermissionStore<InspurUser>(context.Get<ApplicationDbContext>()));
         }
     }
 }

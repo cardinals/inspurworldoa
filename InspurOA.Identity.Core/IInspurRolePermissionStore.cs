@@ -69,6 +69,10 @@ namespace InspurOA.Identity.Core
 
         Task RemovePermissionsOfRoleAsync(TRole role);
 
+        Task RemoveRoleFromRolePermissionAsync(string roleId);
+
+        Task RemovePermissionFromRolePermissionAsync(string permissionId);
+
         Task<IList<TPermission>> GetPermissionAsync(string roleCode);
 
         Task<IList<TPermission>> GetPermissionAsync(TRole role);

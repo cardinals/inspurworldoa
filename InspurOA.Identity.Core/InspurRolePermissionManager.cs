@@ -15,13 +15,13 @@ namespace InspurOA.Identity.Core
     {
         public InspurRolePermissionManager(
             IInspurRoleStore<TRole, string> roleStore,
-            IInspurRolePermissionStore<TRole, TPermission, TRolePermission, string> store) 
+            IInspurRolePermissionStore<TRole, TPermission, TRolePermission, string> store)
             : base(roleStore, store)
         {
         }
     }
 
-    public class InspurRolePermissionManager<TUser, TRole, TPermission, TKey, TRolePermission>
+    public class InspurRolePermissionManager<TUser, TRole, TPermission, TKey, TRolePermission> : IDisposable
         where TUser : class, IInspurUser<TKey>
         where TRole : class, IInspurRole<TKey>
         where TPermission : class, IInspurPermission<TKey>
@@ -50,6 +50,20 @@ namespace InspurOA.Identity.Core
         protected internal IInspurRoleStore<TRole, TKey> RoleStore;
 
         protected internal IInspurRolePermissionStore<TRole, TPermission, TRolePermission, TKey> Store;
+
+        public virtual IQueryable<TRolePermission> RolePermissions
+        {
+            get
+            {
+                var queryableStore = Store as IInspurQueryableRolePermissionStore<TRole, TPermission, TRolePermission, TKey>;
+                if (queryableStore == null)
+                {
+                    throw new NotSupportedException(InspurResources.StoreNotIQueryableRolePemrissionStore);
+                }
+
+                return queryableStore.RolePermissions;
+            }
+        }
 
         public async Task<IList<TRolePermission>> FindRolePermissionsByRoleId(TKey roleId)
         {
@@ -127,6 +141,28 @@ namespace InspurOA.Identity.Core
             await Store.RemovePermissionsOfRoleAsync(role);
         }
 
+        public async Task RemoveRoleFromRolePermissionAsync(string roleId)
+        {
+            ThrowIfDisposed();
+            if (string.IsNullOrWhiteSpace(roleId))
+            {
+                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleId");
+            }
+
+            await Store.RemoveRoleFromRolePermissionAsync(roleId);
+        }
+
+        public async Task RemovePermissionFromRolePermissionAsync(string permissionId)
+        {
+            ThrowIfDisposed();
+            if (string.IsNullOrWhiteSpace(permissionId))
+            {
+                throw new ArgumentException("ValueCannotBeNullOrEmpty", "permissionId");
+            }
+
+            await Store.RemovePermissionFromRolePermissionAsync(permissionId);
+        }
+
         public async Task<IList<TPermission>> GetPermissionAsync(string roleCode)
         {
             ThrowIfDisposed();
@@ -193,7 +229,15 @@ namespace InspurOA.Identity.Core
 
         public async Task<bool> IsAuthorizedByPermissionAsync(string userName, string permissionCode)
         {
-            return await Store.IsAuthorizedByPermissionsAsync(userName, new string[] { permissionCode });
+            var result = Store.IsAuthorizedByPermissionsAsync(userName, new string[] { permissionCode }).Result;
+            if (result)
+            {
+                return await Task.FromResult(true);
+            }
+            else
+            {
+                return await Task.FromResult(false);
+            }
         }
 
         public async Task<bool> IsAuthorizedByPermissionsAsync(string userName, string[] permissionCodes)
@@ -208,8 +252,15 @@ namespace InspurOA.Identity.Core
             {
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "permissionCodes");
             }
-
-            return await Store.IsAuthorizedByPermissionsAsync(userName, permissionCodes);
+            var result = Store.IsAuthorizedByPermissionsAsync(userName, permissionCodes).Result;
+            if (result)
+            {
+                return await Task.FromResult(true);
+            }
+            else
+            {
+                return await Task.FromResult(false);
+            }
         }
 
         /// <summary>

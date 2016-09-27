@@ -319,6 +319,7 @@ namespace InspurOA.Identity.Core
                 {
                     throw new NotSupportedException(InspurResources.StoreNotIQueryableUserStore);
                 }
+
                 return queryableStore.Users;
             }
         }

@@ -1,4 +1,4 @@
-﻿using InspurOA.Authorization;
+﻿using InspurOA.Attributes;
 using InspurOA.Common;
 using InspurOA.DAL;
 using InspurOA.Identity.Core;
@@ -20,8 +20,9 @@ namespace InspurOA.Controllers
     public class UserController : Controller
     {
         private ApplicationUserManager _userManager;
+        private ApplicationRoleManager _roleManager;
         private ApplicationUserRoleManager _userRoleManager;
-        private ApplicationDbContext dbContext = ApplicationDbContext.Create();
+        //private ApplicationDbContext dbContext = ApplicationDbContext.Create();
 
         public ApplicationUserManager UserManager
         {
@@ -32,6 +33,18 @@ namespace InspurOA.Controllers
             private set
             {
                 _userManager = value;
+            }
+        }
+
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
             }
         }
 
@@ -79,7 +92,7 @@ namespace InspurOA.Controllers
         public ActionResult Create()
         {
             List<SelectListItem> Roles = new List<SelectListItem>();
-            foreach (var role in dbContext.Roles.ToList())
+            foreach (var role in RoleManager.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
                 selectListItem.Selected = false;
@@ -99,7 +112,7 @@ namespace InspurOA.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (dbContext.Roles.Any(t => t.RoleCode.Equals(model.RoleCode)))
+                if (RoleManager.Roles.Any(t => t.RoleCode.Equals(model.RoleCode)))
                 {
                     var user = new InspurUser { UserName = model.UserName, Email = model.Email };
                     var result = await UserManager.CreateAsync(user, model.Password);
@@ -123,7 +136,7 @@ namespace InspurOA.Controllers
             }
 
             List<SelectListItem> Roles = new List<SelectListItem>();
-            foreach (var role in dbContext.Roles.ToList())
+            foreach (var role in RoleManager.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
 
@@ -153,11 +166,11 @@ namespace InspurOA.Controllers
                 return RedirectToAction("index");
             }
 
-            var user = dbContext.Users.Find(id);
+            var user = UserManager.Users.FirstOrDefault(u => u.Id == id);
             string RoleCode = RoleHelper.GetRoleCodeByUserId(id);
 
             List<SelectListItem> UserRoles = new List<SelectListItem>();
-            foreach (var role in dbContext.Roles.ToList())
+            foreach (var role in RoleManager.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
                 selectListItem.Text = role.RoleName;
@@ -218,28 +231,22 @@ namespace InspurOA.Controllers
 
         // POST: UserController/Delete/5
         [HttpPost]
-        public void Delete(string[] ids)
+        public async Task Delete(string[] ids)
         {
-            try
+            if (ids == null || ids.Length == 0)
             {
-                if (ids == null || ids.Length == 0)
-                {
-                    return;
-                }
-
-                for (int i = 0; i < ids.Length; i++)
-                {
-                    var user = dbContext.Users.Find(ids[i]);
-                    if (user != null)
-                    {
-                        dbContext.Users.Remove(user);
-                    }
-                }
-
-                dbContext.SaveChanges();
+                return;
             }
-            catch (Exception e)
+
+            for (int i = 0; i < ids.Length; i++)
             {
+                var user = await UserManager.FindByIdAsync(ids[i]);
+                if (user != null)
+                {
+                    await UserManager.DeleteAsync(user);
+                }
+
+                await UserRoleManager.RemoveFromRoleInfoAsync(ids[i]);
             }
         }
 

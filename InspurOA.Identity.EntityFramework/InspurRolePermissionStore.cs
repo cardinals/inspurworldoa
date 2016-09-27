@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.EntityFramework
 {
-    public class InspurRolePermissionStore<TUser> : InspurRolePermissionStore<TUser, InspurIdentityRole, InspurIdentityPermission, string, InspurIdentityUserRole, InspurIdentityRolePermission>
+    public class InspurRolePermissionStore<TUser> : InspurRolePermissionStore<TUser, InspurIdentityRole, InspurIdentityPermission, InspurIdentityUserRole, InspurIdentityRolePermission>,
+        IInspurRolePermissionStore<InspurIdentityRole, InspurIdentityPermission, InspurIdentityRolePermission>
+
         where TUser : class, IInspurUser
     {
         public InspurRolePermissionStore(DbContext context) : base(context)
@@ -23,12 +25,12 @@ namespace InspurOA.Identity.EntityFramework
         }
     }
 
-    public class InspurRolePermissionStore<TUser, TRole, TPermission, TKey, TUserRole, TRolePermission> : IInspurQueryableRolePermissionStore<TRole, TPermission, TRolePermission, TKey>
-        where TUser : class, IInspurUser<TKey>
-        where TUserRole : class, IInspurUserRole<TKey>
-        where TRole : class, IInspurRole<TKey>
-        where TPermission : class, IInspurPermission<TKey>
-        where TRolePermission : class, IInspurRolePermission<TKey>, new()
+    public class InspurRolePermissionStore<TUser, TRole, TPermission, TUserRole, TRolePermission> : IInspurQueryableRolePermissionStore<TRole, TPermission, TRolePermission, string>
+        where TUser : class, IInspurUser<string>
+        where TUserRole : class, IInspurUserRole<string>
+        where TRole : class, IInspurRole<string>
+        where TPermission : class, IInspurPermission<string>
+        where TRolePermission : class, IInspurRolePermission<string>, new()
     {
         private bool _disposed;
         private EntityStore<TUser> _userStore;
@@ -118,11 +120,11 @@ namespace InspurOA.Identity.EntityFramework
         /// </summary>
         /// <param name="roleId">The role identifier.</param>
         /// <returns></returns>
-        public async Task<IList<TRolePermission>> FindRolePermissionsByRoleId(TKey roleId)
+        public async Task<IList<TRolePermission>> FindRolePermissionsByRoleId(string roleId)
         {
             ThrowIfDisposed();
             var query = from rolePermission in _rolePermissionStore.EntitySet
-                        where rolePermission.RoleId.Equals(roleId)
+                        where rolePermission.RoleId == roleId
                         select rolePermission;
 
             return await query.ToListAsync().WithCurrentCulture();
@@ -133,11 +135,11 @@ namespace InspurOA.Identity.EntityFramework
         /// </summary>
         /// <param name="permissionId">The permission identifier.</param>
         /// <returns></returns>
-        public async Task<IList<TRolePermission>> FindRolePermissionsByPermissionId(TKey permissionId)
+        public async Task<IList<TRolePermission>> FindRolePermissionsByPermissionId(string permissionId)
         {
             ThrowIfDisposed();
             var query = from rolePermission in _rolePermissionStore.EntitySet
-                        where rolePermission.PermissionId.Equals(permissionId)
+                        where rolePermission.PermissionId == permissionId
                         select rolePermission;
 
             return await query.ToListAsync().WithCurrentCulture();
@@ -156,7 +158,7 @@ namespace InspurOA.Identity.EntityFramework
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
             }
 
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper().Equals(roleCode.ToUpper())).WithCurrentCulture();
+            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper() == roleCode.ToUpper()).WithCurrentCulture();
             if (roleEntity == null)
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
@@ -200,14 +202,14 @@ namespace InspurOA.Identity.EntityFramework
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
             }
 
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper().Equals(roleCode.ToUpper())).WithCurrentCulture();
+            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper() == roleCode.ToUpper()).WithCurrentCulture();
             if (roleEntity == null)
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
                     "RoleNotFound", roleCode));
             }
 
-            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId.Equals(roleEntity.RoleId));
+            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId == roleEntity.RoleId);
             foreach (var userRole in userRoles)
             {
                 _rolePermissionStore.Delete(userRole);
@@ -224,7 +226,7 @@ namespace InspurOA.Identity.EntityFramework
                 throw new ArgumentNullException("role");
             }
 
-            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId.Equals(role.RoleId));
+            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId == role.RoleId);
             foreach (var userRole in userRoles)
             {
                 _rolePermissionStore.Delete(userRole);
@@ -232,6 +234,41 @@ namespace InspurOA.Identity.EntityFramework
 
             await Context.SaveChangesAsync().WithCurrentCulture();
         }
+
+        public async Task RemoveRoleFromRolePermissionAsync(string roleId)
+        {
+            ThrowIfDisposed();
+            if (string.IsNullOrWhiteSpace(roleId))
+            {
+                throw new ArgumentNullException("roleId");
+            }
+
+            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId == roleId);
+            foreach (var userRole in userRoles)
+            {
+                _rolePermissionStore.Delete(userRole);
+            }
+
+            await Context.SaveChangesAsync().WithCurrentCulture();
+        }
+
+        public async Task RemovePermissionFromRolePermissionAsync(string permissionId)
+        {
+            ThrowIfDisposed();
+            if (string.IsNullOrWhiteSpace(permissionId))
+            {
+                throw new ArgumentNullException("permissionId");
+            }
+
+            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.PermissionId == permissionId);
+            foreach (var userRole in userRoles)
+            {
+                _rolePermissionStore.Delete(userRole);
+            }
+
+            await Context.SaveChangesAsync().WithCurrentCulture();
+        }
+
 
         public async Task<IList<TPermission>> GetPermissionAsync(string roleCode)
         {
@@ -241,7 +278,7 @@ namespace InspurOA.Identity.EntityFramework
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
             }
 
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper().Equals(roleCode.ToUpper())).WithCurrentCulture();
+            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper() == roleCode.ToUpper()).WithCurrentCulture();
             if (roleEntity == null)
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
@@ -249,10 +286,10 @@ namespace InspurOA.Identity.EntityFramework
             }
 
             IList<TPermission> permissionList = new List<TPermission>();
-            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId.Equals(roleEntity.RoleId));
+            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId == roleEntity.RoleId);
             foreach (var userRole in userRoles)
             {
-                var permission = await _permissionStore.EntitySet.SingleOrDefaultAsync(p => p.PermissionId.Equals(userRole.PermissionId)).WithCurrentCulture();
+                var permission = await _permissionStore.EntitySet.SingleOrDefaultAsync(p => p.PermissionId == userRole.PermissionId).WithCurrentCulture();
                 if (permission != null)
                 {
                     permissionList.Add(permission);
@@ -271,10 +308,10 @@ namespace InspurOA.Identity.EntityFramework
             }
 
             IList<TPermission> permissionList = new List<TPermission>();
-            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId.Equals(role.RoleId));
+            var userRoles = _rolePermissionStore.EntitySet.Where(rp => rp.RoleId == role.RoleId);
             foreach (var userRole in userRoles)
             {
-                var permission = await _permissionStore.EntitySet.SingleOrDefaultAsync(p => p.PermissionId.Equals(userRole.PermissionId)).WithCurrentCulture();
+                var permission = await _permissionStore.EntitySet.SingleOrDefaultAsync(p => p.PermissionId == userRole.PermissionId).WithCurrentCulture();
                 if (permission != null)
                 {
                     permissionList.Add(permission);
@@ -311,34 +348,8 @@ namespace InspurOA.Identity.EntityFramework
                     "RoleNotFound", permissionCode));
             }
 
-            return await _rolePermissionStore.EntitySet.AnyAsync(rp => rp.RoleId.Equals(roleEntity.RoleId) && rp.PermissionId.Equals(permissionEntity.PermissionId));
+            return await _rolePermissionStore.EntitySet.AnyAsync(rp => rp.RoleId == roleEntity.RoleId && rp.PermissionId == permissionEntity.PermissionId);
         }
-
-        //public async Task<bool> IsAuthorizedByPermissionAsync(TUser user, string permissionCode)
-        //{
-        //    ThrowIfDisposed();
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException("user");
-        //    }
-
-        //    if (string.IsNullOrWhiteSpace(permissionCode))
-        //    {
-        //        throw new ArgumentException("ValueCannotBeNullOrEmpty", "permissionCode");
-        //    }
-
-        //    var userRole = await _userRoleStore.EntitySet.SingleOrDefaultAsync(ur => ur.UserId.Equals(user.Id)).WithCurrentCulture();
-        //    if (userRole != null)
-        //    {
-        //        var role = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleId.Equals(userRole.RoleId)).WithCurrentCulture();
-        //        if (role != null)
-        //        {
-        //            return await HasPermissionAsync(role.RoleCode, permissionCode);
-        //        }
-        //    }
-
-        //    return await Task.FromResult(false);
-        //}
 
         public async Task<bool> IsAuthorizedByPermissionsAsync(string userName, string[] permissionCodes)
         {
@@ -353,37 +364,30 @@ namespace InspurOA.Identity.EntityFramework
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "permissionCodes");
             }
 
-            try
+            var user = await _userStore.EntitySet.SingleOrDefaultAsync(u => u.UserName == userName).WithCurrentCulture();
+            if (user != null)
             {
-                var user = await _userStore.EntitySet.SingleOrDefaultAsync(u => u.UserName.Equals(userName)).WithCurrentCulture();
-
-                if (user != null)
+                string userId = user.Id;
+                IQueryable<TUserRole> userRoles = _userRoleStore.EntitySet.Where(ur => ur.UserId == userId);
+                if (userRoles != null)
                 {
-                    IQueryable<TUserRole> userRoles = _userRoleStore.EntitySet.Where(ur => ur.UserId.Equals(user.Id));
-                    if (userRoles != null)
+                    foreach (var userRole in userRoles.ToList())
                     {
-                        foreach (var userRole in userRoles.ToList())
+                        var role = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleId == userRole.RoleId).WithCurrentCulture();
+                        if (role != null)
                         {
-                            var role = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleId.Equals(userRole.RoleId)).WithCurrentCulture();
-                            if (role != null)
+                            foreach (var permissionCode in permissionCodes)
                             {
-                                foreach (var permissionCode in permissionCodes)
+                                if (await HasPermissionAsync(role.RoleCode, permissionCode))
                                 {
-                                    if (await HasPermissionAsync(role.RoleCode, permissionCode))
-                                    {
-                                        return await Task.FromResult(true);
-                                    }
+                                    return await Task.FromResult(true);
                                 }
                             }
                         }
                     }
-
                 }
             }
-            catch (Exception e)
-            {
-                throw e;
-            }
+
             return await Task.FromResult(false);
         }
 

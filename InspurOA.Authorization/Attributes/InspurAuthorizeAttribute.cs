@@ -7,6 +7,7 @@ using InspurOA;
 using InspurOA.Identity.Core;
 using InspurOA.Models;
 using InspurOA.Common;
+using InspurOA.Identity.EntityFramework;
 
 namespace InspurOA.Authorization
 {
@@ -20,7 +21,6 @@ namespace InspurOA.Authorization
         private string[] _rolesSplit = new string[0];
         private string _permissions;
         private string[] _permissionsSplit = new string[0];
-
 
         public string Users
         {
@@ -54,6 +54,8 @@ namespace InspurOA.Authorization
 
         protected bool AuthorizeCore(HttpContextBase httpContext)
         {
+            var userRoleManager = httpContext.GetOwinContext().Get<ApplicationUserRoleManager>();
+
             if (httpContext == null)
             {
                 throw new ArgumentNullException("httpContext");

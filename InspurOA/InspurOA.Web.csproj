@@ -215,7 +215,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\InspurAuthorizeAttribute.cs" />
+    <Compile Include="Common\AuthHelper.cs" />
+    <Compile Include="Common\ResumeHelper.cs" />
+    <Compile Include="Common\RoleHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
@@ -230,6 +235,8 @@
       <DependentUpon>201609200850082_UpdateDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Principal\IInspurPrincipal .cs" />
+    <Compile Include="Principal\InspurPrincipal .cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -314,6 +321,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\wenjia\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -327,17 +335,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InspurOA.Authorization\InspurOA.Authorization.csproj">
-      <Project>{2677eeab-f70b-4daa-9ae4-f1bf070fad42}</Project>
-      <Name>InspurOA.Authorization</Name>
-    </ProjectReference>
     <ProjectReference Include="..\InspurOA.BLL\InspurOA.BLL.csproj">
       <Project>{2A39BEB6-E5A1-4E3C-8A03-77A915423C94}</Project>
       <Name>InspurOA.BLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InspurOA.Common\InspurOA.Common.csproj">
-      <Project>{F324C1A2-CEC2-49B1-B14F-3126A783022F}</Project>
-      <Name>InspurOA.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\InspurOA.DAL\InspurOA.DAL.csproj">
       <Project>{E670B00B-0D58-49A2-A2A0-F52A5D18AB92}</Project>

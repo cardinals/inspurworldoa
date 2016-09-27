@@ -10,7 +10,7 @@ namespace InspurOA.Identity.Core
     public class InspurRoleManager<TRole> : InspurRoleManager<TRole, string>
         where TRole : class, IInspurRole<string>
     {
-        public InspurRoleManager(IInspurRoleStore<TRole, string> store) 
+        public InspurRoleManager(IInspurRoleStore<TRole, string> store)
             : base(store)
         {
 
@@ -34,6 +34,20 @@ namespace InspurOA.Identity.Core
         }
 
         protected internal IInspurRoleStore<TRole, TKey> Store;
+
+        public IQueryable<TRole> Roles
+        {
+            get
+            {
+                var quertableStore = Store as IInspurQueryableRoleStore<TRole, TKey>;
+                if (quertableStore == null)
+                {
+                    throw new NotSupportedException(InspurResources.StoreNotIQueryableRoleStore);
+                }
+
+                return quertableStore.Roles;
+            }
+        }
 
         public async Task<IdentityResult> CreateAsync(TRole role)
         {

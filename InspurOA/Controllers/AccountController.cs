@@ -13,10 +13,10 @@ using System.Collections.Generic;
 using InspurOA.Identity.Owin;
 using InspurOA.Identity.Owin.Extensions;
 using Microsoft.AspNet.Identity.Owin;
+using InspurOA.Attributes;
 
 namespace InspurOA.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;

@@ -100,8 +100,6 @@ namespace InspurOA.Common
 
             }
 
-
-
             return false;
         }
 

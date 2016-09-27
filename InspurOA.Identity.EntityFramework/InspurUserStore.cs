@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace InspurOA.Identity.EntityFramework
 {
     public class InspurUserStore<TUser> :
-        InspurUserStore<TUser, InspurIdentityRole, InspurIdentityPermission, string, InspurIdentityUserRole, InspurIdentityRolePermission>,
+        InspurUserStore<TUser, InspurIdentityRole, InspurIdentityPermission, InspurIdentityUserRole, InspurIdentityRolePermission>,
         IInspurUserStore<TUser>
         where TUser : InspurIdentityUser
     {
@@ -29,17 +29,17 @@ namespace InspurOA.Identity.EntityFramework
         }
     }
 
-    public class InspurUserStore<TUser, TRole, TPermission, TKey, TUserRole, TRolePermission> :
-        IInspurUserPasswordStore<TUser, TKey>,
-        IInspurUserEmailStore<TUser, TKey>,
-        IInspurUserPhoneNumberStore<TUser, TKey>,
-        IInspurUserTwoFactorStore<TUser, TKey>
-        where TKey : IEquatable<TKey>
-        where TUser : InspurIdentityUser<TKey>
-        where TRole : InspurIdentityRole<TKey, TUserRole, TRolePermission>
-        where TPermission : InspurIdentityPermission<TKey>
-        where TUserRole : InspurIdentityUserRole<TKey>, new()
-        where TRolePermission : InspurIdentityRolePermission<TKey>, new()
+    public class InspurUserStore<TUser, TRole, TPermission,TUserRole, TRolePermission> :
+        IInspurUserPasswordStore<TUser, string>,
+        IInspurUserEmailStore<TUser, string>,
+        IInspurUserPhoneNumberStore<TUser, string>,
+        IInspurUserTwoFactorStore<TUser, string>,
+        IInspurQueryableUserStore<TUser, string>
+        where TUser : InspurIdentityUser<string>
+        where TRole : InspurIdentityRole<string, TUserRole, TRolePermission>
+        where TPermission : InspurIdentityPermission<string>
+        where TUserRole : InspurIdentityUserRole<string>, new()
+        where TRolePermission : InspurIdentityRolePermission<string>, new()
 
     {
         private readonly DbSet<TUser> _users;
@@ -110,18 +110,19 @@ namespace InspurOA.Identity.EntityFramework
             return Task.FromResult(user.Email);
         }
 
-        public Task<TUser> FindByIdAsync(TKey userId)
+        public Task<TUser> FindByIdAsync(string userId)
         {
             ThrowIfDisposed();
-            //return GetUserAggregateAsync(u => u.Id.Equals(userId));
-            return _userStore.EntitySet.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+            //return GetUserAggregateAsync(u => u.Id == userId));
+            var user = _userStore.EntitySet.SingleOrDefaultAsync(u => u.Id == userId);
+            return user;
         }
 
         public Task<TUser> FindByNameAsync(string userName)
         {
             ThrowIfDisposed();
-            //return GetUserAggregateAsync(u => u.UserName.Equals(userName));
-            return _userStore.EntitySet.SingleOrDefaultAsync(u => u.UserName.Equals(userName));
+            //return GetUserAggregateAsync(u => u.UserName == userName));
+            return _userStore.EntitySet.SingleOrDefaultAsync(u => u.UserName == userName);
         }
 
         public async Task CreateAsync(TUser user)
@@ -317,7 +318,7 @@ namespace InspurOA.Identity.EntityFramework
         {
             ThrowIfDisposed();
             //return GetUserAggregateAsync(u => u.Email.ToUpper() == email.ToUpper());
-            return _users.FirstOrDefaultAsync(u => u.Email.Equals(email));
+            return _users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         /// <summary>
@@ -368,7 +369,7 @@ namespace InspurOA.Identity.EntityFramework
         /// <returns></returns>
         protected async Task<TUser> GetUserAggregateAsync(Expression<Func<TUser, bool>> filter)
         {
-            TKey id;
+            string id;
             TUser user;
             if (FindByIdFilterParser.TryMatchAndGetId(filter, out id))
             {
@@ -423,16 +424,16 @@ namespace InspurOA.Identity.EntityFramework
         private static class FindByIdFilterParser
         {
             // expression pattern we need to match
-            private static readonly Expression<Func<TUser, bool>> Predicate = u => u.Id.Equals(default(TKey));
-            // method we need to match: Object.Equals() 
+            private static readonly Expression<Func<TUser, bool>> Predicate = u => u.Id == default(string);
+            // method we need to match: Object == ) 
             private static readonly MethodInfo EqualsMethodInfo = ((MethodCallExpression)Predicate.Body).Method;
             // property access we need to match: User.Id 
             private static readonly MemberInfo UserIdMemberInfo = ((MemberExpression)((MethodCallExpression)Predicate.Body).Object).Member;
 
-            internal static bool TryMatchAndGetId(Expression<Func<TUser, bool>> filter, out TKey id)
+            internal static bool TryMatchAndGetId(Expression<Func<TUser, bool>> filter, out string id)
             {
                 // default value in case we can’t obtain it 
-                id = default(TKey);
+                id = default(string);
 
                 // lambda body should be a call 
                 if (filter.Body.NodeType != ExpressionType.Call)
@@ -440,7 +441,7 @@ namespace InspurOA.Identity.EntityFramework
                     return false;
                 }
 
-                // actually a call to object.Equals(object)
+                // actually a call to object == object)
                 var callExpression = (MethodCallExpression)filter.Body;
                 if (callExpression.Method != EqualsMethodInfo)
                 {
@@ -493,7 +494,7 @@ namespace InspurOA.Identity.EntityFramework
                 var fieldInfo = (FieldInfo)fieldAccess.Member;
                 var closure = ((ConstantExpression)fieldAccess.Expression).Value;
 
-                id = (TKey)fieldInfo.GetValue(closure);
+                id = (string)fieldInfo.GetValue(closure);
                 return true;
             }
         }

@@ -35,6 +35,20 @@ namespace InspurOA.Identity.Core
 
         protected internal IInspurPermissionStore<TPermission, TKey> Store;
 
+        public IQueryable<TPermission> Permissions
+        {
+            get
+            {
+                var queryableStore = Store as IInspurQueryablePermissionStore<TPermission, TKey>;
+                if (queryableStore == null)
+                {
+                    throw new NotSupportedException(InspurResources.StoreNotIQueryablePemrissionStore);
+                }
+
+                return queryableStore.Permissions;
+            }
+        }
+
 
         public async Task<IdentityResult> CreateAsync(TPermission permission)
         {

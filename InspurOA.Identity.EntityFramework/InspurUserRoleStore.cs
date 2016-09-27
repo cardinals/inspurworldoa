@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.EntityFramework
 {
-    public class InspurUserRoleStore<TUser> : InspurUserRoleStore<TUser, InspurIdentityRole, InspurIdentityUserRole, string>
+    public class InspurUserRoleStore<TUser> : InspurUserRoleStore<TUser, InspurIdentityRole, InspurIdentityUserRole>,
+        IInspurUserRoleStore<TUser, InspurIdentityUserRole>
         where TUser : class, IInspurUser<string>
     {
         public InspurUserRoleStore()
@@ -24,11 +25,10 @@ namespace InspurOA.Identity.EntityFramework
         }
     }
 
-    public class InspurUserRoleStore<TUser, TRole, TUserRole, TKey> : IInspurQueryableUserRoleStore<TUser, TUserRole, TKey>
-        where TUser : class, IInspurUser<TKey>
-        where TRole : class, IInspurRole<TKey>
-        where TUserRole : class, IInspurUserRole<TKey>, new()
-
+    public class InspurUserRoleStore<TUser, TRole, TUserRole> : IInspurQueryableUserRoleStore<TUser, TUserRole, string>
+        where TUser : class, IInspurUser<string>
+        where TRole : class, IInspurRole<string>
+        where TUserRole : class, IInspurUserRole<string>, new()
     {
         private bool _disposed;
         private EntityStore<TUser> _userStore;
@@ -49,6 +49,7 @@ namespace InspurOA.Identity.EntityFramework
         }
 
         public DbContext Context { get; private set; }
+
         public bool DisposeContext { get; set; }
 
         public IQueryable<TUserRole> UserRoles
@@ -92,30 +93,30 @@ namespace InspurOA.Identity.EntityFramework
         //    await Context.SaveChangesAsync().WithCurrentCulture();
         //}
 
-        public async Task<IList<TUserRole>> FindUserRolesByUserId(TKey userId)
+        public async Task<IList<TUserRole>> FindUserRolesByUserId(string userId)
         {
             ThrowIfDisposed();
             var query = from userRole in _userRoleStore.EntitySet
-                        where userRole.UserId.Equals(userId)
+                        where userRole.UserId == userId
                         select userRole;
 
             return await query.ToListAsync().WithCurrentCulture();
         }
 
-        public async Task<IList<TUserRole>> FindUserRolesByRoleId(TKey roleId)
+        public async Task<IList<TUserRole>> FindUserRolesByRoleId(string roleId)
         {
             ThrowIfDisposed();
             var query = from userRole in _userRoleStore.EntitySet
-                        where userRole.RoleId.Equals(roleId)
+                        where userRole.RoleId == roleId
                         select userRole;
 
             return await query.ToListAsync().WithCurrentCulture();
         }
 
-        public async Task<bool> IsUserRoleExisted(TKey userId, TKey roleId)
+        public async Task<bool> IsUserRoleExisted(string userId, string roleId)
         {
             ThrowIfDisposed();
-            return await _userRoleStore.EntitySet.AnyAsync(ur => ur.UserId.Equals(userId) && ur.RoleId.Equals(roleId));
+            return await _userRoleStore.EntitySet.AnyAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
         }
 
         /// <summary>
@@ -124,14 +125,9 @@ namespace InspurOA.Identity.EntityFramework
         /// <param name="user"></param>
         /// <param name="roleCode"></param>
         /// <returns></returns>
-        public async Task AddToRoleAsync(TUser user, string roleCode, bool onlyAllowSingleRoles = true)
+        public async Task AddToRoleAsync(string userId, string roleCode, bool onlyAllowSingleRoles = true)
         {
             ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
             if (String.IsNullOrWhiteSpace(roleCode))
             {
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
@@ -146,14 +142,14 @@ namespace InspurOA.Identity.EntityFramework
 
             if (onlyAllowSingleRoles)
             {
-                var oldUr = _userRoleStore.EntitySet.SingleOrDefault(ur => ur.UserId.Equals(user.Id));
+                var oldUr = _userRoleStore.EntitySet.SingleOrDefault(ur => ur.UserId == userId);
                 if (oldUr != null)
                 {
                     _userRoleStore.Delete(oldUr);
                 }
             }
 
-            var newUr = new TUserRole() { UserId = user.Id, RoleId = roleEntity.RoleId };
+            var newUr = new TUserRole() { UserId = userId, RoleId = roleEntity.RoleId };
             _userRoleStore.Create(newUr);
             await Context.SaveChangesAsync().WithCurrentCulture();
         }
@@ -164,30 +160,64 @@ namespace InspurOA.Identity.EntityFramework
         /// <param name="user"></param>
         /// <param name="roleCode"></param>
         /// <returns></returns>
-        public async Task RemoveFromRoleAsync(TUser user, string roleCode)
+        public async Task RemoveFromRoleAsync(string userId, string roleCode)
         {
             ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
             if (String.IsNullOrWhiteSpace(roleCode))
             {
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
             }
 
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper().Equals(roleCode.ToUpper())).WithCurrentCulture();
+            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper() == roleCode.ToUpper()).WithCurrentCulture();
             if (roleEntity != null)
             {
                 var roleId = roleEntity.RoleId;
-                var userId = user.Id;
-                var userRole = await _userRoleStore.EntitySet.FirstOrDefaultAsync(r => roleId.Equals(r.RoleId) && r.UserId.Equals(userId)).WithCurrentCulture();
+                var userRole = await _userRoleStore.EntitySet.FirstOrDefaultAsync(r => roleId == r.RoleId && r.UserId == userId).WithCurrentCulture();
                 if (userRole != null)
                 {
                     _userRoleStore.Delete(userRole);
                     await Context.SaveChangesAsync().WithCurrentCulture();
                 }
+            }
+        }
+
+        public async Task RemoveUserFromUserRoleAsync(string userId)
+        {
+            ThrowIfDisposed();
+            if (String.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentException("ValueCannotBeNullOrEmpty", "userId");
+            }
+
+            var userRoles = _userRoleStore.EntitySet.Where(ur => ur.UserId == userId);
+            if (userRoles != null)
+            {
+                foreach (var userRole in userRoles.ToList())
+                {
+                    _userRoleStore.Delete(userRole);
+                }
+
+                await Context.SaveChangesAsync().WithCurrentCulture();
+            }
+        }
+
+        public async Task RemoveRoleFromUserRoleAsync(string roleId)
+        {
+            ThrowIfDisposed();
+            if (String.IsNullOrWhiteSpace(roleId))
+            {
+                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleId");
+            }
+
+            var userRoles = _userRoleStore.EntitySet.Where(ur => ur.RoleId == roleId);
+            if (userRoles != null)
+            {
+                foreach (var userRole in userRoles.ToList())
+                {
+                    _userRoleStore.Delete(userRole);
+                }
+
+                await Context.SaveChangesAsync().WithCurrentCulture();
             }
         }
 
@@ -199,7 +229,7 @@ namespace InspurOA.Identity.EntityFramework
                 throw new ArgumentNullException("user");
             }
             var query = from userRole in _userRoleStore.EntitySet
-                        where userRole.UserId.Equals(user.Id)
+                        where userRole.UserId == user.Id
                         select userRole;
 
 
@@ -211,17 +241,11 @@ namespace InspurOA.Identity.EntityFramework
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<IList<string>> GetRoleCodesAsync(TUser user)
+        public async Task<IList<string>> GetRoleCodesAsync(string userId)
         {
             ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            var userId = user.Id;
             var query = from userRole in _userRoleStore.EntitySet
-                        where userRole.UserId.Equals(userId)
+                        where userRole.UserId == userId
                         join role in _roleStore.DbEntitySet on userRole.RoleId equals role.RoleId
                         select role.RoleCode;
 
@@ -234,25 +258,19 @@ namespace InspurOA.Identity.EntityFramework
         /// <param name="user"></param>
         /// <param name="roleCode"></param>
         /// <returns></returns>
-        public async Task<bool> IsInRoleAsync(TUser user, string roleCode)
+        public async Task<bool> IsInRoleAsync(string userId, string roleCode)
         {
             ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
             if (String.IsNullOrWhiteSpace(roleCode))
             {
                 throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
             }
 
-            var role = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper().Equals(roleCode.ToUpper())).WithCurrentCulture();
+            var role = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper() == roleCode.ToUpper()).WithCurrentCulture();
             if (role != null)
             {
-                var userId = user.Id;
                 var roleId = role.RoleId;
-                return await _userRoleStore.EntitySet.AnyAsync(ur => ur.RoleId.Equals(roleId) && ur.UserId.Equals(userId)).WithCurrentCulture();
+                return await _userRoleStore.EntitySet.AnyAsync(ur => ur.RoleId == roleId && ur.UserId == userId).WithCurrentCulture();
             }
 
             return false;

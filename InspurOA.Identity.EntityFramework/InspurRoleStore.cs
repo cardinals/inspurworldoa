@@ -12,7 +12,8 @@ namespace InspurOA.Identity.EntityFramework
     ///     EntityFramework based implementation
     /// </summary>
     /// <typeparam name="TRole"></typeparam>
-    public class InspurRoleStore : InspurRoleStore<InspurIdentityRole, string, InspurIdentityUserRole, InspurIdentityRolePermission>
+    public class InspurRoleStore : InspurRoleStore<InspurIdentityRole, InspurIdentityUserRole, InspurIdentityRolePermission>,
+        IInspurRoleStore<InspurIdentityRole>
     {
         /// <summary>
         ///     Constructor
@@ -36,12 +37,12 @@ namespace InspurOA.Identity.EntityFramework
     ///     EntityFramework based implementation
     /// </summary>
     /// <typeparam name="TRole"></typeparam>
-    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="string"></typeparam>
     /// <typeparam name="TUserRole"></typeparam>
-    public class InspurRoleStore<TRole, TKey, TUserRole, TRolePermission> : IInspurQueryableRoleStore<TRole, TKey>
-        where TUserRole : InspurIdentityUserRole<TKey>, new()
-        where TRole : InspurIdentityRole<TKey, TUserRole, TRolePermission>, new()
-        where TRolePermission : InspurIdentityRolePermission<TKey>, new()
+    public class InspurRoleStore<TRole, TUserRole, TRolePermission> : IInspurQueryableRoleStore<TRole>
+        where TRole : InspurIdentityRole<string, TUserRole, TRolePermission>, new()
+        where TUserRole : InspurIdentityUserRole<string>, new()
+        where TRolePermission : InspurIdentityRolePermission<string>, new()
     {
         private bool _disposed;
         private EntityStore<TRole> _roleStore;
@@ -75,7 +76,7 @@ namespace InspurOA.Identity.EntityFramework
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public Task<TRole> FindByIdAsync(TKey roleId)
+        public Task<TRole> FindByIdAsync(string roleId)
         {
             ThrowIfDisposed();
             return _roleStore.GetByIdAsync(roleId);
@@ -89,7 +90,7 @@ namespace InspurOA.Identity.EntityFramework
         public Task<TRole> FindByCodeAsync(string roleCode)
         {
             ThrowIfDisposed();
-            return _roleStore.EntitySet.FirstOrDefaultAsync(u => u.RoleCode.ToUpper().Equals(roleCode.ToUpper()));
+            return _roleStore.EntitySet.FirstOrDefaultAsync(u => u.RoleCode.ToUpper() == roleCode.ToUpper());
         }
 
         /// <summary>

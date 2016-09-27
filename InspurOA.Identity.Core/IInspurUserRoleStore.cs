@@ -29,14 +29,18 @@ namespace InspurOA.Identity.Core
 
         Task<bool> IsUserRoleExisted(TKey userId, TKey roleId);
 
-        Task AddToRoleAsync(TUser user, string roleCode, bool onlyAllowSingleRoles = true);
+        Task AddToRoleAsync(string userId, string roleCode, bool onlyAllowSingleRoles = true);
 
-        Task RemoveFromRoleAsync(TUser user, string roleCode);
+        Task RemoveFromRoleAsync(string userId, string roleCode);
+
+        Task RemoveUserFromUserRoleAsync(string userId);
+
+        Task RemoveRoleFromUserRoleAsync(string roleId);
 
         Task<IList<TUserRole>> GetUserRolesAsync(TUser user);
 
-        Task<IList<string>> GetRoleCodesAsync(TUser user);
+        Task<IList<string>> GetRoleCodesAsync(string userId);
 
-        Task<bool> IsInRoleAsync(TUser user, string roleCode);
+        Task<bool> IsInRoleAsync(string userId, string roleCode);
     }
 }

@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.EntityFramework
 {
-    public class InspurPermissionStore : InspurPermissionStore<InspurIdentityPermission, string>
+    public class InspurPermissionStore : InspurPermissionStore<InspurIdentityPermission>,
+        IInspurPermissionStore<InspurIdentityPermission>
     {
         public InspurPermissionStore(DbContext context) : base(context)
         {
@@ -22,8 +23,8 @@ namespace InspurOA.Identity.EntityFramework
         }
     }
 
-    public class InspurPermissionStore<TPermission, TKey> : IInspurQueryablePermissionStore<TPermission, TKey>
-        where TPermission : InspurIdentityPermission<TKey>, new()
+    public class InspurPermissionStore<TPermission> : IInspurQueryablePermissionStore<TPermission, string>
+        where TPermission : InspurIdentityPermission<string>, new()
     {
         private bool _disposed;
         private EntityStore<TPermission> _permissionStore;
@@ -43,7 +44,7 @@ namespace InspurOA.Identity.EntityFramework
 
         public bool DisposeContext { get; set; }
 
-        public Task<TPermission> FindByIdAsync(TKey permissionId)
+        public Task<TPermission> FindByIdAsync(string permissionId)
         {
             ThrowIfDisposed();
             return _permissionStore.GetByIdAsync(permissionId);
@@ -52,7 +53,7 @@ namespace InspurOA.Identity.EntityFramework
         public Task<TPermission> FindByCodeAsync(string permissionCode)
         {
             ThrowIfDisposed();
-            return _permissionStore.EntitySet.FirstOrDefaultAsync(p => permissionCode.ToUpper().Equals(permissionCode.ToUpper()));
+            return _permissionStore.EntitySet.FirstOrDefaultAsync(p => permissionCode.ToUpper() == permissionCode.ToUpper());
         }
 
         public async Task CreateAsync(TPermission permission)

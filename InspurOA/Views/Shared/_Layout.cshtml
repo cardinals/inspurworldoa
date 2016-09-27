@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using InspurOA.Common
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -20,8 +21,9 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("简历管理", "Index", "Resume")</li>
                     <li>@Html.ActionLink("简历共享", "Index", "Home")</li>
-                    @*@if (User.IsInRole("Admin"))
-                    {*@
+                    @*@if (User.IsInRole("Admin"))*@
+                    @if (AuthHelper.IsAuthorizedByRole(User.Identity.Name, "Admin"))
+                    {
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 系统管理
@@ -35,7 +37,7 @@
                                 <li>@Html.ActionLink("权限管理", "Index", "Permission")</li>
                             </ul>
                         </li>
-                    @*}*@
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

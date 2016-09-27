@@ -261,12 +261,24 @@
     <value>Role {0} does not exist.</value>
     <comment>error when a role does not exist</comment>
   </data>
+  <data name="StoreNotIQueryablePemrissionStore" xml:space="preserve">
+    <value>Store does not implement IQueryablePermissionStore&lt;TPermission&gt;.</value>
+    <comment>error when the store does not implement this interface</comment>
+  </data>
+  <data name="StoreNotIQueryableRolePemrissionStore" xml:space="preserve">
+    <value>Store does not implement IQueryableRolePermissionStore&lt;TUser&gt;.</value>
+    <comment>error when the store does not implement this interface</comment>
+  </data>
   <data name="StoreNotIQueryableRoleStore" xml:space="preserve">
     <value>Store does not implement IQueryableRoleStore&lt;TRole&gt;.</value>
     <comment>error when the store does not implement this interface</comment>
   </data>
   <data name="StoreNotIQueryableRoleStore1" xml:space="preserve">
     <value>Store does not implement IInspurQueryableRoleStore&lt;TRole&gt;.</value>
+    <comment>error when the store does not implement this interface</comment>
+  </data>
+  <data name="StoreNotIQueryableUserRoleStore" xml:space="preserve">
+    <value>Store does not implement IQueryableUserRoleStore&lt;TUser&gt;.</value>
     <comment>error when the store does not implement this interface</comment>
   </data>
   <data name="StoreNotIQueryableUserStore" xml:space="preserve">
@@ -350,7 +362,8 @@
     <comment>error when the store does not implement this interface</comment>
   </data>
   <data name="StoreNotIUserStore" xml:space="preserve">
-    <value />
+    <value>Store does not implement IInspurUserStore&lt;TUser&gt;.</value>
+    <comment>error when the store does not implement this interface</comment>
   </data>
   <data name="StoreNotIUserStore1" xml:space="preserve">
     <value>Store does not implement IInspurUserStore&lt;TUser&gt;.</value>

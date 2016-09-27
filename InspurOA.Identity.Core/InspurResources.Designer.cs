@@ -385,6 +385,24 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IQueryablePermissionStore&lt;TPermission&gt;..
+        /// </summary>
+        internal static string StoreNotIQueryablePemrissionStore {
+            get {
+                return ResourceManager.GetString("StoreNotIQueryablePemrissionStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IQueryableRolePermissionStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIQueryableRolePemrissionStore {
+            get {
+                return ResourceManager.GetString("StoreNotIQueryableRolePemrissionStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Store does not implement IQueryableRoleStore&lt;TRole&gt;..
         /// </summary>
         internal static string StoreNotIQueryableRoleStore {
@@ -399,6 +417,15 @@ namespace InspurOA.Identity.Core {
         internal static string StoreNotIQueryableRoleStore1 {
             get {
                 return ResourceManager.GetString("StoreNotIQueryableRoleStore1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store does not implement IQueryableUserRoleStore&lt;TUser&gt;..
+        /// </summary>
+        internal static string StoreNotIQueryableUserRoleStore {
+            get {
+                return ResourceManager.GetString("StoreNotIQueryableUserRoleStore", resourceCulture);
             }
         }
         
@@ -583,7 +610,7 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Store does not implement IInspurUserStore&lt;TUser&gt;..
         /// </summary>
         internal static string StoreNotIUserStore {
             get {

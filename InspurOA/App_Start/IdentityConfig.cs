@@ -14,7 +14,6 @@ using InspurOA.DAL;
 using InspurOA.Identity.Core;
 using InspurOA.Identity.EntityFramework;
 using InspurOA.Identity.Owin;
-//using InspurOA.Identity.Owin.Extensions;
 
 namespace InspurOA
 {

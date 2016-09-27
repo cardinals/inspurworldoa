@@ -230,10 +230,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201609200850082_UpdateDB.cs" />
-    <Compile Include="Migrations\201609200850082_UpdateDB.Designer.cs">
-      <DependentUpon>201609200850082_UpdateDB.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Principal\IInspurPrincipal .cs" />
     <Compile Include="Principal\InspurPrincipal .cs" />
@@ -359,11 +355,6 @@
       <Project>{d0189ae5-c1b4-4885-94f7-7cd879949323}</Project>
       <Name>InspurOA.Models</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609200850082_UpdateDB.resx">
-      <DependentUpon>201609200850082_UpdateDB.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

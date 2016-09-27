@@ -14,6 +14,7 @@ using InspurOA.DAL;
 using InspurOA.Identity.Core;
 using InspurOA.Identity.EntityFramework;
 using InspurOA.Identity.Owin;
+//using InspurOA.Identity.Owin.Extensions;
 
 namespace InspurOA
 {
@@ -35,6 +36,27 @@ namespace InspurOA
         }
     }
 
+
+
+    // Configure the application sign-in manager which is used in this application.
+    public class ApplicationSignInManager : InspurSignInManager<InspurUser, string>
+    {
+        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
+            : base(userManager, authenticationManager)
+        {
+        }
+
+        public override Task<ClaimsIdentity> CreateUserIdentityAsync(InspurUser user)
+        {
+            return user.GenerateUserIdentityAsync((ApplicationUserManager)InspurUserManager);
+        }
+
+        public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
+        {
+            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+        }
+    }
+
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
     public class ApplicationUserManager : InspurUserManager<InspurUser>
     {
@@ -43,10 +65,9 @@ namespace InspurOA
         {
         }
 
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            IInspurUserStore<InspurUser> store = new InspurUserStore<InspurUser>(context.Get<ApplicationDbContext>());
-            var manager = new ApplicationUserManager(store);
+            var manager = new ApplicationUserManager(new InspurUserStore<InspurUser>(context.Get<ApplicationDbContext>()));
             // Configure validation logic for usernames
             manager.InspurUserValidator = new InspurUserValidator<InspurUser>(manager)
             {
@@ -85,29 +106,75 @@ namespace InspurOA
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider = 
+                manager.UserTokenProvider =
                     new InspurDataProtectorTokenProvider<InspurUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;
         }
     }
 
-    // Configure the application sign-in manager which is used in this application.
-    public class ApplicationSignInManager : InspurSignInManager<InspurUser, string>
+    public class ApplicationRoleManager : InspurRoleManager<InspurIdentityRole>
     {
-        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
-            : base(userManager, authenticationManager)
+        public ApplicationRoleManager(IInspurRoleStore<InspurIdentityRole> store)
+            : base(store)
+        {
+
+        }
+
+        public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
+        {
+            return new ApplicationRoleManager(new InspurRoleStore(context.Get<ApplicationDbContext>()));
+        }
+    }
+
+
+    public class ApplicationPermissionManager : InspurPermissionManager<InspurIdentityPermission>
+    {
+        public ApplicationPermissionManager(IInspurPermissionStore<InspurIdentityPermission> store)
+            : base(store)
+        {
+
+        }
+
+        public static ApplicationPermissionManager Create(IdentityFactoryOptions<ApplicationPermissionManager> options, IOwinContext context)
+        {
+            return new ApplicationPermissionManager(new InspurPermissionStore(context.Get<ApplicationDbContext>()));
+        }
+    }
+
+    public class ApplicationUserRoleManager : InspurUserRoleManager<InspurUser, InspurIdentityRole, InspurIdentityUserRole>
+    {
+        public ApplicationUserRoleManager(
+            IInspurUserStore<InspurUser> userStore,
+            IInspurRoleStore<InspurIdentityRole> roleStore,
+            IInspurUserRoleStore<InspurUser, InspurIdentityUserRole> store
+            ) : base(userStore, roleStore, store)
         {
         }
 
-        public override Task<ClaimsIdentity> CreateUserIdentityAsync(InspurUser user)
+        public static ApplicationUserRoleManager Create(IdentityFactoryOptions<ApplicationUserRoleManager> options, IOwinContext context)
         {
-            return user.GenerateUserIdentityAsync((ApplicationUserManager)InspurUserManager);
+            return new ApplicationUserRoleManager(
+                new InspurUserStore<InspurUser>(context.Get<ApplicationDbContext>()),
+                new InspurRoleStore(context.Get<ApplicationDbContext>()),
+                new InspurUserRoleStore<InspurUser>(context.Get<ApplicationDbContext>()));
+        }
+    }
+
+    public class ApplicationRolePermissionManager : InspurRolePermissionManager<InspurUser, InspurIdentityRole, InspurIdentityPermission, InspurIdentityRolePermission>
+    {
+        public ApplicationRolePermissionManager(
+            IInspurRoleStore<InspurIdentityRole> roleStore,
+            IInspurRolePermissionStore<InspurIdentityRole, InspurIdentityPermission, InspurIdentityRolePermission> store)
+            : base(roleStore, store)
+        {
         }
 
-        public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
+        public static ApplicationRolePermissionManager Create(IdentityFactoryOptions<ApplicationRolePermissionManager> options, IOwinContext context)
         {
-            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+            return new ApplicationRolePermissionManager(
+                new InspurRoleStore(context.Get<ApplicationDbContext>()),
+                new InspurRolePermissionStore<InspurUser>(context.Get<ApplicationDbContext>()));
         }
     }
 }

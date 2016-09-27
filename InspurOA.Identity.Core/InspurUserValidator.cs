@@ -11,12 +11,10 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.Core
 {
-    class InspurUserValidator
-    {
-    }/// <summary>
-     ///     Validates users before they are saved
-     /// </summary>
-     /// <typeparam name="TUser"></typeparam>
+    /// <summary>
+    ///     Validates users before they are saved
+    /// </summary>
+    /// <typeparam name="TUser"></typeparam>
     public class InspurUserValidator<TUser> : InspurUserValidator<TUser, string> where TUser : class, IInspurUser<string>
     {
         /// <summary>

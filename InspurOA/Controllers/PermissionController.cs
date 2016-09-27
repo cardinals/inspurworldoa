@@ -9,36 +9,65 @@ using System.Web.Mvc;
 using InspurOA.Models;
 using InspurOA;
 using InspurOA.DAL;
-using InspurOA.Authorization;
 using InspurOA.Identity.EntityFramework;
+using InspurOA.Attributes;
+using Microsoft.AspNet.Identity.Owin;
+using System.Threading.Tasks;
 
 namespace InspurOA.Controllers
 {
-    [InspurAuthorize(Roles = "Admin")]
+    [InspurAuthorize(Roles = "Admin", Permissions = "ControlPermission")]
     public class PermissionController : Controller
     {
-        private ApplicationDbContext dbContext = new ApplicationDbContext();
+        private ApplicationPermissionManager _permissionManager;
+        private ApplicationRolePermissionManager _rolePermissionManager;
+
+        public ApplicationPermissionManager PermissionManager
+        {
+            get
+            {
+                return _permissionManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationPermissionManager>();
+            }
+            private set
+            {
+                _permissionManager = value;
+            }
+        }
+
+        public ApplicationRolePermissionManager RolePermissionManager
+        {
+            get
+            {
+                return _rolePermissionManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationRolePermissionManager>();
+            }
+            private set
+            {
+                _rolePermissionManager = value;
+            }
+        }
+
 
         // GET: Permissions
         public ActionResult Index()
         {
-            return View(dbContext.Permissions.ToList());
+            return View(PermissionManager.Permissions.ToList());
         }
 
         // GET: Permissions/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var permission = dbContext.Permissions.Find(id);
-            if (permission == null)
+            var p = await PermissionManager.FindByIdAsync(id);
+            if (p == null)
             {
                 return HttpNotFound();
             }
-            return View(permission);
+
+            return View(p);
         }
 
         // GET: Permissions/Create
@@ -50,16 +79,16 @@ namespace InspurOA.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PermissionViewModel model)
+        public async Task<ActionResult> Create(PermissionViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var permission = new InspurIdentityPermission();
-                permission.PermissionId = Guid.NewGuid().ToString();
-                permission.PermissionCode = model.PermissionCode;
-                permission.PermissionDescription = model.PermissionDescription;
-                dbContext.Permissions.Add(permission);
-                dbContext.SaveChanges();
+                var p = new InspurIdentityPermission();
+                p.PermissionId = Guid.NewGuid().ToString();
+                p.PermissionCode = model.PermissionCode;
+                p.PermissionDescription = model.PermissionDescription;
+
+                await PermissionManager.CreateAsync(p);
                 return RedirectToAction("Index");
             }
 
@@ -67,18 +96,21 @@ namespace InspurOA.Controllers
         }
 
         // GET: Permissions/Edit/5
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var permission = dbContext.Permissions.Find(id);
-            if (permission == null)
+
+            var p = await PermissionManager.FindByIdAsync(id);
+            if (p == null)
             {
                 return HttpNotFound();
             }
-            return View(permission);
+
+            PermissionViewModel model = new PermissionViewModel() { PermissionId = p.PermissionId, PermissionCode = p.PermissionCode, PermissionDescription = p.PermissionDescription };
+            return View(model);
         }
 
         // POST: Permissions/Edit/5
@@ -86,16 +118,16 @@ namespace InspurOA.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(PermissionViewModel model)
+        public async Task<ActionResult> Edit(PermissionViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var permission = new InspurIdentityPermission();
-                permission.PermissionId = model.PermissionId;
-                permission.PermissionCode = model.PermissionCode;
-                permission.PermissionDescription = model.PermissionDescription;
-                dbContext.Entry(permission).State = EntityState.Modified;
-                dbContext.SaveChanges();
+                var p = new InspurIdentityPermission();
+                p.PermissionId = model.PermissionId;
+                p.PermissionCode = model.PermissionCode;
+                p.PermissionDescription = model.PermissionDescription;
+
+                await PermissionManager.UpdateAsync(p);
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -103,7 +135,7 @@ namespace InspurOA.Controllers
 
         // GET: Permissions/Delete/5
         [HttpPost]
-        public ActionResult Delete(string[] ids)
+        public async Task<ActionResult> Delete(string[] ids)
         {
             if (ids == null || ids.Length == 0)
             {
@@ -112,32 +144,13 @@ namespace InspurOA.Controllers
 
             foreach (string id in ids)
             {
-                using (var transcation = dbContext.Database.BeginTransaction())
+                var p = await PermissionManager.FindByIdAsync(id);
+                if (p != null)
                 {
-                    try
-                    {
-                        var permission = dbContext.Permissions.Find(id);
-                        if (permission != null)
-                        {
-                            dbContext.Permissions.Remove(permission);
-                        }
-
-                        dbContext.SaveChanges();
-
-                        IQueryable<InspurIdentityRolePermission> RolePermissions = dbContext.RolePermissions.Where(t => t.PermissionId == id);
-                        foreach (var rp in RolePermissions)
-                        {
-                            dbContext.RolePermissions.Remove(rp);
-                        }
-
-                        dbContext.SaveChanges();
-                        transcation.Commit();
-                    }
-                    catch
-                    {
-                        transcation.Rollback();
-                    }
+                    await PermissionManager.DeleteAsync(p);
                 }
+
+                await RolePermissionManager.RemovePermissionFromRolePermissionAsync(id);
             }
 
             return RedirectToAction("Index");
@@ -158,8 +171,9 @@ namespace InspurOA.Controllers
         {
             if (disposing)
             {
-                dbContext.Dispose();
+
             }
+
             base.Dispose(disposing);
         }
     }

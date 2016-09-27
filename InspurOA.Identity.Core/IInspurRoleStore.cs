@@ -10,7 +10,8 @@ namespace InspurOA.Identity.Core
     ///     Interface that exposes basic role management
     /// </summary>
     /// <typeparam name="TRole"></typeparam>
-    public interface IInspurRoleStore<TRole> : IInspurRoleStore<TRole, string> where TRole : IInspurRole<string>
+    public interface IInspurRoleStore<TRole> : IInspurRoleStore<TRole, string>
+        where TRole : IInspurRole<string>
     {
     }
 
@@ -19,7 +20,8 @@ namespace InspurOA.Identity.Core
     /// </summary>
     /// <typeparam name="TRole"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public interface IInspurRoleStore<TRole, in TKey> : IDisposable where TRole : IInspurRole<TKey>
+    public interface IInspurRoleStore<TRole, in TKey> : IDisposable 
+        where TRole : IInspurRole<TKey>
     {
         /// <summary>
         ///     Create a new role
@@ -50,10 +52,10 @@ namespace InspurOA.Identity.Core
         Task<TRole> FindByIdAsync(TKey roleId);
 
         /// <summary>
-        ///     Find a role by name
+        ///     Find a role by code
         /// </summary>
-        /// <param name="roleName"></param>
+        /// <param name="roleCode"></param>
         /// <returns></returns>
-        Task<TRole> FindByNameAsync(string roleName);
+        Task<TRole> FindByCodeAsync(string roleCode);
     }
 }

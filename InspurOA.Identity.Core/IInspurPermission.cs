@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.Core
 {
-    public interface IInspurPermission : IPermission<string>
-    {
-    }
-
-    public interface IPermission<out TKey>
+    public interface IInspurPermission<out TKey>
     {
         TKey PermissionId { get; }
 

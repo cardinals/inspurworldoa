@@ -1,6 +1,7 @@
-﻿using InspurOA.Authorization;
+﻿using InspurOA.Attributes;
 using InspurOA.Common;
 using InspurOA.DAL;
+using InspurOA.Identity.Core;
 using InspurOA.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using InspurOA.Identity.Owin.Extensions;
 
 namespace InspurOA.Controllers
 {
@@ -18,7 +20,9 @@ namespace InspurOA.Controllers
     public class UserController : Controller
     {
         private ApplicationUserManager _userManager;
-        private ApplicationDbContext dbContext = ApplicationDbContext.Create();
+        private ApplicationRoleManager _roleManager;
+        private ApplicationUserRoleManager _userRoleManager;
+        //private ApplicationDbContext dbContext = ApplicationDbContext.Create();
 
         public ApplicationUserManager UserManager
         {
@@ -32,14 +36,38 @@ namespace InspurOA.Controllers
             }
         }
 
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
+            }
+        }
+
+        public ApplicationUserRoleManager UserRoleManager
+        {
+            get
+            {
+                return _userRoleManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserRoleManager>();
+            }
+            private set
+            {
+                _userRoleManager = value;
+            }
+        }
+
         // GET: UserController
         public ActionResult Index()
         {
-            return View(dbContext.Users.ToList());
+            return View(UserManager.Users.ToList());
         }
 
         // GET: UserController/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -47,7 +75,7 @@ namespace InspurOA.Controllers
             }
 
             UserDetailViewModel userDetailViewModel = new UserDetailViewModel();
-            var user = dbContext.Users.Find(id);
+            var user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
                 userDetailViewModel.Id = id;
@@ -55,7 +83,7 @@ namespace InspurOA.Controllers
                 userDetailViewModel.Email = user.Email;
             }
 
-            userDetailViewModel.RoleCode = RoleHelper.GetRoleCodeByUserId(id);
+            userDetailViewModel.RoleCode = RoleHelper.GetRoleNameByUserId(id);
 
             return View(userDetailViewModel);
         }
@@ -64,7 +92,7 @@ namespace InspurOA.Controllers
         public ActionResult Create()
         {
             List<SelectListItem> Roles = new List<SelectListItem>();
-            foreach (var role in dbContext.Roles.ToList())
+            foreach (var role in RoleManager.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
                 selectListItem.Selected = false;
@@ -84,16 +112,16 @@ namespace InspurOA.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (dbContext.Roles.Any(t => t.RoleCode == model.RoleCode))
+                if (RoleManager.Roles.Any(t => t.RoleCode.Equals(model.RoleCode)))
                 {
                     var user = new InspurUser { UserName = model.UserName, Email = model.Email };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        InspurUser TUser = dbContext.Users.First(t => t.UserName == model.UserName);
+                        InspurUser TUser = UserManager.Users.First(t => t.UserName.Equals(model.UserName));
                         if (TUser != null)
                         {
-                            await UserManager.AddToRoleAsync(TUser.Id, model.RoleCode);
+                            await UserRoleManager.AddToRoleAsync(TUser.Id, model.RoleCode);
                         }
 
                         return RedirectToAction("Index", "User");
@@ -108,7 +136,7 @@ namespace InspurOA.Controllers
             }
 
             List<SelectListItem> Roles = new List<SelectListItem>();
-            foreach (var role in dbContext.Roles.ToList())
+            foreach (var role in RoleManager.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
 
@@ -138,11 +166,11 @@ namespace InspurOA.Controllers
                 return RedirectToAction("index");
             }
 
-            var user = dbContext.Users.Find(id);
+            var user = UserManager.Users.FirstOrDefault(u => u.Id == id);
             string RoleCode = RoleHelper.GetRoleCodeByUserId(id);
 
             List<SelectListItem> UserRoles = new List<SelectListItem>();
-            foreach (var role in dbContext.Roles.ToList())
+            foreach (var role in RoleManager.Roles.ToList())
             {
                 SelectListItem selectListItem = new SelectListItem();
                 selectListItem.Text = role.RoleName;
@@ -160,21 +188,42 @@ namespace InspurOA.Controllers
             }
 
             ViewData["Roles"] = UserRoles;
+            UserCreateViewModel model = new UserCreateViewModel() { UserId = user.Id, UserName = user.UserName, Email = user.Email };
 
-            return View(user);
+            return View(model);
         }
 
         // POST: UserController/Edit/5
         [HttpPost]
-        public ActionResult Edit(string id, FormCollection collection)
+        public async Task<ActionResult> Edit(string id, FormCollection collection)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
             try
             {
-                // TODO: Add update logic here
+                if (!string.IsNullOrWhiteSpace(id))
+                {
+                    var user = await UserManager.FindByIdAsync(id);
 
-                return RedirectToAction("Index");
+                    if (user != null)
+                    {
+                        user.UserName = collection.Get("UserName");
+                        user.Email = collection.Get("Email");
+
+                        var result = await UserManager.UpdateAsync(user);
+                        if (result.Succeeded)
+                        {
+                            await UserRoleManager.AddToRoleAsync(id, collection.Get("RoleCode"));
+                        }
+                    }
+                }
+
+                return RedirectToAction("Index", "User");
             }
-            catch
+            catch (Exception e)
             {
                 return View();
             }
@@ -182,28 +231,22 @@ namespace InspurOA.Controllers
 
         // POST: UserController/Delete/5
         [HttpPost]
-        public void Delete(string[] ids)
+        public async Task Delete(string[] ids)
         {
-            try
+            if (ids == null || ids.Length == 0)
             {
-                if (ids == null || ids.Length == 0)
-                {
-                    return;
-                }
-
-                for (int i = 0; i < ids.Length; i++)
-                {
-                    var user = dbContext.Users.Find(ids[i]);
-                    if (user != null)
-                    {
-                        dbContext.Users.Remove(user);
-                    }
-                }
-
-                dbContext.SaveChanges();
+                return;
             }
-            catch (Exception e)
+
+            for (int i = 0; i < ids.Length; i++)
             {
+                var user = await UserManager.FindByIdAsync(ids[i]);
+                if (user != null)
+                {
+                    await UserManager.DeleteAsync(user);
+                }
+
+                await UserRoleManager.RemoveFromRoleInfoAsync(ids[i]);
             }
         }
 

@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\InspurOA.Common\bin\Debug\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
@@ -49,9 +52,14 @@
   <ItemGroup>
     <Compile Include="Extensions\InspurIdentityExtensions.cs" />
     <Compile Include="IInspurClaimsIdentityFactory.cs" />
+    <Compile Include="IInspurQueryablePermissionStore.cs" />
+    <Compile Include="IInspurQueryableRolePermissionStore.cs" />
     <Compile Include="IInspurQueryableRoleStore.cs" />
+    <Compile Include="IInspurQueryableUserRoleStore.cs" />
     <Compile Include="IInspurQueryableUserStore.cs" />
     <Compile Include="IInspurRole.cs" />
+    <Compile Include="IInspurRolePermission.cs" />
+    <Compile Include="IInspurRolePermissionStore.cs" />
     <Compile Include="IInspurRoleStore.cs" />
     <Compile Include="IInspurUser.cs" />
     <Compile Include="IInspurUserClaimStore.cs" />
@@ -60,6 +68,7 @@
     <Compile Include="IInspurUserLoginStore.cs" />
     <Compile Include="IInspurUserPasswordStore.cs" />
     <Compile Include="IInspurUserPhoneNumberStore.cs" />
+    <Compile Include="IInspurUserRole.cs" />
     <Compile Include="IInspurUserRoleStore.cs" />
     <Compile Include="IInspurUserSecurityStampStore.cs" />
     <Compile Include="IInspurUserStore.cs" />
@@ -69,19 +78,21 @@
     <Compile Include="InspurClaimsIdentityFactory.cs" />
     <Compile Include="InspurDefaultAuthenticationTypes.cs" />
     <Compile Include="InspurEmailTokenProvider.cs" />
+    <Compile Include="InspurPermissionManager.cs" />
     <Compile Include="InspurPhoneNumberTokenProvider.cs" />
     <Compile Include="InspurResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InspurResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="InspurRoleManager.cs" />
+    <Compile Include="InspurRolePermissionManager.cs" />
     <Compile Include="InspurTotpSecurityStampBasedTokenProvider.cs" />
     <Compile Include="InspurUserLoginInfo.cs" />
+    <Compile Include="InspurUserRoleManager.cs" />
     <Compile Include="InspurUserValidator.cs" />
     <Compile Include="IInspurPermission.cs" />
     <Compile Include="IInspurPermissionStore.cs" />
-    <Compile Include="IInspurRolePermissionStore.cs" />
-    <Compile Include="Resources.Designer.cs" />
     <Compile Include="Rfc6238AuthenticationService.cs" />
     <Compile Include="TaskExtensions.cs" />
     <Compile Include="InspurUserManager.cs" />
@@ -95,7 +106,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspurResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

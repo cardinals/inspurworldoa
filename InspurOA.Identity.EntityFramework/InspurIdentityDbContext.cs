@@ -335,15 +335,27 @@ namespace InspurOA.Identity.EntityFramework
         }
 
         /// <summary>
-        ///     IDbSet of Users
+        /// IDbSet of Users
         /// </summary>
+        /// <value>
+        /// The users.
+        /// </value>
         public virtual IDbSet<TUser> Users { get; set; }
 
         /// <summary>
-        ///     IDbSet of Roles
+        /// IDbSet of Roles
         /// </summary>
+        /// <value>
+        /// The roles.
+        /// </value>
         public virtual IDbSet<TRole> Roles { get; set; }
 
+        /// <summary>
+        /// Gets or sets the permissions.
+        /// </summary>
+        /// <value>
+        /// The permissions.
+        /// </value>
         public virtual IDbSet<TPermission> Permissions { get; set; }
 
         /// <summary>
@@ -391,10 +403,10 @@ namespace InspurOA.Identity.EntityFramework
             var role = modelBuilder.Entity<TRole>()
                 .ToTable("RoleInfo")
                 .HasKey(r => r.RoleId);
-            role.Property(r => r.RoleName)
+            role.Property(r => r.RoleCode)
                 .IsRequired()
                 .HasMaxLength(256)
-                .HasColumnAnnotation("Index", new IndexAnnotation(new IndexAttribute("RoleNameIndex") { IsUnique = true }));
+                .HasColumnAnnotation("Index", new IndexAnnotation(new IndexAttribute("RoleCodeIndex") { IsUnique = true }));
             role.HasMany(r => r.Users).WithRequired().HasForeignKey(ur => ur.RoleId);
 
 

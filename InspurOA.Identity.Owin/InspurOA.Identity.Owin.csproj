@@ -75,6 +75,7 @@
     <Compile Include="Extensions\AuthenticationManagerExtensions.cs" />
     <Compile Include="InspurDataProtectorTokenProvider.cs" />
     <Compile Include="InspurExternalLoginInfo.cs" />
+    <Compile Include="InspurIdentityFactoryProvider.cs" />
     <Compile Include="InspurSecurityStampValidator.cs" />
     <Compile Include="InspurSignInManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

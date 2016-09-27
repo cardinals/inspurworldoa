@@ -99,14 +99,14 @@ namespace InspurOA.Identity.Core
                 id.AddClaim(new Claim(SecurityStampClaimType,
                     await manager.GetSecurityStampAsync(user.Id).WithCurrentCulture()));
             }
-            if (manager.SupportsUserRole)
-            {
-                IList<string> roles = await manager.GetRolesAsync(user.Id).WithCurrentCulture();
-                foreach (string roleName in roles)
-                {
-                    id.AddClaim(new Claim(RoleClaimType, roleName, ClaimValueTypes.String));
-                }
-            }
+            //if (manager.SupportsUserRole)
+            //{
+            //    IList<string> roles = await manager.GetRolesAsync(user.Id).WithCurrentCulture();
+            //    foreach (string roleName in roles)
+            //    {
+            //        id.AddClaim(new Claim(RoleClaimType, roleName, ClaimValueTypes.String));
+            //    }
+            //}
             if (manager.SupportsUserClaim)
             {
                 id.AddClaims(await manager.GetClaimsAsync(user.Id).WithCurrentCulture());

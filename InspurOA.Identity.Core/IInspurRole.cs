@@ -10,6 +10,6 @@ namespace InspurOA.Identity.Core
     {
         Tkey RoleId { get; set; }
 
-        string RoleName { get; set; }
+        string RoleCode { get; set; }
     }
 }

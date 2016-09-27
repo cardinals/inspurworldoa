@@ -3,6 +3,11 @@ using System.Linq;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
+using InspurOA;
+using InspurOA.Identity.Core;
+using InspurOA.Models;
+using InspurOA.Common;
+using InspurOA.Identity.EntityFramework;
 
 namespace InspurOA.Authorization
 {
@@ -49,6 +54,8 @@ namespace InspurOA.Authorization
 
         protected bool AuthorizeCore(HttpContextBase httpContext)
         {
+            var userRoleManager = httpContext.GetOwinContext().Get<ApplicationUserRoleManager>();
+
             if (httpContext == null)
             {
                 throw new ArgumentNullException("httpContext");
@@ -65,12 +72,12 @@ namespace InspurOA.Authorization
                 return false;
             }
 
-            if (_rolesSplit.Length > 0 && !_rolesSplit.Any(user.IsInRole))
+            if (_rolesSplit.Length > 0 && !InspurAuthorizeHelper.IsAuthorizedByRoles(user.Identity.Name, _rolesSplit))
             {
                 return false;
             }
 
-            if (_permissionsSplit.Length > 0 && !_permissionsSplit.Any())
+            if (_permissionsSplit.Length > 0 && !InspurAuthorizeHelper.IsAuthorizedByPermissions(user.Identity.Name, _permissionsSplit))
             {
                 return false;
             }

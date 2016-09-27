@@ -10,7 +10,8 @@ namespace InspurOA.Identity.Core
     ///     Interface that exposes basic user management apis
     /// </summary>
     /// <typeparam name="TUser"></typeparam>
-    public interface IInspurUserStore<TUser> : IInspurUserStore<TUser, string> where TUser : class, IInspurUser<string>
+    public interface IInspurUserStore<TUser> : IInspurUserStore<TUser, string>
+        where TUser : class, IInspurUser<string>
     {
     }
 
@@ -19,7 +20,8 @@ namespace InspurOA.Identity.Core
     /// </summary>
     /// <typeparam name="TUser"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public interface IInspurUserStore<TUser, in TKey> : IDisposable where TUser : class, IInspurUser<TKey>
+    public interface IInspurUserStore<TUser, in TKey> : IDisposable 
+        where TUser : class, IInspurUser<TKey>
     {
         /// <summary>
         ///     Insert a new user

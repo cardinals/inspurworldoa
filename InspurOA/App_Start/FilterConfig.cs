@@ -1,4 +1,4 @@
-﻿using InspurOA.Authorization;
+﻿using InspurOA.Attributes;
 using System.Web;
 using System.Web.Mvc;
 

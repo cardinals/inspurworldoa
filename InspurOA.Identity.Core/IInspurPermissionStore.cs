@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace InspurOA.Identity.Core
 {
-    public interface IPermissionStore<TPermission, in TKey> : 
-        IDisposable 
-        where TPermission : class, IPermission<TKey>
+    public interface IInspurPermissionStore<TPermission> : IInspurPermissionStore<TPermission, string>
+        where TPermission : class, IInspurPermission<string>
+    {
+
+    }
+
+    public interface IInspurPermissionStore<TPermission, in TKey> : IDisposable
+        where TPermission : class, IInspurPermission<TKey>
     {
         Task CreateAsync(TPermission permission);
 

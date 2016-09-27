@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace InspurOA.Identity.EntityFramework
 {
     public class InspurUserStore<TUser> :
-        InspurUserStore<TUser, InspurIdentityRole, InspurIdentityPermission, string, InspurIdentityUserRole, InspurIdentityRolePermission>,
+        InspurUserStore<TUser, InspurIdentityRole, InspurIdentityPermission, InspurIdentityUserRole, InspurIdentityRolePermission>,
         IInspurUserStore<TUser>
         where TUser : InspurIdentityUser
     {
@@ -29,28 +29,31 @@ namespace InspurOA.Identity.EntityFramework
         }
     }
 
-    public class InspurUserStore<TUser, TRole, TPermission, TKey, TUserRole, TRolePermission> :
-        IInspurUserRoleStore<TUser, TKey>,
-        IInspurRolePermissionStore<TUser, TPermission, TKey>,
-        IInspurUserPasswordStore<TUser, TKey>,
-        IInspurUserEmailStore<TUser, TKey>,
-        IInspurUserPhoneNumberStore<TUser, TKey>,
-        IInspurUserTwoFactorStore<TUser, TKey>
-        where TKey : IEquatable<TKey>
-        where TUser : InspurIdentityUser<TKey>
-        where TRole : InspurIdentityRole<TKey, TUserRole, TRolePermission>
-        where TPermission : InspurIdentityPermission<TKey>
-        where TUserRole : InspurIdentityUserRole<TKey>, new()
-        where TRolePermission : InspurIdentityRolePermission<TKey>, new()
+    public class InspurUserStore<TUser, TRole, TPermission,TUserRole, TRolePermission> :
+        IInspurUserPasswordStore<TUser, string>,
+        IInspurUserEmailStore<TUser, string>,
+        IInspurUserPhoneNumberStore<TUser, string>,
+        IInspurUserTwoFactorStore<TUser, string>,
+        IInspurQueryableUserStore<TUser, string>
+        where TUser : InspurIdentityUser<string>
+        where TRole : InspurIdentityRole<string, TUserRole, TRolePermission>
+        where TPermission : InspurIdentityPermission<string>
+        where TUserRole : InspurIdentityUserRole<string>, new()
+        where TRolePermission : InspurIdentityRolePermission<string>, new()
 
     {
+        private readonly DbSet<TUser> _users;
         private readonly DbSet<TUserRole> _userRoles;
+        private readonly DbSet<TRole> _roles;
         private readonly DbSet<TRolePermission> _rolePermissions;
+        private readonly DbSet<TPermission> _permissions;
 
         private bool _disposed;
         private EntityStore<TUser> _userStore;
+        private EntityStore<TUserRole> _userRoleStore;
         private EntityStore<TRole> _roleStore;
         private EntityStore<TPermission> _permissionStore;
+        private EntityStore<TRolePermission> _rolePermissionStore;
 
         public InspurUserStore(DbContext context)
         {
@@ -61,11 +64,16 @@ namespace InspurOA.Identity.EntityFramework
             AutoSaveChanges = true;
             Context = context;
             _userStore = new EntityStore<TUser>(context);
+            _userRoleStore = new EntityStore<TUserRole>(context);
             _roleStore = new EntityStore<TRole>(context);
             _permissionStore = new EntityStore<TPermission>(context);
+            _rolePermissionStore = new EntityStore<TRolePermission>(context);
 
+            _users = Context.Set<TUser>();
             _userRoles = Context.Set<TUserRole>();
+            _roles = Context.Set<TRole>();
             _rolePermissions = Context.Set<TRolePermission>();
+            _permissions = Context.Set<TPermission>();
         }
 
         public DbContext Context { get; private set; }
@@ -102,16 +110,19 @@ namespace InspurOA.Identity.EntityFramework
             return Task.FromResult(user.Email);
         }
 
-        public Task<TUser> FindByIdAsync(TKey userId)
+        public Task<TUser> FindByIdAsync(string userId)
         {
             ThrowIfDisposed();
-            return GetUserAggregateAsync(u => u.Id.Equals(userId));
+            //return GetUserAggregateAsync(u => u.Id == userId));
+            var user = _userStore.EntitySet.SingleOrDefaultAsync(u => u.Id == userId);
+            return user;
         }
 
         public Task<TUser> FindByNameAsync(string userName)
         {
             ThrowIfDisposed();
-            return GetUserAggregateAsync(u => u.UserName.Equals(userName));
+            //return GetUserAggregateAsync(u => u.UserName == userName));
+            return _userStore.EntitySet.SingleOrDefaultAsync(u => u.UserName == userName);
         }
 
         public async Task CreateAsync(TUser user)
@@ -306,7 +317,8 @@ namespace InspurOA.Identity.EntityFramework
         public virtual Task<TUser> FindByEmailAsync(string email)
         {
             ThrowIfDisposed();
-            return GetUserAggregateAsync(u => u.Email.ToUpper() == email.ToUpper());
+            //return GetUserAggregateAsync(u => u.Email.ToUpper() == email.ToUpper());
+            return _users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         /// <summary>
@@ -341,255 +353,6 @@ namespace InspurOA.Identity.EntityFramework
             return Task.FromResult(0);
         }
 
-        /// <summary>
-        ///     Add a user to a role
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        public async Task AddToRoleAsync(TUser user, string roleName)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            if (String.IsNullOrWhiteSpace(roleName))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleName");
-            }
-
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleName.ToUpper() == roleName.ToUpper()).WithCurrentCulture();
-            if (roleEntity == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", roleName));
-            }
-
-            var ur = new TUserRole { UserId = user.Id, RoleId = roleEntity.RoleId };
-            _userRoles.Add(ur);
-        }
-
-        /// <summary>
-        ///     Remove a user from a role
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        public async Task RemoveFromRoleAsync(TUser user, string roleName)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            if (String.IsNullOrWhiteSpace(roleName))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleName");
-            }
-
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleName.ToUpper() == roleName.ToUpper()).WithCurrentCulture();
-            if (roleEntity != null)
-            {
-                var roleId = roleEntity.RoleId;
-                var userId = user.Id;
-                var userRole = await _userRoles.FirstOrDefaultAsync(r => roleId.Equals(r.RoleId) && r.UserId.Equals(userId)).WithCurrentCulture();
-                if (userRole != null)
-                {
-                    _userRoles.Remove(userRole);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Get the names of the roles a user is a member of
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public async Task<IList<string>> GetRolesAsync(TUser user)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            var userId = user.Id;
-            var query = from userRole in _userRoles
-                        where userRole.UserId.Equals(userId)
-                        join role in _roleStore.DbEntitySet on userRole.RoleId equals role.RoleId
-                        select role.RoleName;
-
-            return await query.ToListAsync().WithCurrentCulture();
-        }
-
-        /// <summary>
-        ///     Returns true if the user is in the named role
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        public async Task<bool> IsInRoleAsync(TUser user, string roleName)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            if (String.IsNullOrWhiteSpace(roleName))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleName");
-            }
-
-            var role = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleName.ToUpper() == roleName.ToUpper()).WithCurrentCulture();
-            if (role != null)
-            {
-                var userId = user.Id;
-                var roleId = role.RoleId;
-                return await _userRoles.AnyAsync(ur => ur.RoleId.Equals(roleId) && ur.UserId.Equals(userId)).WithCurrentCulture();
-            }
-
-            return false;
-        }
-
-        public async Task AddPermissionToRoleAsync(IList<TPermission> permissionList, string roleName)
-        {
-            ThrowIfDisposed();
-            if (permissionList == null || permissionList.Count == 0)
-            {
-                throw new ArgumentNullException("permissionList", "Null or has no element.");
-            }
-
-            if (string.IsNullOrWhiteSpace(roleName))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleName");
-            }
-
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleName.ToUpper() == roleName.ToUpper()).WithCurrentCulture();
-            if (roleEntity == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", roleName));
-            }
-
-            foreach (var permission in permissionList)
-            {
-                _rolePermissions.Add(new TRolePermission { RoleId = roleEntity.RoleId, PermissionId = permission.PermissionId });
-            }
-        }
-
-        public async Task RemovePermissionsOfRoleAsync(string roleName)
-        {
-            ThrowIfDisposed();
-            if (string.IsNullOrWhiteSpace(roleName))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleName");
-            }
-
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleName.ToUpper() == roleName.ToUpper()).WithCurrentCulture();
-            if (roleEntity == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", roleName));
-            }
-
-            var userRoles = _rolePermissions.Where(rp => rp.RoleId.Equals(roleEntity.RoleId));
-            foreach (var userRole in userRoles)
-            {
-                _rolePermissions.Remove(userRole);
-            }
-        }
-
-        public async Task<IList<TPermission>> GetPermissionAsync(string roleName)
-        {
-            ThrowIfDisposed();
-            if (string.IsNullOrWhiteSpace(roleName))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleName");
-            }
-
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleName.ToUpper() == roleName.ToUpper()).WithCurrentCulture();
-            if (roleEntity == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", roleName));
-            }
-
-            IList<TPermission> permissionList = new List<TPermission>();
-            var userRoles = _rolePermissions.Where(rp => rp.RoleId.Equals(roleEntity.RoleId));
-            foreach (var userRole in userRoles)
-            {
-                var permission = await _permissionStore.DbEntitySet.SingleOrDefaultAsync(p => p.PermissionId.Equals(userRole.PermissionId)).WithCurrentCulture();
-                if (permission != null)
-                {
-                    permissionList.Add(permission);
-                }
-            }
-
-            return permissionList;
-        }
-
-        public async Task<bool> HasPermission(string roleName, string permissionCode)
-        {
-            ThrowIfDisposed();
-            if (string.IsNullOrWhiteSpace(roleName))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleName");
-            }
-
-            if (string.IsNullOrWhiteSpace(permissionCode))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "permissionCode");
-            }
-
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleName.ToUpper() == roleName.ToUpper()).WithCurrentCulture();
-            if (roleEntity == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", roleName));
-            }
-
-            var permissionEntity = await _permissionStore.DbEntitySet.SingleOrDefaultAsync(p => p.PermissionCode == permissionCode).WithCurrentCulture();
-            if (permissionEntity == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", permissionCode));
-            }
-
-            return await _rolePermissions.AnyAsync(rp => rp.RoleId.Equals(roleEntity.RoleId) && rp.PermissionId.Equals(permissionEntity.PermissionId));
-        }
-
-        public async Task<bool> HasPermission(TUser user, string permissionCode)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            if (string.IsNullOrWhiteSpace(permissionCode))
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "permissionCode");
-            }
-
-            var userRole = _userRoles.SingleOrDefault(ur => ur.UserId.Equals(user.Id));
-            if (userRole != null)
-            {
-                var role = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleId.Equals(userRole.RoleId)).WithCurrentCulture();
-                if (role != null)
-                {
-                    return await HasPermission(role.RoleName, permissionCode);
-                }
-
-                return await Task.FromResult(false);
-            }
-
-            return await Task.FromResult(false);
-        }
-
         // Only call save changes if AutoSaveChanges is true
         private async Task SaveChanges()
         {
@@ -606,7 +369,7 @@ namespace InspurOA.Identity.EntityFramework
         /// <returns></returns>
         protected async Task<TUser> GetUserAggregateAsync(Expression<Func<TUser, bool>> filter)
         {
-            TKey id;
+            string id;
             TUser user;
             if (FindByIdFilterParser.TryMatchAndGetId(filter, out id))
             {
@@ -661,16 +424,16 @@ namespace InspurOA.Identity.EntityFramework
         private static class FindByIdFilterParser
         {
             // expression pattern we need to match
-            private static readonly Expression<Func<TUser, bool>> Predicate = u => u.Id.Equals(default(TKey));
-            // method we need to match: Object.Equals() 
+            private static readonly Expression<Func<TUser, bool>> Predicate = u => u.Id == default(string);
+            // method we need to match: Object == ) 
             private static readonly MethodInfo EqualsMethodInfo = ((MethodCallExpression)Predicate.Body).Method;
             // property access we need to match: User.Id 
             private static readonly MemberInfo UserIdMemberInfo = ((MemberExpression)((MethodCallExpression)Predicate.Body).Object).Member;
 
-            internal static bool TryMatchAndGetId(Expression<Func<TUser, bool>> filter, out TKey id)
+            internal static bool TryMatchAndGetId(Expression<Func<TUser, bool>> filter, out string id)
             {
                 // default value in case we can’t obtain it 
-                id = default(TKey);
+                id = default(string);
 
                 // lambda body should be a call 
                 if (filter.Body.NodeType != ExpressionType.Call)
@@ -678,7 +441,7 @@ namespace InspurOA.Identity.EntityFramework
                     return false;
                 }
 
-                // actually a call to object.Equals(object)
+                // actually a call to object == object)
                 var callExpression = (MethodCallExpression)filter.Body;
                 if (callExpression.Method != EqualsMethodInfo)
                 {
@@ -731,7 +494,7 @@ namespace InspurOA.Identity.EntityFramework
                 var fieldInfo = (FieldInfo)fieldAccess.Member;
                 var closure = ((ConstantExpression)fieldAccess.Expression).Value;
 
-                id = (TKey)fieldInfo.GetValue(closure);
+                id = (string)fieldInfo.GetValue(closure);
                 return true;
             }
         }

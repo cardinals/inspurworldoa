@@ -9,15 +9,20 @@ namespace InspurOA.Models
     public class IndexViewModel
     {
         public bool HasPassword { get; set; }
+
         //public IList<InspurUserLoginInfo> Logins { get; set; }
+
         public string PhoneNumber { get; set; }
+
         public bool TwoFactor { get; set; }
+
         public bool BrowserRemembered { get; set; }
     }
 
     public class ManageLoginsViewModel
     {
         public IList<InspurUserLoginInfo> CurrentLogins { get; set; }
+
         public IList<AuthenticationDescription> OtherLogins { get; set; }
     }
 
@@ -28,60 +33,61 @@ namespace InspurOA.Models
 
     public class SetPasswordViewModel
     {
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "'{0}'是必填项。")]
+        [StringLength(100, ErrorMessage = "{0} 至少包含{2}个字符。", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "New password")]
+        [Display(Name = "新 密 码")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm new password")]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Display(Name = "确认密码")]
+        [Compare("NewPassword", ErrorMessage = "两次输入的密码不匹配。")]
         public string ConfirmPassword { get; set; }
     }
 
     public class ChangePasswordViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "必填字段")]
         [DataType(DataType.Password)]
-        [Display(Name = "Current password")]
+        [Display(Name = "当前密码")]
         public string OldPassword { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "'{0}'是必填项。")]
+        [StringLength(100, ErrorMessage = "{0} 至少包含{2}个字符。", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "New password")]
+        [Display(Name = "新  密  码")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm new password")]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Display(Name = "确认密码")]
+        [Compare("NewPassword", ErrorMessage = "两次输入的密码不匹配。")]
         public string ConfirmPassword { get; set; }
     }
 
     public class AddPhoneNumberViewModel
     {
-        [Required]
-        [Phone]
-        [Display(Name = "Phone Number")]
+        [Required(ErrorMessage = "'{0}'是必填项。")]
+        [Phone(ErrorMessage = "'{0}'不是有效的电话号码")]
+        [Display(Name = "电话号码")]
         public string Number { get; set; }
     }
 
     public class VerifyPhoneNumberViewModel
     {
-        [Required]
-        [Display(Name = "Code")]
+        [Required(ErrorMessage = "'{0}'是必填项。")]
+        [Display(Name = "验证码")]
         public string Code { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "'{0}'是必填项。")]
         [Phone]
-        [Display(Name = "Phone Number")]
+        [Display(Name = "电话号码")]
         public string PhoneNumber { get; set; }
     }
 
     public class ConfigureTwoFactorViewModel
     {
         public string SelectedProvider { get; set; }
+
         public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
     }
 }

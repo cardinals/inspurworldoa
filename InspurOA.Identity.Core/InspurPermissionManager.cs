@@ -22,6 +22,7 @@ namespace InspurOA.Identity.Core
         where TKey : IEquatable<TKey>
     {
         private bool _disposed;
+        private IIdentityValidator<TPermission> _permissionValidator;
 
         public InspurPermissionManager(IInspurPermissionStore<TPermission, TKey> store)
         {
@@ -31,6 +32,7 @@ namespace InspurOA.Identity.Core
             }
 
             Store = store;
+            InspurPermissionValidator = new InspurPermissionValidator<TPermission, TKey>(this);
         }
 
         protected internal IInspurPermissionStore<TPermission, TKey> Store;
@@ -49,6 +51,24 @@ namespace InspurOA.Identity.Core
             }
         }
 
+        public IIdentityValidator<TPermission> InspurPermissionValidator
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return _permissionValidator;
+            }
+            set
+            {
+                ThrowIfDisposed();
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                _permissionValidator = value;
+            }
+        }
 
         public async Task<IdentityResult> CreateAsync(TPermission permission)
         {
@@ -56,6 +76,12 @@ namespace InspurOA.Identity.Core
             if (permission == null)
             {
                 throw new ArgumentNullException("permission");
+            }
+
+            var result =await InspurPermissionValidator.ValidateAsync(permission);
+            if (!result.Succeeded)
+            {
+                return result;
             }
 
             await Store.CreateAsync(permission).WithCurrentCulture();
@@ -68,6 +94,12 @@ namespace InspurOA.Identity.Core
             if (permission == null)
             {
                 throw new ArgumentNullException("permission");
+            }
+
+            var result = await InspurPermissionValidator.ValidateAsync(permission);
+            if (!result.Succeeded)
+            {
+                return result;
             }
 
             await Store.UpdateAsync(permission);

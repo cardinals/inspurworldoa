@@ -92,7 +92,7 @@ namespace InspurOA.Controllers
                         return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                     case InspurSignInStatus.Failure:
                     default:
-                        ModelState.AddModelError("", "Invalid login attempt.");
+                        ModelState.AddModelError("", "用户名或密码错误，请重试。");
                         return View(model);
                 }
             }

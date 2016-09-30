@@ -58,14 +58,21 @@ namespace InspurOA.Identity.EntityFramework
 
         public async Task CreateAsync(TPermission permission)
         {
-            ThrowIfDisposed();
-            if (permission == null)
+            try
             {
-                throw new ArgumentNullException("permission");
-            }
+                ThrowIfDisposed();
+                if (permission == null)
+                {
+                    throw new ArgumentNullException("permission");
+                }
 
-            _permissionStore.Create(permission);
-            await Context.SaveChangesAsync().WithCurrentCulture();
+                _permissionStore.Create(permission);
+                await Context.SaveChangesAsync().WithCurrentCulture();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task DeleteAsync(TPermission permission)

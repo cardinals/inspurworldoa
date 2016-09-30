@@ -90,7 +90,7 @@ namespace InspurOA.Identity.Core
         {
             if (string.IsNullOrWhiteSpace(user.UserName))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.PropertyTooShort, "Name"));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.PropertyTooShort, "UserName"));
             }
             else if (AllowOnlyAlphanumericUserNames && !Regex.IsMatch(user.UserName, @"^[A-Za-z0-9@_\.]+$"))
             {

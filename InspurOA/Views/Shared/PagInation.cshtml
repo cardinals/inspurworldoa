@@ -1,0 +1,124 @@
+﻿
+<ul class="pagination">
+    @{
+        var currentPageIndex = 0;
+        var pageCount = 1;
+        var currentLimit = 10;
+        if (ViewData["CurrentPageIndex"] != null)
+        {
+            currentPageIndex = Convert.ToInt32(ViewData["CurrentPageIndex"]);
+        }
+
+        if (ViewData["PageCount"] != null)
+        {
+            pageCount = Convert.ToInt32(ViewData["PageCount"]);
+        }
+
+        if (ViewData["Limit"] != null)
+        {
+            currentLimit = Convert.ToInt32(ViewData["Limit"]);
+        }
+
+        <li class="btn-group">
+            <a data-type="limit" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                @currentLimit<b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li role="presentation">@Html.ActionLink("10", "Index", new { limit = 10 })</li>
+                <li class="divider"></li>
+                <li role="presentation">@Html.ActionLink("50", "Index", new { limit = 50 })</li>
+                <li class="divider"></li>
+                <li role="presentation">@Html.ActionLink("100", "Index", new { limit = 100 })</li>
+                <li class="divider"></li>
+                <li role="presentation">@Html.ActionLink("500", "Index", new { limit = 500 })</li>
+            </ul>
+        </li>
+        <li>@Html.ActionLink("首页", "Index", new { pageIndex = 0, limit = currentLimit })</li>
+        if (currentPageIndex > 0)
+        {
+            <li>@Html.ActionLink("上一页", "Index", new { pageIndex = currentPageIndex - 1, limit = currentLimit })</li>
+        }
+
+        if (pageCount <= 5)
+        {
+            for (int i = 0; i < pageCount; i++)
+            {
+                if (i == currentPageIndex)
+                {
+                    <li class="active">@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                }
+            }
+        }
+        else
+        {
+            if (currentPageIndex <= 2)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    if (i == currentPageIndex)
+                    {
+                        <li class="active">@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                    }
+                }
+            }
+            else if (currentPageIndex >= pageCount - 2)
+            {
+                for (int i = pageCount - 5; i < pageCount; i++)
+                {
+                    if (i == currentPageIndex)
+                    {
+                        <li class="active">@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                    }
+                }
+            }
+            else if (currentPageIndex > 2 && currentPageIndex < pageCount - 2)
+            {
+                for (int i = currentPageIndex - 2; i <= currentPageIndex + 2; i++)
+                {
+                    if (i == currentPageIndex)
+                    {
+                        <li class="active">@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink((i + 1).ToString(), "Index", new { pageIndex = i, limit = currentLimit })</li>
+                    }
+                }
+            }
+        }
+
+        if (currentPageIndex < pageCount - 1)
+        {
+            <li>@Html.ActionLink("下一页", "Index", new { pageIndex = currentPageIndex + 1, limit = currentLimit })</li>
+        }
+        if (pageCount > 0)
+        {
+            <li>@Html.ActionLink("尾页", "Index", new { pageIndex = pageCount - 1, limit = currentLimit })</li>
+        }
+        else
+        {
+            <li>@Html.ActionLink("尾页", "Index", new { pageIndex = 0, limit = currentLimit })</li>
+        }
+    }
+</ul>
+
+<script type="text/javascript">
+    $().ready(function () {
+        $("li", "ul[role='menu']").click(function () {
+            var item = this;
+            $("a[ data-type='limit']").html(this.innerText + "<b class='caret'>");
+        });
+    });
+</script>

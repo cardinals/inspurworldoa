@@ -13,6 +13,8 @@ using InspurOA.Identity.EntityFramework;
 using InspurOA.Attributes;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
+using InspurOA.Extensions;
+using Microsoft.AspNet.Identity;
 
 namespace InspurOA.Controllers
 {
@@ -48,9 +50,17 @@ namespace InspurOA.Controllers
 
 
         // GET: Permissions
-        public ActionResult Index()
+        public ActionResult Index(int pageIndex = 0, int limit = 10)
         {
-            return View(PermissionManager.Permissions.ToList());
+            int totalCount;
+            int pageCount;
+
+            var list = PermissionManager.Permissions.QueryByPage(p => p.PermissionCode, out totalCount, out pageCount, pageIndex, limit).ToList();
+            ViewData["TotalCount"] = totalCount;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPageIndex"] = pageIndex;
+            ViewData["Limit"] = limit;
+            return View(list);
         }
 
         // GET: Permissions/Details/5
@@ -83,16 +93,22 @@ namespace InspurOA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var p = new InspurIdentityPermission();
-                p.PermissionId = Guid.NewGuid().ToString();
-                p.PermissionCode = model.PermissionCode;
-                p.PermissionDescription = model.PermissionDescription;
-
-                await PermissionManager.CreateAsync(p);
-                return RedirectToAction("Index");
+                return View(model);
             }
 
-            return View(model);
+            var p = new InspurIdentityPermission();
+            p.PermissionId = Guid.NewGuid().ToString();
+            p.PermissionCode = model.PermissionCode;
+            p.PermissionDescription = model.PermissionDescription;
+
+            var result = await PermissionManager.CreateAsync(p);
+            if (!result.Succeeded)
+            {
+                AddErrors(result);
+                return View(model);
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: Permissions/Edit/5
@@ -122,15 +138,22 @@ namespace InspurOA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var p = new InspurIdentityPermission();
-                p.PermissionId = model.PermissionId;
-                p.PermissionCode = model.PermissionCode;
-                p.PermissionDescription = model.PermissionDescription;
-
-                await PermissionManager.UpdateAsync(p);
-                return RedirectToAction("Index");
+                return View(model);
             }
-            return View(model);
+
+            var p = new InspurIdentityPermission();
+            p.PermissionId = model.PermissionId;
+            p.PermissionCode = model.PermissionCode;
+            p.PermissionDescription = model.PermissionDescription;
+
+            var result = await PermissionManager.UpdateAsync(p);
+            if (!result.Succeeded)
+            {
+                AddErrors(result);
+                return View(model);
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: Permissions/Delete/5
@@ -166,6 +189,14 @@ namespace InspurOA.Controllers
         //    dbContext.SaveChanges();
         //    return RedirectToAction("Index");
         //}
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

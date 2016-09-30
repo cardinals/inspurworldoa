@@ -79,6 +79,7 @@
     <Compile Include="InspurDefaultAuthenticationTypes.cs" />
     <Compile Include="InspurEmailTokenProvider.cs" />
     <Compile Include="InspurPermissionManager.cs" />
+    <Compile Include="InspurPermissionValidator.cs" />
     <Compile Include="InspurPhoneNumberTokenProvider.cs" />
     <Compile Include="InspurResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -87,6 +88,7 @@
     </Compile>
     <Compile Include="InspurRoleManager.cs" />
     <Compile Include="InspurRolePermissionManager.cs" />
+    <Compile Include="InspurRoleValidator.cs" />
     <Compile Include="InspurTotpSecurityStampBasedTokenProvider.cs" />
     <Compile Include="InspurUserLoginInfo.cs" />
     <Compile Include="InspurUserRoleManager.cs" />

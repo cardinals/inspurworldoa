@@ -25,28 +25,6 @@ namespace InspurOA.Identity.Core
         where TPermission : class, IInspurPermission<TKey>
         where TRolePermission : class, IInspurRolePermission<TKey>
     {
-
-        ///// <summary>
-        ///// Create a new rolePermission
-        ///// </summary>
-        ///// <param name="rolePermission">The role permission.</param>
-        ///// <returns></returns>
-        //Task CreateAsync(TRolePermission rolePermission);
-
-        ///// <summary>
-        ///// Update a rolePermission
-        ///// </summary>
-        ///// <param name="rolePermission">The role permission.</param>
-        ///// <returns></returns>
-        //Task UpdateAsync(TRolePermission rolePermission);
-
-        ///// <summary>
-        ///// Delete a rolePermission
-        ///// </summary>
-        ///// <param name="rolePermission">The role permission.</param>
-        ///// <returns></returns>
-        //Task DeleteAsync(TRolePermission rolePermission);
-
         /// <summary>
         /// Find a rolePermission by id
         /// </summary>
@@ -61,9 +39,9 @@ namespace InspurOA.Identity.Core
         /// <returns></returns>
         Task<IList<TRolePermission>> FindRolePermissionsByPermissionId(TKey permissionId);
 
-        Task AddPermissionToRoleAsync(IList<TPermission> permissionList, string roleCode);
+        Task AddPermissionToRoleAsync(IList<string> permissionIdList, string roleId);
 
-        Task AddPermissionToRoleAsync(IList<TPermission> permissionList, TRole role);
+        Task AddPermissionToRoleAsync(IList<string> permissionIdList, TRole role);
 
         Task RemovePermissionsOfRoleAsync(string roleCode);
 

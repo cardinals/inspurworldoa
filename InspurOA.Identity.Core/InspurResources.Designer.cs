@@ -79,6 +79,15 @@ namespace InspurOA.Identity.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 代码{0}已经存在.
+        /// </summary>
+        internal static string DuplicateCode {
+            get {
+                return ResourceManager.GetString("DuplicateCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email &apos;{0}&apos; is already taken..
         /// </summary>
         internal static string DuplicateEmail {
@@ -345,6 +354,15 @@ namespace InspurOA.Identity.Core {
         internal static string PasswordTooShort1 {
             get {
                 return ResourceManager.GetString("PasswordTooShort1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ‘权限代码’ 已经存在。.
+        /// </summary>
+        internal static string PermissionCodeExisted {
+            get {
+                return ResourceManager.GetString("PermissionCodeExisted", resourceCulture);
             }
         }
         

@@ -17,6 +17,9 @@ namespace InspurOA.Models
         [Display(Name = "邮箱")]
         public string Email { get; set; }
 
+        [Display(Name = "电话号码")]
+        public string PhoneNumber { get; set; }
+
         [Display(Name = "所属角色")]
         public string RoleCode { get; set; }
 

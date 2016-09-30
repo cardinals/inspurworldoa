@@ -87,28 +87,28 @@ namespace InspurOA.Identity.Core
             return await Store.FindRolePermissionsByPermissionId(permissionId);
         }
 
-        public async Task AddPermissionToRoleAsync(IList<TPermission> permissionList, string roleCode)
+        public async Task AddPermissionToRoleAsync(IList<string> permissionIdList, string roleId)
         {
             ThrowIfDisposed();
-            if (permissionList == null || permissionList.Count == 0)
+            if (permissionIdList == null || permissionIdList.Count == 0)
             {
-                throw new ArgumentNullException("permissionList", "Null or has no element.");
+                throw new ArgumentNullException("permissionIdList", "Null or has no element.");
             }
 
-            if (string.IsNullOrWhiteSpace(roleCode))
+            if (string.IsNullOrWhiteSpace(roleId))
             {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
+                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleId");
             }
 
-            await Store.AddPermissionToRoleAsync(permissionList, roleCode);
+            await Store.AddPermissionToRoleAsync(permissionIdList, roleId);
         }
 
-        public async Task AddPermissionToRoleAsync(IList<TPermission> permissionList, TRole role)
+        public async Task AddPermissionToRoleAsync(IList<string> permissionIdList, TRole role)
         {
             ThrowIfDisposed();
-            if (permissionList == null || permissionList.Count == 0)
+            if (permissionIdList == null || permissionIdList.Count == 0)
             {
-                throw new ArgumentNullException("permissionList", "Null or has no element.");
+                throw new ArgumentNullException("permissionIdList", "Null or has no element.");
             }
 
             if (role == null)
@@ -116,7 +116,7 @@ namespace InspurOA.Identity.Core
                 throw new ArgumentNullException("role");
             }
 
-            await Store.AddPermissionToRoleAsync(permissionList, role);
+            await Store.AddPermissionToRoleAsync(permissionIdList, role);
         }
 
         public async Task RemovePermissionsOfRoleAsync(string roleCode)

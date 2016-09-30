@@ -125,6 +125,10 @@
     <value>An unknown failure has occured.</value>
     <comment>Default identity result error message</comment>
   </data>
+  <data name="DuplicateCode" xml:space="preserve">
+    <value>代码{0}已经存在</value>
+    <comment>error for duplicate code</comment>
+  </data>
   <data name="DuplicateEmail" xml:space="preserve">
     <value>Email '{0}' is already taken.</value>
     <comment>error for duplicate emails</comment>
@@ -244,6 +248,10 @@
   <data name="PasswordTooShort1" xml:space="preserve">
     <value>Passwords must be at least {0} characters.</value>
     <comment>Error message for passwords that are too short</comment>
+  </data>
+  <data name="PermissionCodeExisted" xml:space="preserve">
+    <value>‘权限代码’ 已经存在。</value>
+    <comment>Error when the permissionCode already existed</comment>
   </data>
   <data name="PropertyTooShort" xml:space="preserve">
     <value>{0} cannot be null or empty.</value>

@@ -1,13 +1,17 @@
 ﻿using InspurOA.Attributes;
 using InspurOA.DAL;
+using InspurOA.Extensions;
 using InspurOA.Identity.EntityFramework;
 using InspurOA.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -16,12 +20,59 @@ namespace InspurOA.Controllers
     [InspurAuthorize(Roles = "Admin", Permissions = "ControlRole")]
     public class RoleController : Controller
     {
-        ApplicationDbContext dbContext = new ApplicationDbContext();
+        private ApplicationRoleManager _roleManager;
+        private ApplicationPermissionManager _permissionManager;
+        private ApplicationRolePermissionManager _rolePermissionManager;
+
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+
+            private set
+            {
+                _roleManager = value;
+            }
+        }
+
+        public ApplicationPermissionManager PermissionManager
+        {
+            get
+            {
+                return _permissionManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationPermissionManager>();
+            }
+            private set
+            {
+                _permissionManager = value;
+            }
+        }
+
+        public ApplicationRolePermissionManager RolePermissionManager
+        {
+            get
+            {
+                return _rolePermissionManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationRolePermissionManager>();
+            }
+            private set
+            {
+                _rolePermissionManager = value;
+            }
+        }
 
         // GET: Role
-        public ActionResult Index()
+        public ActionResult Index(int pageIndex = 0, int limit = 10)
         {
-            return View(dbContext.Roles.ToList());
+            int totalCount;
+            int pageCount;
+
+            var list = RoleManager.Roles.QueryByPage(t => t.RoleName, out totalCount, out pageCount, pageIndex, limit).ToList();
+            ViewData["TotalCount"] = totalCount;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPageIndex"] = pageIndex;
+            ViewData["Limit"] = limit;
+            return View(list);
         }
 
         // GET: Role/Details/5
@@ -34,7 +85,7 @@ namespace InspurOA.Controllers
         public ActionResult Create()
         {
             List<PermissionItemViewModel> PermissionList = new List<PermissionItemViewModel>();
-            foreach (var item in dbContext.Permissions.ToList())
+            foreach (var item in PermissionManager.Permissions.ToList())
             {
                 PermissionList.Add(new PermissionItemViewModel() { IsChecked = false, Permission = item });
             }
@@ -44,7 +95,7 @@ namespace InspurOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(RoleViewModel model, FormCollection collection)
+        public async Task<ActionResult> Create(RoleViewModel model, FormCollection collection)
         {
             string PermissionStr = collection.Get("Permissions");
             string[] permissionIdArray = { };
@@ -54,7 +105,7 @@ namespace InspurOA.Controllers
             }
 
             List<PermissionItemViewModel> PermissionList = new List<PermissionItemViewModel>();
-            foreach (var item in dbContext.Permissions.ToList())
+            foreach (var item in PermissionManager.Permissions.ToList())
             {
                 if (permissionIdArray.Contains(item.PermissionId))
                 {
@@ -74,31 +125,15 @@ namespace InspurOA.Controllers
 
             string newRoleId = Guid.NewGuid().ToString();
             var role = new InspurIdentityRole() { RoleId = newRoleId, RoleCode = model.RoleCode, RoleName = model.RoleName, RoleDescription = model.RoleDescription };
-            using (var transcation = dbContext.Database.BeginTransaction())
+            var result = await RoleManager.CreateAsync(role);
+            if (!result.Succeeded)
             {
-                try
-                {
-                    dbContext.Roles.Add(role);
-                    dbContext.SaveChanges();
-
-                    foreach (var permissionId in permissionIdArray)
-                    {
-                        var RP = new InspurIdentityRolePermission();
-                        RP.RoleId = role.RoleId;
-                        RP.PermissionId = permissionId;
-
-                        dbContext.RolePermissions.Add(RP);
-                    }
-
-                    dbContext.SaveChanges();
-                    transcation.Commit();
-                }
-                catch
-                {
-                    transcation.Rollback();
-                }
+                AddErrors(result);
+                ViewData["Permissions"] = PermissionList;
+                return View(model);
             }
 
+            await RolePermissionManager.AddPermissionToRoleAsync(permissionIdArray, role.RoleId);
             return RedirectToAction("Index");
         }
 
@@ -158,7 +193,7 @@ namespace InspurOA.Controllers
 
         // GET: Role/Edit/5
 
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
             try
             {
@@ -168,15 +203,15 @@ namespace InspurOA.Controllers
                 }
 
                 var roleViewModel = new RoleViewModel();
-                var Role = dbContext.Roles.Find(id);
+                var Role = await RoleManager.FindByIdAsync(id);
                 roleViewModel.RoleId = id;
                 roleViewModel.RoleCode = Role.RoleCode;
                 roleViewModel.RoleName = Role.RoleName;
                 roleViewModel.RoleDescription = Role.RoleDescription;
                 List<PermissionItemViewModel> permissionList = new List<PermissionItemViewModel>();
 
-                IQueryable<InspurIdentityRolePermission> rolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == id);
-                foreach (var item in dbContext.Permissions.ToList())
+                IQueryable<InspurIdentityRolePermission> rolePermissions = RolePermissionManager.RolePermissions.Where(t => t.RoleId == id);
+                foreach (var item in PermissionManager.Permissions.ToList())
                 {
                     if (rolePermissions.Any(t => t.PermissionId == item.PermissionId))
                     {
@@ -199,9 +234,9 @@ namespace InspurOA.Controllers
 
         // POST: Role/Edit
         [HttpPost]
-        public ActionResult Edit(RoleViewModel model, FormCollection collection)
+        public async Task<ActionResult> Edit(RoleViewModel model, FormCollection collection)
         {
-            var Role = dbContext.Roles.FirstOrDefault(t => t.RoleId == model.RoleId);
+            var Role = await RoleManager.FindByIdAsync(model.RoleId);
             if (Role == null)
             {
                 return RedirectToAction("Index");
@@ -215,7 +250,7 @@ namespace InspurOA.Controllers
             }
 
             List<PermissionItemViewModel> PermissionList = new List<PermissionItemViewModel>();
-            foreach (var item in dbContext.Permissions.ToList())
+            foreach (var item in PermissionManager.Permissions.ToList())
             {
                 if (permissionIdArray.Contains(item.PermissionId))
                 {
@@ -233,41 +268,19 @@ namespace InspurOA.Controllers
                 return View(model);
             }
 
-            using (var transcation = dbContext.Database.BeginTransaction())
+            Role.RoleCode = model.RoleCode;
+            Role.RoleName = model.RoleName;
+            Role.RoleDescription = model.RoleDescription;
+            var result = await RoleManager.UpdateAsync(Role);
+            if (!result.Succeeded)
             {
-                try
-                {
-                    Role.RoleCode = model.RoleCode;
-                    Role.RoleName = model.RoleName;
-                    Role.RoleDescription = model.RoleDescription;
-                    dbContext.Entry(Role).State = EntityState.Modified;
-                    dbContext.SaveChanges();
-
-                    var RolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == model.RoleId);
-                    foreach (var RP in RolePermissions)
-                    {
-                        dbContext.RolePermissions.Remove(RP);
-                    }
-
-                    dbContext.SaveChanges();
-
-                    foreach (var permissionId in permissionIdArray)
-                    {
-                        var RP = new InspurIdentityRolePermission();
-                        RP.RoleId = Role.RoleId;
-                        RP.PermissionId = permissionId;
-
-                        dbContext.RolePermissions.Add(RP);
-                    }
-
-                    dbContext.SaveChanges();
-                    transcation.Commit();
-                }
-                catch
-                {
-                    transcation.Rollback();
-                }
+                AddErrors(result);
+                ViewData["Permissions"] = PermissionList;
+                return View(model);
             }
+
+            await RolePermissionManager.RemoveRoleFromRolePermissionAsync(model.RoleId);
+            await RolePermissionManager.AddPermissionToRoleAsync(permissionIdArray, model.RoleId);
 
             return RedirectToAction("Index");
         }
@@ -280,7 +293,7 @@ namespace InspurOA.Controllers
 
         // POST: Role/Delete/5
         [HttpPost]
-        public ActionResult Delete(string[] ids)
+        public async Task<ActionResult> Delete(string[] ids)
         {
             try
             {
@@ -291,21 +304,13 @@ namespace InspurOA.Controllers
 
                 foreach (string id in ids)
                 {
-                    using (var transcation = dbContext.Database.BeginTransaction())
+                    var role = await RoleManager.FindByIdAsync(id);
+                    if (role != null)
                     {
-                        var role = dbContext.Roles.Find(id);
-                        dbContext.Roles.Remove(role);
-                        dbContext.SaveChanges();
-
-                        var RolePermissions = dbContext.RolePermissions.Where(t => t.RoleId == id);
-                        foreach (var RP in RolePermissions)
-                        {
-                            dbContext.RolePermissions.Remove(RP);
-                        }
-
-                        dbContext.SaveChanges();
-                        transcation.Commit();
+                        await RoleManager.DeleteAsync(role);
                     }
+
+                    await RolePermissionManager.RemoveRoleFromRolePermissionAsync(id);
                 }
             }
             catch
@@ -314,6 +319,25 @@ namespace InspurOA.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

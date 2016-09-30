@@ -17,11 +17,13 @@ namespace InspurOA.Identity.Core
         }
     }
 
+
     public class InspurRoleManager<TRole, TKey> : IDisposable
         where TRole : class, IInspurRole<TKey>
         where TKey : IEquatable<TKey>
     {
         private bool _disposed;
+        private IIdentityValidator<TRole> _roleValidator;
 
         public InspurRoleManager(IInspurRoleStore<TRole, TKey> store)
         {
@@ -31,6 +33,7 @@ namespace InspurOA.Identity.Core
             }
 
             Store = store;
+            InspurRoleValidator = new InspurRoleValidator<TRole, TKey>(this);
         }
 
         protected internal IInspurRoleStore<TRole, TKey> Store;
@@ -49,6 +52,25 @@ namespace InspurOA.Identity.Core
             }
         }
 
+        public IIdentityValidator<TRole> InspurRoleValidator
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return _roleValidator;
+            }
+            set
+            {
+                ThrowIfDisposed();
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                _roleValidator = value;
+            }
+        }
+
         public async Task<IdentityResult> CreateAsync(TRole role)
         {
             ThrowIfDisposed();
@@ -57,7 +79,13 @@ namespace InspurOA.Identity.Core
                 throw new ArgumentNullException("role");
             }
 
-            await Store.CreateAsync(role);
+            var result = await InspurRoleValidator.ValidateAsync(role).WithCurrentCulture();
+            if (!result.Succeeded)
+            {
+                return result;
+            }
+
+            await Store.CreateAsync(role).WithCurrentCulture();
             return IdentityResult.Success;
         }
 
@@ -67,6 +95,12 @@ namespace InspurOA.Identity.Core
             if (role == null)
             {
                 throw new ArgumentNullException("role");
+            }
+
+            var result = await InspurRoleValidator.ValidateAsync(role).WithCurrentCulture();
+            if (!result.Succeeded)
+            {
+                return result;
             }
 
             await Store.UpdateAsync(role);

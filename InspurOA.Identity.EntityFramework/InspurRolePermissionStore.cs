@@ -145,38 +145,38 @@ namespace InspurOA.Identity.EntityFramework
             return await query.ToListAsync().WithCurrentCulture();
         }
 
-        public async Task AddPermissionToRoleAsync(IList<TPermission> permissionList, string roleCode)
+        public async Task AddPermissionToRoleAsync(IList<string> permissionIdList, string roleId)
         {
             ThrowIfDisposed();
-            if (permissionList == null || permissionList.Count == 0)
+            if (permissionIdList == null || permissionIdList.Count == 0)
             {
-                throw new ArgumentNullException("permissionList", "Null or has no element.");
+                throw new ArgumentNullException("permissionIdList", "Null or has no element.");
             }
 
-            if (string.IsNullOrWhiteSpace(roleCode))
+            if (string.IsNullOrWhiteSpace(roleId))
             {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCode");
+                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleId");
             }
 
-            var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper() == roleCode.ToUpper()).WithCurrentCulture();
+            var roleEntity = await _roleStore.DbEntitySet.FirstOrDefaultAsync(r => r.RoleId == roleId).WithCurrentCulture();
             if (roleEntity == null)
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", roleCode));
+                    "RoleNotFound", roleId));
             }
 
-            foreach (var permission in permissionList)
+            foreach (var id in permissionIdList)
             {
-                _rolePermissionStore.Create(new TRolePermission { RoleId = roleEntity.RoleId, PermissionId = permission.PermissionId });
+                _rolePermissionStore.Create(new TRolePermission { RoleId = roleEntity.RoleId, PermissionId = id });
             }
 
             await Context.SaveChangesAsync().WithCurrentCulture();
         }
 
-        public async Task AddPermissionToRoleAsync(IList<TPermission> permissionList, TRole role)
+        public async Task AddPermissionToRoleAsync(IList<string> permissionIdList, TRole role)
         {
             ThrowIfDisposed();
-            if (permissionList == null || permissionList.Count == 0)
+            if (permissionIdList == null || permissionIdList.Count == 0)
             {
                 throw new ArgumentNullException("permissionList", "Null or has no element.");
             }
@@ -186,9 +186,9 @@ namespace InspurOA.Identity.EntityFramework
                 throw new ArgumentNullException("role");
             }
 
-            foreach (var permission in permissionList)
+            foreach (var id in permissionIdList)
             {
-                _rolePermissionStore.Create(new TRolePermission { RoleId = role.RoleId, PermissionId = permission.PermissionId });
+                _rolePermissionStore.Create(new TRolePermission { RoleId = role.RoleId, PermissionId = id });
             }
 
             await Context.SaveChangesAsync().WithCurrentCulture();

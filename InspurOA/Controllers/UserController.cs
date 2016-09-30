@@ -13,16 +13,16 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using InspurOA.Identity.Owin.Extensions;
+using InspurOA.Extensions;
 
 namespace InspurOA.Controllers
 {
-    //[InspurAuthorize(Roles = "Admin")]
+    [InspurAuthorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
         private ApplicationUserRoleManager _userRoleManager;
-        //private ApplicationDbContext dbContext = ApplicationDbContext.Create();
 
         public ApplicationUserManager UserManager
         {
@@ -61,9 +61,17 @@ namespace InspurOA.Controllers
         }
 
         // GET: UserController
-        public ActionResult Index()
+        public ActionResult Index(int pageIndex = 0, int limit = 10)
         {
-            return View(UserManager.Users.ToList());
+            int totalCount;
+            int pageCount;
+
+            var list = UserManager.Users.QueryByPage(u => u.UserName, out totalCount, out pageCount, pageIndex, limit).ToList();
+            ViewData["TotalCount"] = totalCount;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPageIndex"] = pageIndex;
+            ViewData["Limit"] = limit;
+            return View(list);
         }
 
         // GET: UserController/Details/5
@@ -81,6 +89,7 @@ namespace InspurOA.Controllers
                 userDetailViewModel.Id = id;
                 userDetailViewModel.UserName = user.UserName;
                 userDetailViewModel.Email = user.Email;
+                userDetailViewModel.PhoneNumber = user.PhoneNumber;
             }
 
             userDetailViewModel.RoleCode = RoleHelper.GetRoleNameByUserId(id);
@@ -202,31 +211,24 @@ namespace InspurOA.Controllers
                 return View();
             }
 
-            try
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                if (!string.IsNullOrWhiteSpace(id))
+                var user = await UserManager.FindByIdAsync(id);
+
+                if (user != null)
                 {
-                    var user = await UserManager.FindByIdAsync(id);
+                    user.UserName = collection.Get("UserName");
+                    user.Email = collection.Get("Email");
 
-                    if (user != null)
+                    var result = await UserManager.UpdateAsync(user);
+                    if (result.Succeeded)
                     {
-                        user.UserName = collection.Get("UserName");
-                        user.Email = collection.Get("Email");
-
-                        var result = await UserManager.UpdateAsync(user);
-                        if (result.Succeeded)
-                        {
-                            await UserRoleManager.AddToRoleAsync(id, collection.Get("RoleCode"));
-                        }
+                        await UserRoleManager.AddToRoleAsync(id, collection.Get("RoleCode"));
                     }
                 }
+            }
 
-                return RedirectToAction("Index", "User");
-            }
-            catch (Exception e)
-            {
-                return View();
-            }
+            return RedirectToAction("Index", "User");
         }
 
         // POST: UserController/Delete/5

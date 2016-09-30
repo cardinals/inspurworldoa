@@ -330,16 +330,7 @@ namespace InspurOA.Identity.Core
         public IDictionary<string, IInspurUserTokenProvider<TUser, TKey>> TwoFactorProviders
         {
             get { return _factors; }
-        }
-
-        /// <summary>
-        ///     Dispose this object
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        }        
 
         /// <summary>
         ///     Creates a ClaimsIdentity representing the user
@@ -913,7 +904,6 @@ namespace InspurOA.Identity.Core
             }
             return cast;
         }
-     
 
         // IInspurUserEmailStore methods
         internal IInspurUserEmailStore<TUser, TKey> GetEmailStore()
@@ -1617,6 +1607,8 @@ namespace InspurOA.Identity.Core
             return await store.GetAccessFailedCountAsync(user).WithCurrentCulture();
         }
 
+
+
         private void ThrowIfDisposed()
         {
             if (_disposed)
@@ -1625,6 +1617,15 @@ namespace InspurOA.Identity.Core
             }
         }
 
+        /// <summary>
+        ///     Dispose this object
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        
         /// <summary>
         ///     When disposing, actually dipose the store
         /// </summary>

@@ -239,7 +239,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Principal\IInspurPrincipal .cs" />
     <Compile Include="Principal\InspurPrincipal .cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -327,6 +326,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\wenjia\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>

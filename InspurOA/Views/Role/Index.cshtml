@@ -1,31 +1,33 @@
-﻿@model IEnumerable< InspurOA.Identity.EntityFramework.InspurIdentityRole>
+﻿@model IEnumerable<InspurOA.Identity.EntityFramework.InspurIdentityRole>
 
 @{
     ViewBag.Title = "角色管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>角色管理</h2>
+<h2>@ViewBag.Title</h2>
 <p>
     @Html.ActionLink("添加角色", "Create", null, new { @class = "btn btn-primary" })
     <input class="btn btn-primary" name="BtnDelete" type="button" value="删除" />
 </p>
-<table class="table">
-    <tr>
-        <th></th>
-        <th>
-            角色代号
-        </th>
-        <th>
-            角色名称
-        </th>
-        <th>
-            角色描述
-        </th>
-    </tr>
 
-    @foreach (var item in Model)
-    {
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+        <tr>
+            <th></th>
+            <th>
+                角色代号
+            </th>
+            <th>
+                角色名称
+            </th>
+            <th>
+                角色描述
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 <input type="checkbox" value="@Html.DisplayFor(modelItem => item.RoleId)" />
@@ -40,10 +42,10 @@
                 @Html.DisplayFor(modelItem => item.RoleDescription)
             </td>
         </tr>
-    }
-</table>
-@Html.Partial("PagInation")
-
+        }
+    </table>
+    @Html.Partial("PagInation")
+</div>
 <style type="text/css">
     tr {
         cursor: pointer;

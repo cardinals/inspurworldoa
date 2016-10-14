@@ -6,9 +6,9 @@ namespace InspurOA.Models
     public class Resume
     {
         [Key]
-        public string Guid { get; set; }
+        public string Id { get; set; }
 
-        [Display(Name ="个人信息")]
+        [Display(Name = "个人信息")]
         public string PersonalInformation { get; set; }
 
         [Display(Name = "求职意向")]
@@ -48,12 +48,15 @@ namespace InspurOA.Models
         public string FilePath { get; set; }
 
         [Display(Name = "上传日期")]
-        public DateTime UploadTime { get; set; }
-
-        [Display(Name = "语言")]
-        public ResumeLanguageType ResumeLanguageType { get; set; }
+        public DateTime UploadTime { get; set; }        
 
         [Display(Name = "来源")]
         public string SourceSite { get; set; }
+
+        [Display(Name = "语言类别")]
+        public string LanguageType { get; set; }
+
+        [Display(Name = "职位名称")]
+        public string PostName { get; set; }
     }
 }

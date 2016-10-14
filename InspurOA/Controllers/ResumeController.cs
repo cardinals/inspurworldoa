@@ -29,7 +29,12 @@ namespace InspurOA.Controllers
         // GET: Resume
         public ActionResult Index()
         {
-            return View(db.ResumeSet.OrderByDescending(R=>R.UploadTime).ToList());
+            return View(db.ResumeSet.OrderByDescending(R => R.UploadTime).ToList());
+        }
+
+        public ActionResult TemplateDetail()
+        {
+            return View("Details");
         }
 
         // GET: Resume/Details/5
@@ -70,8 +75,13 @@ namespace InspurOA.Controllers
         //    return View(resume);
         //}
 
-        public ActionResult Upload(string type)
+        public ActionResult UploadResume(string languageType, string sourceSite, string postName)
         {
+            if (string.IsNullOrWhiteSpace(sourceSite) || string.IsNullOrWhiteSpace(languageType) || string.IsNullOrWhiteSpace(postName))
+            {
+                return View("Create");
+            }
+
             app = new ApplicationClass();
 
             for (int k = 0; k < Request.Files.Count; k++)
@@ -112,7 +122,7 @@ namespace InspurOA.Controllers
 
                     doc.Close();
 
-                    if (type.Equals("ZL"))
+                    if (sourceSite.Equals("ZL"))
                     {
                         resume = ResumeHelper.getZLResumeEntity(content);
                     }
@@ -123,7 +133,9 @@ namespace InspurOA.Controllers
 
                     resume.FilePath = fileName;
                     resume.UploadTime = DateTime.Now;
-                    resume.SourceSite = type;
+                    resume.SourceSite = sourceSite;
+                    resume.LanguageType = languageType;
+                    resume.PostName = postName;
                     ResumeBLL opt = new ResumeBLL();
                     opt.SaveResume(resume);
                 }
@@ -143,7 +155,6 @@ namespace InspurOA.Controllers
             }
 
             app.Quit();
-
             return RedirectToAction("Index");
         }
 
@@ -155,7 +166,7 @@ namespace InspurOA.Controllers
                 return null;
             }
 
-            return JsonConvert.SerializeObject(db.ResumeSet.OrderByDescending(R => R.UploadTime).ToList().Where(t=>t.PersonalInformation.Contains(query)));
+            return JsonConvert.SerializeObject(db.ResumeSet.OrderByDescending(R => R.UploadTime).ToList().Where(t => t.PersonalInformation.Contains(query)));
         }
 
         //// GET: Resume/Edit/5

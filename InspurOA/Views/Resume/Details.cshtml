@@ -1,154 +1,143 @@
 ﻿@model InspurOA.Models.Resume
 
 @{
-    Layout = null;
+    ViewBag.Title = "简历信息";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-    <div>
-        <h4>Resume</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.PersonalInformation)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.PersonalInformation)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.CareerObjective)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.CareerObjective)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.SelfAssessment)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.SelfAssessment)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.WorkExperience)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.WorkExperience)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.ProjectExperience)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.ProjectExperience)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.Education)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.Education)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.Certificates)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.Certificates)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.HonorsandAwards)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.HonorsandAwards)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.SchoolPractice)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.SchoolPractice)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.LanguageSkills)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.LanguageSkills)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.Training)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.Training)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.ProfessionalSkills)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.ProfessionalSkills)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.FilePath)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.FilePath)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.UploadTime)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.UploadTime)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.ResumeLanguageType)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.ResumeLanguageType)
-            </dd>
-    
-            <dt>
-                @Html.DisplayNameFor(model => model.SourceSite)
-            </dt>
-    
-            <dd>
-                @Html.DisplayFor(model => model.SourceSite)
-            </dd>
-    
-        </dl>
-    </div>
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Guid }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
-</body>
-</html>
+<h2>@ViewBag.Title</h2>
+@Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+<hr />
+<div style="">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PersonalInformation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PersonalInformation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CareerObjective)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CareerObjective)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SelfAssessment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SelfAssessment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WorkExperience)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WorkExperience)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjectExperience)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjectExperience)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Education)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Education)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Certificates)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Certificates)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HonorsandAwards)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HonorsandAwards)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SchoolPractice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SchoolPractice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LanguageSkills)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LanguageSkills)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Training)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Training)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfessionalSkills)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfessionalSkills)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FilePath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FilePath)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UploadTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UploadTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LanguageType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LanguageType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SourceSite)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SourceSite)
+        </dd>
+
+    </dl>
+</div>

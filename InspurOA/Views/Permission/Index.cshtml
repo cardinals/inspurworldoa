@@ -5,23 +5,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>权限信息列表</h2>
+<h2>@ViewBag.Title</h2>
 
 <p>
     @Html.ActionLink("添加权限", "Create", null, new { @class = "btn btn-primary" })
     <input class="btn btn-primary" name="BtnDelete" type="button" value="删除" />
 </p>
 
-<table class="table">
-    <tr>
-        <th></th>
-        <th>权限代码</th>
-        <th>
-            权限描述
-        </th>
-    </tr>
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+        <tr>
+            <th></th>
+            <th>权限代码</th>
+            <th>
+                权限描述
+            </th>
+        </tr>
 
-    @foreach (var item in Model)
+        @foreach (var item in Model)
     {
         <tr>
             <td>
@@ -36,9 +37,9 @@
         </tr>
     }
 
-</table>
-@Html.Partial("PagInation")
-
+    </table>
+    @Html.Partial("PagInation")
+</div>
 <style type="text/css">
     tr {
         cursor: pointer;

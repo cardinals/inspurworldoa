@@ -5,12 +5,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+@*<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>*@
 <style type="text/css">
     .div-group {
+        position:relative;
         display: block;
         width: 100%;
         margin-top: 20px;
+        margin-bottom:20px;
         box-sizing: border-box;
         content: normal;
         clear: none;
@@ -29,8 +31,6 @@
                 fileList.empty();
                 for (var i = 0; i < event.target.files.length; i++) {
                     fileList.append("<div style='float:left;' class='col-md-12'><span>" + event.target.files[i].name + "</span></div>");
-
-                    //fileList.append("<div style='float:left;' class='col-md-12'><span>" + event.target.files[i].name+ "</span><input type='button' class='btn btn-primary btn-xs' value='-' style='float:right;' /></div>");
                 }
             }
         });
@@ -39,43 +39,58 @@
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/jqueryval")
 
+<h2>@ViewBag.Title</h2>
+@Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+<hr />
+
 <div style="margin-left:auto;margin-right:auto;max-width:400px;box-sizing:border-box;">
-    @using (Html.BeginForm("Upload", "Resume", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("UploadResume", "Resume", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
     {
-        <div class="div-group col-md-12">
-            <span class="col-md-4"> 语言类型：</span>
+        <div class="form-group">
+            <label class="col-md-4 control-label">语言类型：</label>
             <div class="col-md-8">
-                <select class="list-group-item">
-                    <option value="CN"> 中文 </option>
-                    <option value="EN"> English </option>
+                <select name="languageType" class="form-control">
+                    <option value="中文">中文</option>
+                    <option value="English">English</option>
                 </select>
             </div>
         </div>
-        <div class="div-group col-md-12">
-            <span class="col-md-4">
-                来源：
-            </span>
+        <div class="form-group">
+            <label class="col-md-4 control-label">网站来源：</label>
             <div class="col-md-8">
-                <ol class="list-group" style="list-style:none;padding-left:0px;">
-                    <li class="list-group-item"><input type="radio" name="type" value="ZL" checked="checked" />智联招聘</li>
-                    <li class="list-group-item"><input type="radio" name="type" value="WY" />前程无忧</li>
-                </ol>
+                <select name="sourceSite" class="form-control">
+                    <option value="ZL">智联招聘</option>
+                    <option value="WY">前程无忧</option>
+                </select>
             </div>
         </div>
-        <div class="div-group">
-            <input type="button" id="btnSelectDoc" value="选择文档..." class="form-control" style="width:100%;height:30px;" />
-            <input type="file" name="file" style="height:30px;width:100%;float:right;display:none;" /> @*multiple="multiple"*@
-            <div name="fileList" style="width:100%;max-height:200px;margin-top:10px;display:none;">
+        <div class="form-group">
+            <label class="col-md-4 control-label">岗位名称：</label>
+            <div class="col-md-8">
+                <select name="postName" class="form-control">
+                    <option value=".Net Web开发">.Net Web开发</option>
+                    <option value="Java开发">Java开发</option>
+                    <option value="软件测试">软件测试</option>
+                    <option value="软件开发测试">软件开发测试</option>
+                </select>
             </div>
         </div>
-        <div class="div-group">
-            @*@Html.ActionLink("返回列表", "Index", null, new { @class = "col-md-2 btn btn-primary btn-md" })*@
-            @*<a href="Index" class="">&laquo; 返回列表</a>*@
-            @*@Html.ActionLink("&laquo; 返回列表", "Index", null, new { @class = "col-md-6 btn btn-primary " })*@
-            <input type="submit" id="BtnUpload" class="form-control btn btn-primary" value="上传" />
+        <div class="form-group">
+            <label class="col-md-4 control-label">文档：</label>
+            <div class="col-md-8">
+                <input type="button" id="btnSelectDoc" value="选择简历..." class="form-control" />
+                <input type="file" name="file" style="height:30px;width:100%;float:right;display:none;" multiple="multiple" /> @**@
+            </div>
         </div>
-        <div class="div-group">
-            @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+        <div class="form-group">
+            <div name="fileList" class="col-md-8 col-md-offset-4" style="max-height:200PX;overflow:auto;">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <input type="submit" id="BtnUpload" class="form-control btn btn-primary" value="上传" />
+            </div>
         </div>
     }
 </div>
+

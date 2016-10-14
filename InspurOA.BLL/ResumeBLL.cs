@@ -17,7 +17,7 @@ namespace InspurOA.BLL
 
         public void SaveResume(Resume resume)
         {
-            resume.Guid = Guid.NewGuid().ToString();
+            resume.Id = Guid.NewGuid().ToString();
             dal.ResumeSet.Add(resume);
             dal.SaveChanges();
         }

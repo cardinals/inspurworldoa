@@ -262,28 +262,35 @@ namespace InspurOA.Identity.Core
         /// <exception cref="ArgumentException">ValueCannotBeNullOrEmpty;roleCodes</exception>
         public async Task<bool> IsAuthorizedByRolesAsync(string userName, string[] roleCodes)
         {
-            ThrowIfDisposed();
-            if (String.IsNullOrWhiteSpace(userName))
+            try
             {
-                return await Task.FromResult(false);
-            }
-
-            if (roleCodes == null || roleCodes.Length == 0)
-            {
-                throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCodes");
-            }
-
-            var user = await UserStore.FindByNameAsync(userName).WithCurrentCulture();
-            if (user != null)
-            {
-                foreach (string roleCode in roleCodes)
+                ThrowIfDisposed();
+                if (String.IsNullOrWhiteSpace(userName))
                 {
-                    var role = await RoleStore.FindByCodeAsync(roleCode).WithCurrentCulture();
-                    if (await Store.IsUserRoleExisted(user.Id, role.RoleId))
+                    return await Task.FromResult(false);
+                }
+
+                if (roleCodes == null || roleCodes.Length == 0)
+                {
+                    throw new ArgumentException("ValueCannotBeNullOrEmpty", "roleCodes");
+                }
+
+                var user = await UserStore.FindByNameAsync(userName).WithCurrentCulture();
+                if (user != null)
+                {
+                    foreach (string roleCode in roleCodes)
                     {
-                        return await Task.FromResult(true);
+                        var role = await RoleStore.FindByCodeAsync(roleCode).WithCurrentCulture();
+                        if (await Store.IsUserRoleExisted(user.Id, role.RoleId))
+                        {
+                            return await Task.FromResult(true);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return await Task.FromResult(false);

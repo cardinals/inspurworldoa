@@ -8,7 +8,7 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
-
+    @RenderSection("scripts", required: false)
     <link href="~/Content/_Layout.css" rel="stylesheet" />
 </head>
 <body>
@@ -19,9 +19,24 @@
             </div>
             <div>
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("简历管理", "Index", "Resume")</li>
-                    <li>@Html.ActionLink("简历共享", "Index", "Home")</li>
-                    @*@if (User.IsInRole("Admin"))*@
+                    @*<li>@Html.ActionLink("简历管理", "Index", "Resume")</li>*@
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            简历管理
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("简历管理", "Index", "Resume")</li>
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("项目信息维护", "Index", "Project")</li>
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("网站来源维护", "Index", "")</li>
+                            <li class="divider"></li>
+                            <li>@Html.ActionLink("岗位名称维护", "Index", "")</li>
+                        </ul>
+                    </li>
+                    @*<li>@Html.ActionLink("简历共享", "Index", "Home")</li>*@
+
                     @if (AuthHelper.IsAuthorizedByRole(User.Identity.Name, "Admin"))
                     {
                         <li class="dropdown">
@@ -52,8 +67,6 @@
             <p>&copy; @DateTime.Now.Year - 浪潮世科简历信息管理系统</p>
         </div>
     </footer>
-    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -24,12 +24,41 @@ namespace InspurOA.Controllers
         private object unknow = Type.Missing;
         private string localResumeFolderPath = ConfigurationManager.AppSettings["LocalResumeFolderPath"].ToString();
 
-        private ResumeDbContext db = new ResumeDbContext();
+        private ResumeBLL bll = new ResumeBLL();
+        private ResumeCommentBLL commentBll = new ResumeCommentBLL();
+        private ProjectBLL proBll = new ProjectBLL();
 
         // GET: Resume
-        public ActionResult Index()
+        public ActionResult Index(string query, int pageIndex = 0, int limit = 10)
         {
-            return View(db.ResumeSet.OrderByDescending(R=>R.UploadTime).ToList());
+            int totalCount = 0, pageCount = 0;
+            IQueryable<Resume> comments = null;
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                comments = bll.QueryResumeByPage(null,
+                 R => R.UploadTime.ToString(),
+                 out totalCount,
+                 out pageCount,
+                 pageIndex,
+                 limit);
+            }
+            else
+            {
+                comments = bll.QueryResumeByPage(r => r.PersonalInformation.Contains(query) || r.WorkExperience.Contains(query) || r.ProjectExperience.Contains(query) || r.Education.Contains(query),
+                  R => R.UploadTime.ToString(),
+                  out totalCount,
+                  out pageCount,
+                  pageIndex,
+                  limit);
+            }
+
+            ViewData["TotalCount"] = totalCount;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPageIndex"] = pageIndex;
+            ViewData["Limit"] = limit;
+            ViewData["query"] = query;
+
+            return View(comments);
         }
 
         // GET: Resume/Details/5
@@ -39,39 +68,35 @@ namespace InspurOA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Resume resume = db.ResumeSet.Find(id);
+            Resume resume = bll.FindResume(id);
             if (resume == null)
             {
                 return HttpNotFound();
             }
+
             return View(resume);
         }
 
         // GET: Resume/Create
         public ActionResult Create()
         {
+            var projects = proBll.GetAllProjects();
+            ViewData["Projects"] = projects;
             return View();
         }
 
-        //// POST: Resume/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "Guid,PersonalInformation,CareerObjective,SelfAssessment,WorkExperience,ProjectExperience,Education,Certificates,HonorsandAwards,SchoolPractice,LanguageSkills,Training,ProfessionalSkills,FilePath,UploadTime,ResumeLanguageType,SourceSite")] Resume resume)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.ResumeSet.Add(resume);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    return View(resume);
-        //}
-
-        public ActionResult Upload(string type)
+        public ActionResult UploadResume(string languageType, string sourceSite, string projectName)//, string postName
         {
+            if (string.IsNullOrWhiteSpace(sourceSite) || string.IsNullOrWhiteSpace(languageType) || string.IsNullOrWhiteSpace(projectName))// || string.IsNullOrWhiteSpace(postName)
+            {
+                return View("Create");
+            }
+
+            if (!sourceSite.Equals("ZL") && sourceSite.Equals("WY"))
+            {
+                return View("Create");
+            }
+
             app = new ApplicationClass();
 
             for (int k = 0; k < Request.Files.Count; k++)
@@ -112,7 +137,7 @@ namespace InspurOA.Controllers
 
                     doc.Close();
 
-                    if (type.Equals("ZL"))
+                    if (sourceSite.Equals("ZL"))
                     {
                         resume = ResumeHelper.getZLResumeEntity(content);
                     }
@@ -121,9 +146,24 @@ namespace InspurOA.Controllers
                         resume = ResumeHelper.GetWYResumeEntity(content);
                     }
 
+                    switch (sourceSite)
+                    {
+                        case "ZL":
+                            resume.SourceSite = "智联招聘";
+                            break;
+                        case "WY":
+                            resume.SourceSite = "前程无忧";
+                            break;
+                        default:
+                            resume.SourceSite = "";
+                            break;
+                    }
+
+                    resume.Id = Guid.NewGuid().ToString();
                     resume.FilePath = fileName;
                     resume.UploadTime = DateTime.Now;
-                    resume.SourceSite = type;
+                    resume.LanguageType = languageType;
+                    resume.ProjectName = projectName;
                     ResumeBLL opt = new ResumeBLL();
                     opt.SaveResume(resume);
                 }
@@ -143,84 +183,79 @@ namespace InspurOA.Controllers
             }
 
             app.Quit();
-
             return RedirectToAction("Index");
         }
 
+        //[HttpPost]
+        //public String Search(string query)
+        //{
+        //    if (string.IsNullOrWhiteSpace(query))
+        //    {
+        //        return null;
+        //    }
+
+        //    return JsonConvert.SerializeObject(bll.GetResumeList()
+        //        .OrderByDescending(R => R.UploadTime)
+        //        .Where(t => (t.PersonalInformation.Contains(query) || t.WorkExperience.Contains(query) || t.ProjectExperience.Contains(query) || t.Education.Contains(query))));
+        //}
+
         [HttpPost]
-        public String Search(string query)
+        public ActionResult SearchResumes(FormCollection colleciton)
         {
+            string query = colleciton.Get("query");
             if (string.IsNullOrWhiteSpace(query))
             {
-                return null;
+                return RedirectToAction("index");
             }
 
-            return JsonConvert.SerializeObject(db.ResumeSet.OrderByDescending(R => R.UploadTime).ToList().Where(t=>t.PersonalInformation.Contains(query)));
+            int totalCount = 0, pageCount = 0;
+
+            //var comments = bll.GetResumeList()
+            //     .OrderByDescending(R => R.UploadTime)
+            //     .Where(t => (t.PersonalInformation.Contains(query) || t.WorkExperience.Contains(query) || t.ProjectExperience.Contains(query) || t.Education.Contains(query)));
+
+            var comments = bll.QueryResumeByPage(
+                r => r.PersonalInformation.Contains(query) || r.WorkExperience.Contains(query) || r.ProjectExperience.Contains(query) || r.Education.Contains(query),
+                R => R.UploadTime.ToString(),
+                out totalCount,
+                out pageCount,
+                0);
+            ViewData["query"] = query;
+            return View("index", comments);
+        }
+        // GET: Resume/Delete/5
+        public string Delete(string[] ids)
+        {
+            if (ids == null || ids.Length <= 0)
+            {
+                return "{ 'result' : false }";
+            }
+
+            foreach (var id in ids)
+            {
+                var resume = bll.FindResume(id);
+                if (resume != null)
+                {
+                    bll.DeleteResume(resume);
+                }
+
+                var comments = commentBll.FindResumeCommentsByResumeId(id);
+                foreach (var comment in comments)
+                {
+                    commentBll.DeleteResumeComment(comment);
+                }
+            }
+
+            return "{ 'result':true }";
         }
 
-        //// GET: Resume/Edit/5
-        //public ActionResult Edit(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Resume resume = db.ResumeSet.Find(id);
-        //    if (resume == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(resume);
-        //}
-
-        //// POST: Resume/Edit/5
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "Guid,PersonalInformation,CareerObjective,SelfAssessment,WorkExperience,ProjectExperience,Education,Certificates,HonorsandAwards,SchoolPractice,LanguageSkills,Training,ProfessionalSkills,FilePath,UploadTime,ResumeLanguageType,SourceSite")] Resume resume)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(resume).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(resume);
-        //}
-
-        //// GET: Resume/Delete/5
-        //public ActionResult Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Resume resume = db.ResumeSet.Find(id);
-        //    if (resume == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(resume);
-        //}
-
-        //// POST: Resume/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(string id)
-        //{
-        //    Resume resume = db.ResumeSet.Find(id);
-        //    db.ResumeSet.Remove(resume);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

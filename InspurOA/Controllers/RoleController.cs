@@ -1,6 +1,6 @@
 ﻿using InspurOA.Attributes;
+using InspurOA.BLL;
 using InspurOA.DAL;
-using InspurOA.Extensions;
 using InspurOA.Identity.EntityFramework;
 using InspurOA.Models;
 using Microsoft.AspNet.Identity;

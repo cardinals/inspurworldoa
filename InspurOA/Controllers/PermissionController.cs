@@ -13,8 +13,8 @@ using InspurOA.Identity.EntityFramework;
 using InspurOA.Attributes;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
-using InspurOA.Extensions;
 using Microsoft.AspNet.Identity;
+using InspurOA.BLL;
 
 namespace InspurOA.Controllers
 {

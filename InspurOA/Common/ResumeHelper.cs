@@ -106,15 +106,19 @@ namespace InspurOA.Common
             switch (propertyName)
             {
                 case "PersonalInformation":
+                    if (propertyValue.StartsWith("\r更新时间"))
+                    {
+                        propertyValue = propertyValue.Substring(18);
+                    }
                     resume.PersonalInformation = propertyValue;
                     break;
                 case "求职意向":
                 case "CareerObjective":
-                case "SelfAssessment":
                     resume.CareerObjective = propertyValue;
                     break;
                 case "自我评价":
                 case "Self-Assessment":
+                case "SelfAssessment":
                     resume.SelfAssessment = propertyValue;
                     break;
                 case "工作经历":

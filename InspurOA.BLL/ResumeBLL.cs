@@ -3,23 +3,53 @@ using InspurOA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace InspurOA.BLL
 {
     public class ResumeBLL
     {
-        ResumeDbContext dal = new ResumeDbContext();
+        InspurDbContext dal = new InspurDbContext();
 
         public List<Resume> GetResumeList()
         {
             return dal.ResumeSet.ToList();
         }
 
-        public void SaveResume(Resume resume)
+        public IQueryable<Resume> QueryResumeByPage(Expression<Func<Resume, bool>> whereSelector, Expression<Func<Resume, string>> KeySelector, out int totalCount, out int pageCount, int offset, int limit = 10)
         {
-            resume.Id = Guid.NewGuid().ToString();
+            totalCount = 0;
+            pageCount = 0;
+            if (offset < 0)
+            {
+                throw new ArgumentException("参数不能小于0", "offset");
+            }
+
+            if (limit <= 0)
+            {
+                throw new ArgumentException("参数必须大于0", "limit");
+            }
+
+            return dal.ResumeSet.QueryByPage<Resume>(whereSelector, KeySelector, out totalCount, out pageCount, offset, limit);
+        }
+
+        public bool SaveResume(Resume resume)
+        {
             dal.ResumeSet.Add(resume);
-            dal.SaveChanges();
+            var saved = dal.SaveChanges();
+            return saved > 0;
+        }
+
+        public bool DeleteResume(Resume resume)
+        {
+            dal.ResumeSet.Remove(resume);
+            var deleted = dal.SaveChanges();
+            return deleted > 0;
+        }
+
+        public Resume FindResume(string id)
+        {
+            return dal.ResumeSet.Find(id);
         }
     }
 }

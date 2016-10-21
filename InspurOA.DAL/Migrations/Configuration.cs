@@ -5,14 +5,14 @@ namespace InspurOA.DAL.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<InspurOA.DAL.ResumeDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<InspurOA.DAL.InspurDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(InspurOA.DAL.ResumeDbContext context)
+        protected override void Seed(InspurOA.DAL.InspurDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

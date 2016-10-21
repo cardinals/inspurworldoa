@@ -1,5 +1,5 @@
 ﻿@model InspurOA.Models.Resume
-
+@using InspurOA.Models
 @{
     ViewBag.Title = "简历信息";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +9,9 @@
 <h2>@ViewBag.Title</h2>
 @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
 <hr />
-<div style="">
+<div>
+    <input type="hidden" name="ResumeId" value="@Model.Id" />
+
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.PersonalInformation)
@@ -138,6 +140,229 @@
         <dd>
             @Html.DisplayFor(model => model.SourceSite)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjectName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjectName)
+        </dd>
 
     </dl>
 </div>
+<hr />
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        @*<input type="button" name="LoadComments" value="加载面试反馈" class="btn btn-primary" /> |*@
+        <input type="button" name="AddComment" value="添加面试反馈" class="btn btn-primary" /> |
+        <input type="button" name="DeleteComment" value="删除反馈信息" class="btn btn-primary" />
+    </div>
+    <div data-name="CreatePart" class="col-md-12 form-horizontal" style="display:none;margin-top:30px;">
+        <div class="form-group">
+            <label class="col-md-2 control-label">岗位名称</label>
+            <div class="col-md-4">
+                <input type="text" name="PostName" class="form-control" />
+            </div>
+            <label class="col-md-2 control-label">面试日期</label>
+            <div class="col-md-4">
+                <input type="text" id="dateinfo" name="InterviewDate" placeholder="请选择日期" readonly class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">面试反馈</label>
+            <div class="col-md-9">
+                <textarea name="InterviewFeedBack" class="full-Control" style="max-width:100%;"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="button" name="BtnAddComment" value="提交" class="btn btn-default col-md-1 col-md-offset-10" />
+        </div>
+    </div>
+</div>
+<hr />
+<div id="ListComment" class="table-responsive" style="margin-bottom:30px;">
+
+</div>
+<script type="text/javascript" src="~/Scripts/jedate/jedate.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var LoadComment = function () {
+            var resumeId = $("input[name='ResumeId']").val();
+            if (resumeId == undefined || resumeId == "") {
+                alert("错误！");
+                return;
+            }
+
+            var data = { "ResumeId": resumeId };
+            $("#ListComment").html("");
+            $.ajax({
+                type: "post",
+                url: "../ResumeComment/ListResumeComments",
+                data: data,
+                dataType: "json",
+                success: function (result) {
+                    if (result != undefined && result.length > 0) {
+                        var tbodyInnerHtml = "";
+                        tbodyInnerHtml += " <table class='table table-bordered table-striped table-hover'>";
+
+                        tbodyInnerHtml += "<thead>";
+                        tbodyInnerHtml += "<tr class='success'>";
+                        tbodyInnerHtml += "<th>";
+                        tbodyInnerHtml += " <input type='checkbox' name='CheckAll' />";
+                        tbodyInnerHtml += "</th>";
+                        tbodyInnerHtml += "<th>";
+                        tbodyInnerHtml += "岗位名称";
+                        tbodyInnerHtml += "</th>";
+                        tbodyInnerHtml += "<th>";
+                        tbodyInnerHtml += "面试日期";
+                        tbodyInnerHtml += "</th>";
+                        tbodyInnerHtml += "<th>";
+                        tbodyInnerHtml += "面试反馈";
+                        tbodyInnerHtml += "</th>";
+                        tbodyInnerHtml += "<th>";
+                        tbodyInnerHtml += "反馈日期";
+                        tbodyInnerHtml += "</th>";
+                        tbodyInnerHtml += "<th>";
+                        tbodyInnerHtml += "反馈者";
+                        tbodyInnerHtml += "</th>";
+                        tbodyInnerHtml += "</tr>";
+                        tbodyInnerHtml += "</thead>";
+                        tbodyInnerHtml += "<tbody>";
+
+                        for (var i = 0; i < result.length; i++) {
+                            tbodyInnerHtml += "<tr class='active'>";
+                            tbodyInnerHtml += "<td>";
+                            tbodyInnerHtml += "<input type='checkbox' name='ID' value='" + result[i].Id + "' />";
+                            tbodyInnerHtml += "</td>";
+                            tbodyInnerHtml += "<td>";
+                            tbodyInnerHtml += result[i].PostName;
+                            tbodyInnerHtml += " </td>";
+                            tbodyInnerHtml += "<td>";
+                            tbodyInnerHtml += result[i].InterviewDate;
+                            tbodyInnerHtml += " </td>";
+                            tbodyInnerHtml += "<td>";
+                            tbodyInnerHtml += result[i].InterviewFeedBack;
+                            tbodyInnerHtml += " </td>";
+                            tbodyInnerHtml += "<td>";
+                            tbodyInnerHtml += result[i].FeedBackTime;
+                            tbodyInnerHtml += " </td>";
+                            tbodyInnerHtml += "<td>";
+                            tbodyInnerHtml += result[i].UserName;
+                            tbodyInnerHtml += " </td>";
+                        }
+
+                        tbodyInnerHtml += "</tbody>";
+                        tbodyInnerHtml += "   </table>";
+
+
+                        $("#ListComment").html(tbodyInnerHtml);
+                        //var commentList = $("<div[name='Comment']>");
+                        //commentList.text("");
+                        //commentList.append(tbodyInnerHtml);
+                    }
+                },
+                error: function (errorMessage) {
+                    alert("加载失败！");
+                    //alert(ex.responseText);
+                }
+            });
+        }
+
+        LoadComment();
+
+        $("input[name='AddComment']").click(function () {
+            $("div[data-name='CreatePart']").toggle();
+        });
+
+        //$("input[name='LoadComments']").click(function () {
+        //    LoadComment();
+        //});
+
+        $("input[name='DeleteComment']").click(function () {
+            var checkedList = $("input[name='ID']");
+            var selectedIds = [];
+            for (var i = 0; i < checkedList.length; i++) {
+                if (checkedList[i].checked) {
+                    selectedIds.push(checkedList[i].value);
+                }
+            }
+
+            if (selectedIds.length > 0) {
+                if (confirm("确认删除?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "../ResumeComment/Delete",
+                        data: { 'ids': selectedIds },
+                        dataType: "json",
+                        success: function (result) {
+                            $("input[name='LoadComments']").click();
+                        },
+                        error: function (ex) {
+                            LoadComment();
+                            //alert(ex.responseText);
+                        }
+                    });
+                }
+            }
+            else {
+                alert("请选择要删除的列表项！");
+            }
+        });
+
+        $("input[name='BtnAddComment']").click(function () {
+            var resumeId = $("input[name='ResumeId']").val();
+            var postName = $("input[name='PostName']").val();
+            var interviewDate = $("input[name='InterviewDate']").val();
+            var interviewFeedBack = $("textarea[name='InterviewFeedBack']").val();
+
+            if (resumeId == undefined || resumeId == "") {
+                alert("发生错误，将新页面！");
+                window.location.reload();
+                return;
+            }
+
+            if (postName == undefined || postName == "") {
+                alert("请输入‘岗位名称’");
+                return;
+            }
+
+            if (interviewDate == undefined || interviewDate == "") {
+                alert("请输入‘面试日期’");
+                return;
+            }
+
+            if (interviewFeedBack == undefined || interviewFeedBack == "") {
+                alert("请输入‘面试反馈’");
+                return;
+            }
+
+            var data = { "ResumeId": resumeId, "postName": postName, "interviewDate": interviewDate, "interviewFeedBack": interviewFeedBack };
+            $.ajax({
+                type: "post",
+                url: "../ResumeComment/Create",
+                data: data,
+                dataType: "json",
+                success: function (result) {
+                    $("input[name='PostName']").val("");
+                    $("input[name='InterviewDate']").val("");
+                    $("textarea[name='InterviewFeedBack']").val("");
+                    $("div[data-name='CreatePart']").toggle();
+                    LoadComment();
+                },
+                error: function (errorMessage) {
+                    alert(ex.responseText);
+                }
+            });
+        });
+
+        jeDate({
+            dateCell: "#dateinfo",
+            format: "YYYY-MM-DD hh:mm:ss",
+            isinitVal: true,
+            isTime: true, //isClear:false,
+            minDate: "1990-01-01 00:00:00"//,
+            //okfun: function (val) { alert(val) }
+        });
+    });
+</script>

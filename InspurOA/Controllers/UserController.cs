@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using InspurOA.Identity.Owin.Extensions;
-using InspurOA.Extensions;
+using InspurOA.BLL;
 
 namespace InspurOA.Controllers
 {

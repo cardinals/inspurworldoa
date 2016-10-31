@@ -4,149 +4,133 @@
     ViewBag.Title = "简历管理";
 }
 
-<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
-<style type="text/css">
-    tr {
-        cursor: pointer;
-    }
+@*<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/Content/Checkbox/checkbox.css" rel="stylesheet" />*@
 
-    th {
-        text-align: center;
-        border: 2px solid;
-    }
-
-    td {
-        padding: 1px;
-        border-left: 1px dashed;
-        border-right: 1px dashed;
-        border-top: 2px solid;
-        border-bottom: 2px solid;
-        font-size: 12px;
-        height: 30px;
-    }
-</style>
-
-<h2>@ViewBag.Title</h2>
-<div class="row">
-    <div class="col-xs-8 col-sm-9 col-md-9">
-        @Html.ActionLink("上传简历", "Create", null, new { @class = "btn btn-primary" }) |
-        <input type="button" name="DeleteResume" value="删除简历" class="btn btn-primary" />
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
     </div>
-    @*<div class="col-xs-4 col-sm-3 col-md-3">*@
-    @using (Html.BeginForm("SearchResumes", "Resume", null, FormMethod.Post, new { @class = "col-xs-4 col-sm-3 col-md-3" }))
-    {
-        <div class="input-group">
-            <input type="text" name="query" class="form-control">
-            <span class="input-group-btn">
-                <input type="submit" class="btn btn-default" value="搜索" />
-                @*<button class="btn btn-default" name="search" type="button">搜索</button>*@
-            </span>
-        </div>
-    }
-    @*</div>*@
+    <div class="col-md-8 right" style="float:right;">
+        @Html.ActionLink("上传简历", "Create", null, new { @class = "btn btn-primary" }) |
+        <input type="button" name="DeleteResume" value="删除简历" class="btn btn-danger" />
+    </div>
 </div>
 <hr />
-<div class="table-responsive">
-    <table id="GridList" class="table table-bordered table-striped table-hover">
-        <thead>
-            <tr class="success">
-                <th>
-                    <input type="checkbox" name="CheckAll" />
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PersonalInformation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CareerObjective)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SelfAssessment)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.WorkExperience)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ProjectExperience)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Education)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr class="active">
-                    <td>
-                        <input type="checkbox" name="ID" value="@Html.DisplayFor(modelItem => item.Id)" />
-                    </td>
-                    <td data-type="content">
-                        @if (@Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Length > 50)
-                        {
-                            @Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Substring(0, 50)
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.PersonalInformation)
-                        }
-                    </td>
-                    <td data-type="content">
-                        @if (@Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Length > 50)
-                        {
-                            @Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Substring(0, 50)
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.CareerObjective)
-                        }
-                    </td>
-                    <td data-type="content">
-                        @if (@Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Length > 50)
-                        {
-                            @Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Substring(0, 50)
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.SelfAssessment)
-                        }
-                    </td>
-                    <td data-type="content">
-                        @if (@Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Length > 50)
-                        {
-                            @Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Substring(0, 50)
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.WorkExperience)
-                        }
-                    </td>
-                    <td data-type="content">
-                        @if (@Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Length > 50)
-                        {
-                            @Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Substring(0, 50)
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.ProjectExperience)
-                        }
-                    </td>
-                    <td data-type="content">
-                        @if (@Html.DisplayFor(modelItem => item.Education).ToHtmlString().Length > 50)
-                        {
-                            @Html.DisplayFor(modelItem => item.Education).ToHtmlString().Substring(0, 50)
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.Education)
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    @Html.Partial("PagInation")
-</div>
 
+<div class="subContainer">
+    <div class="row top-row">
+        @using (Html.BeginForm("SearchResumes", "Resume", null, FormMethod.Post, new { @class = "col-xs-4 col-sm-3 col-md-3 right" }))
+        {
+            <div class="input-group">
+                <input type="text" name="query" class="form-control" style="border-radius:4px;">
+                <span class="input-group-btn">
+                    <input type="submit" class="btn btn-default" value="搜索" />
+                </span>
+            </div>
+        }
+    </div>
+    <div class="table-responsive">
+        <table id="GridList" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" name="CheckAll" />
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PersonalInformation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CareerObjective)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SelfAssessment)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkExperience)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProjectExperience)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Education)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="ID" value="@Html.DisplayFor(modelItem => item.Id)" />
+                        </td>
+                        <td data-type="content">
+                            @if (@Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Length > 50)
+                            {
+                                @Html.DisplayFor(modelItem => item.PersonalInformation).ToHtmlString().Substring(0, 50)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.PersonalInformation)
+                            }
+                        </td>
+                        <td data-type="content">
+                            @if (@Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Length > 50)
+                            {
+                                @Html.DisplayFor(modelItem => item.CareerObjective).ToHtmlString().Substring(0, 50)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.CareerObjective)
+                            }
+                        </td>
+                        <td data-type="content">
+                            @if (@Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Length > 50)
+                            {
+                                @Html.DisplayFor(modelItem => item.SelfAssessment).ToHtmlString().Substring(0, 50)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.SelfAssessment)
+                            }
+                        </td>
+                        <td data-type="content">
+                            @if (@Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Length > 50)
+                            {
+                                @Html.DisplayFor(modelItem => item.WorkExperience).ToHtmlString().Substring(0, 50)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.WorkExperience)
+                            }
+                        </td>
+                        <td data-type="content">
+                            @if (@Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Length > 50)
+                            {
+                                @Html.DisplayFor(modelItem => item.ProjectExperience).ToHtmlString().Substring(0, 50)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.ProjectExperience)
+                            }
+                        </td>
+                        <td data-type="content">
+                            @if (@Html.DisplayFor(modelItem => item.Education).ToHtmlString().Length > 50)
+                            {
+                                @Html.DisplayFor(modelItem => item.Education).ToHtmlString().Substring(0, 50)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Education)
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @Html.Partial("PagInation")
+    </div>
+</div>
 <script type="text/javascript">
     $(document).ready(function () {
         $(function () {

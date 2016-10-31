@@ -5,24 +5,28 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
-<p>
-    @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
-</p>
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
+    </div>
+    <div class="col-md-8 right" style="float:right;">
+        @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
+<hr />
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <hr />
+    <div class="form-horizontal">        
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.PermissionId)
         <div class="form-group">
             @Html.LabelFor(model => model.PermissionCode, htmlAttributes: new { @class = "control-label col-md-2" })
             @*<label class="control-label col-md-2" for="PermissionDescription">权限描述</label>*@
             <div class="col-md-10">
-                @Html.EditorFor(model => model.PermissionCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.PermissionCode, new { htmlAttributes = new { @class = "common-control col-md-4" } })
                 @Html.ValidationMessageFor(model => model.PermissionCode, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -38,7 +42,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="保存" class="btn btn-default form-control" />
+                <input type="submit" value="保存" class="btn btn-default common-control col-md-4" />
             </div>
         </div>
     </div>

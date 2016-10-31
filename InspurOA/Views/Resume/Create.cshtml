@@ -8,11 +8,11 @@
 @*<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>*@
 <style type="text/css">
     .div-group {
-        position:relative;
+        position: relative;
         display: block;
         width: 100%;
         margin-top: 20px;
-        margin-bottom:20px;
+        margin-bottom: 20px;
         box-sizing: border-box;
         content: normal;
         clear: none;
@@ -34,13 +34,28 @@
                 }
             }
         });
+
+        $("input[type='submit']").click(function () {
+            var file = $("input[name='file']").val();
+            if (file == undefined || file == "") {
+                alert("请选择要上传的简历文档！");
+                return false;
+            }
+
+        });
     });
 </script>
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/jqueryval")
 
-<h2>@ViewBag.Title</h2>
-@Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
+    </div>
+    <div class="col-md-8 right" style="float:right;">
+        @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
 <hr />
 
 <div style="margin-left:auto;margin-right:auto;max-width:400px;box-sizing:border-box;">
@@ -77,38 +92,36 @@
                                 <option value="@item.ProjectName">@item.ProjectName</option>
                             }
                         }
-
                     }
                 </select>
             </div>
         </div>
         @*<div class="form-group">
-            <label class="col-md-4 control-label">岗位名称：</label>
-            <div class="col-md-8">
-                <select name="postName" class="form-control">
-                    <option value=".Net Web开发">.Net Web开发</option>
-                    <option value="Java开发">Java开发</option>
-                    <option value="软件测试">软件测试</option>
-                    <option value="软件开发测试">软件开发测试</option>
-                </select>
-            </div>
-        </div>*@
-        <div class="form-group">
-            <label class="col-md-4 control-label">文档：</label>
-            <div class="col-md-8">
-                <input type="button" id="btnSelectDoc" value="选择简历..." class="form-control" />
-                <input type="file" name="file" style="height:30px;width:100%;float:right;display:none;" multiple="multiple" /> @**@
-            </div>
-        </div>
-        <div class="form-group">
-            <div name="fileList" class="col-md-8 col-md-offset-4" style="max-height:200PX;overflow:auto;">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-8 col-md-offset-4">
-                <input type="submit" id="BtnUpload" class="form-control btn btn-primary" value="上传" />
-            </div>
-        </div>
-    }
+                <label class="col-md-4 control-label">岗位名称：</label>
+                <div class="col-md-8">
+                    <select name="postName" class="form-control">
+                        <option value=".Net Web开发">.Net Web开发</option>
+                        <option value="Java开发">Java开发</option>
+                        <option value="软件测试">软件测试</option>
+                        <option value="软件开发测试">软件开发测试</option>
+                    </select>
+                </div>
+            </div>*@
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">文档：</label>
+                            <div class="col-md-8">
+                                <input type="button" id="btnSelectDoc" value="选择简历..." class="form-control" />
+                                <input type="file" name="file" style="height:30px;width:100%;float:right;display:none;" multiple="multiple" /> @**@
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div name="fileList" class="col-md-8 col-md-offset-4" style="max-height:200PX;overflow:auto;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4">
+                                <input type="submit" id="BtnUpload" class="form-control btn btn-primary" value="上传" />
+                            </div>
+                        </div>
+                        }
 </div>
-

@@ -1,47 +1,48 @@
 ﻿@model IEnumerable<InspurOA.Models.ProjectModel>
 
 @{
-    ViewBag.Title = "项目列表";
+    ViewBag.Title = "项目管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
-<p>
-    @Html.ActionLink("添加", "Create", null, new { @class = "btn btn-primary" }) |
-    <input class="btn btn-primary" name="BtnDelete" type="button" value="删除" />
-</p>
-<hr />
-<div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover">
-        <tr class="success">
-            <th>
-                <input type="checkbox" name="CheckAll" />
-            </th>
-            <th>
-                项目名称
-            </th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <input type="checkbox" name="ID" value="@Html.DisplayFor(modelItem => item.Id)" />
-                </td>
-                <td data-type="content">
-                    @Html.DisplayFor(modelItem => item.ProjectName)
-                </td>
-            </tr>
-        }
-
-    </table>
-    @Html.Partial("PagInation")
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
+    </div>
+    <div class="col-md-8 right" style="float:right;">
+        @Html.ActionLink("添加项目", "Create", null, new { @class = "btn btn-primary" }) |
+        <input class="btn btn-danger" name="BtnDelete" type="button" value="删除项目" />
+    </div>
 </div>
-<style type="text/css">
-    tr {
-        cursor: pointer;
-    }
-</style>
+<hr />
+
+<div class="subContainer">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <tr class="success">
+                <th>
+                    <input type="checkbox" name="CheckAll" />
+                </th>
+                <th>
+                    项目名称
+                </th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="ID" value="@Html.DisplayFor(modelItem => item.Id)" />
+                    </td>
+                    <td data-type="content">
+                        @Html.DisplayFor(modelItem => item.ProjectName)
+                    </td>
+                </tr>
+            }
+        </table>
+        @Html.Partial("PagInation")
+    </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $("td[data-type='content']").click(function () {

@@ -110,6 +110,8 @@
     <Compile Include="Resume\Resume.cs" />
     <Compile Include="Resume\UploadResumeItemViewModel.cs" />
     <Compile Include="Role\RoleViewModel.cs" />
+    <Compile Include="Statistics\StatisticsModel.cs" />
+    <Compile Include="Statistics\StatisticsViewModel.cs" />
     <Compile Include="User\UserCreateViewModel.cs" />
     <Compile Include="User\UserDetailViewModel.cs" />
   </ItemGroup>

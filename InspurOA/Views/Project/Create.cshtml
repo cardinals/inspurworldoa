@@ -5,13 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
-<p>
-    @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
-</p>
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
+    </div>
+    <div class="col-md-8 right" style="float:right;">
+        @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
 <hr />
-<div style="float:left;width:70%;min-width:500px;">
-    @using (Html.BeginForm())
+
+@*<div style="float:left;width:70%;max-width:500px;">*@
+    @using (Html.BeginForm("Create", "Project", FormMethod.Post, new { @class = "form-horizontal form-md", role = "form" }))
     {
         @Html.AntiForgeryToken()
 
@@ -19,16 +24,16 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "common-control col-md-8" } })
                     @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="保存" class="btn btn-default form-control" />
+                    <input type="submit" value="保存" class="btn btn-default common-control col-md-8" />
                 </div>
             </div>
         </div>
     }
-</div>
+@*</div>*@

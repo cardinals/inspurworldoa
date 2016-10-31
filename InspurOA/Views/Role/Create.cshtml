@@ -5,16 +5,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
-<p>
-    @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
-</p>
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
+    </div>
+    <div class="col-md-8 right" style="float:right;">
+        @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
+<hr />
+
 @using (Html.BeginForm("Create", "Role", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal form-md">
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.RoleCode, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -42,7 +47,7 @@
             var PermissionList = ViewData["Permissions"] as List<PermissionItemViewModel>;
             <div class="form-group">
                 @Html.LabelFor(model => model.Permissions, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
+                <div class="col-md-10 limit-div">
                     @Html.ValidationMessageFor(model => model.Permissions, "", new { @class = "text-danger" })
                     <table class="table-responsive">
                         @foreach (var item in PermissionList)

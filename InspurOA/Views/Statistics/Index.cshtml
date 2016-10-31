@@ -1,0 +1,44 @@
+﻿@model InspurOA.Models.StatisticsViewModel
+
+@{
+    ViewBag.Title = "简历统计";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
+    </div>
+    <div class="col-md-8 right" style="float:right;">
+        <span><b>简历总数：</b></span>【 @Model.TotalCount 】 <span><b>份</b></span>
+    </div>
+</div>
+<hr />
+
+<div class="subContainer">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <tr class="success">
+                <th>
+                    项目名称
+                </th>
+                <th>
+                    简历数量
+                </th>
+            </tr>
+            @foreach (var item in Model.GroupList)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProjectName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Count)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

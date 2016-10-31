@@ -66,13 +66,18 @@ namespace InspurOA.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return Redirect("idnex");
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Resume resume = bll.FindResume(id);
             if (resume == null)
             {
                 return HttpNotFound();
             }
+
+            var projects = proBll.GetAllProjects();
+            ViewData["Projects"] = projects;
 
             return View(resume);
         }
@@ -89,11 +94,15 @@ namespace InspurOA.Controllers
         {
             if (string.IsNullOrWhiteSpace(sourceSite) || string.IsNullOrWhiteSpace(languageType) || string.IsNullOrWhiteSpace(projectName))// || string.IsNullOrWhiteSpace(postName)
             {
+                var projects = proBll.GetAllProjects();
+                ViewData["Projects"] = projects;
                 return View("Create");
             }
 
-            if (!sourceSite.Equals("ZL") && sourceSite.Equals("WY"))
+            if (!sourceSite.Equals("ZL") && !sourceSite.Equals("WY"))
             {
+                var projects = proBll.GetAllProjects();
+                ViewData["Projects"] = projects;
                 return View("Create");
             }
 
@@ -186,18 +195,25 @@ namespace InspurOA.Controllers
             return RedirectToAction("Index");
         }
 
-        //[HttpPost]
-        //public String Search(string query)
-        //{
-        //    if (string.IsNullOrWhiteSpace(query))
-        //    {
-        //        return null;
-        //    }
+        [HttpPost]
+        public string ChangeProjectName(string resumeId, string projectName)
+        {
+            if (string.IsNullOrWhiteSpace(resumeId) || string.IsNullOrWhiteSpace(projectName))
+            {
+                return "{\"result\":false}";
+            }
 
-        //    return JsonConvert.SerializeObject(bll.GetResumeList()
-        //        .OrderByDescending(R => R.UploadTime)
-        //        .Where(t => (t.PersonalInformation.Contains(query) || t.WorkExperience.Contains(query) || t.ProjectExperience.Contains(query) || t.Education.Contains(query))));
-        //}
+            var resume = bll.FindResume(resumeId);
+            if (resume == null)
+            {
+                return "{\"result\":false}";
+            }
+
+            resume.ProjectName = projectName;
+            bll.UpdateResume(resume);
+
+            return "{\"result\":true}";
+        }
 
         [HttpPost]
         public ActionResult SearchResumes(FormCollection colleciton)

@@ -1,52 +1,52 @@
 ﻿@model IEnumerable<InspurOA.Identity.EntityFramework.InspurIdentityPermission>
 
 @{
-    ViewBag.Title = "权限信息列表";
+    ViewBag.Title = "权限管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="row top-row">
+    <div class="col-md-4 left" style="float:left;">
+        <span class="caption">@ViewBag.Title</span>
+    </div>
+    <div class="col-md-8 right" style="float:right;">
+        @Html.ActionLink("添加权限", "Create", null, new { @class = "btn btn-primary" }) |
+        <input class="btn btn-danger" name="BtnDelete" type="button" value="删除权限" />
+    </div>
+</div>
+<hr />
 
-<p>
-    @Html.ActionLink("添加权限", "Create", null, new { @class = "btn btn-primary" })
-    <input class="btn btn-primary" name="BtnDelete" type="button" value="删除" />
-</p>
-
-<div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover">
-        <tr class="success">
-            <th>
-                <input type="checkbox" name="CheckAll" />
-            </th>
-            <th>权限代码</th>
-            <th>
-                权限描述
-            </th>
-        </tr>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <input type="checkbox" name="ID" value="@Html.DisplayFor(modelItem => item.PermissionId)" />
-                </td>
-                <td data-content="content">
-                    @Html.DisplayFor(modelItem => item.PermissionCode)
-                </td>
-                <td data-content="content">
-                    @Html.DisplayFor(modelItem => item.PermissionDescription)
-                </td>
+<div class="subContainer">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <tr class="success">
+                <th>
+                    <input type="checkbox" name="CheckAll" />
+                </th>
+                <th>权限代码</th>
+                <th>
+                    权限描述
+                </th>
             </tr>
-        }
-
-    </table>
-    @Html.Partial("PagInation")
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="ID" value="@Html.DisplayFor(modelItem => item.PermissionId)" />
+                    </td>
+                    <td data-content="content">
+                        @Html.DisplayFor(modelItem => item.PermissionCode)
+                    </td>
+                    <td data-content="content">
+                        @Html.DisplayFor(modelItem => item.PermissionDescription)
+                    </td>
+                </tr>
+            }
+        </table>
+        @Html.Partial("PagInation")
+    </div>
 </div>
 
-<style type="text/css">
-    tr {
-        cursor: pointer;
-    }
-</style>
 <script type="text/javascript">
     $(document).ready(function () {
         $("td[data-content='content']").click(function () {

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - InspurWorldOA</title>
+    <title>@ViewBag.Title - InspurWorld</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
@@ -15,11 +15,11 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                @Html.ActionLink("Inspur World", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @*@Html.ActionLink("Inspur World", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                <a href="../../Home/Index" class="navbar-brand"><b>Inspur World</b></a>
             </div>
             <div>
                 <ul class="nav navbar-nav">
-                    @*<li>@Html.ActionLink("简历管理", "Index", "Resume")</li>*@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             简历管理
@@ -28,11 +28,11 @@
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("简历管理", "Index", "Resume")</li>
                             <li class="divider"></li>
-                            <li>@Html.ActionLink("项目信息维护", "Index", "Project")</li>
+                            <li>@Html.ActionLink("项目管理", "Index", "Project")</li>
                             <li class="divider"></li>
-                            <li>@Html.ActionLink("网站来源维护", "Index", "")</li>
-                            <li class="divider"></li>
-                            <li>@Html.ActionLink("岗位名称维护", "Index", "")</li>
+                            <li>@Html.ActionLink("简历统计", "Index", "Statistics")</li>
+                            @*<li class="divider"></li>
+                                <li>@Html.ActionLink("岗位名称维护", "Index", "")</li>*@
                         </ul>
                     </li>
                     @*<li>@Html.ActionLink("简历共享", "Index", "Home")</li>*@
@@ -53,6 +53,8 @@
                             </ul>
                         </li>
                     }
+
+                    @*@Html.ActionLink("About", "About", "Home",null,new { @class= "navbar-brand" })*@
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -62,7 +64,6 @@
         @RenderBody()
     </div>
     <footer>
-        <hr />
         <div>
             <p>&copy; @DateTime.Now.Year - 浪潮世科简历信息管理系统</p>
         </div>

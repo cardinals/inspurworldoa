@@ -14,6 +14,7 @@ using InspurOA.Common;
 using InspurOA.BLL;
 using System.Configuration;
 using Newtonsoft.Json;
+using InspurOA.Web.Models;
 
 namespace InspurOA.Controllers
 {
@@ -23,10 +24,30 @@ namespace InspurOA.Controllers
         private Document doc = null;
         private object unknow = Type.Missing;
         private string localResumeFolderPath = ConfigurationManager.AppSettings["LocalResumeFolderPath"].ToString();
-
+        
         private ResumeBLL bll = new ResumeBLL();
         private ResumeCommentBLL commentBll = new ResumeCommentBLL();
         private ProjectBLL proBll = new ProjectBLL();
+
+        private string LocalResumeFolderPath
+        {
+            get
+            {
+                try
+                {
+                    if (!Directory.Exists(localResumeFolderPath))
+                    {
+                        Directory.CreateDirectory(localResumeFolderPath);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+
+                return localResumeFolderPath;
+            }
+        }
 
         // GET: Resume
         public ActionResult Index(string query, int pageIndex = 0, int limit = 10)
@@ -58,7 +79,7 @@ namespace InspurOA.Controllers
             ViewData["Limit"] = limit;
             ViewData["query"] = query;
 
-            return View(comments);
+            return View(ChangeResumeModelToViewModel(comments.ToList()));
         }
 
         // GET: Resume/Details/5
@@ -73,20 +94,20 @@ namespace InspurOA.Controllers
             Resume resume = bll.FindResume(id);
             if (resume == null)
             {
-                return HttpNotFound();
+                return Redirect("idnex");
             }
 
-            var projects = proBll.GetAllProjects();
-            ViewData["Projects"] = projects;
+            var projects = proBll.GetAllProjects().ToList();
+            ViewData["Projects"] = ChangeProjectModelToViewModel(projects);
 
-            return View(resume);
+            return View(ChangeResumeModelToViewModel(resume));
         }
 
         // GET: Resume/Create
         public ActionResult Create()
         {
             var projects = proBll.GetAllProjects();
-            ViewData["Projects"] = projects;
+            ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
             return View();
         }
 
@@ -119,7 +140,7 @@ namespace InspurOA.Controllers
                 }
 
                 string fileName = string.Format("{0}--{1}", DateTime.Now.ToString("yyyyMMddhhmmss"), Path.GetFileName(file.FileName));
-                string filePath = Path.Combine(localResumeFolderPath, fileName);
+                string filePath = Path.Combine(LocalResumeFolderPath, fileName);
                 FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
                 fs.Close();
                 file.SaveAs(filePath);
@@ -226,19 +247,17 @@ namespace InspurOA.Controllers
 
             int totalCount = 0, pageCount = 0;
 
-            //var comments = bll.GetResumeList()
-            //     .OrderByDescending(R => R.UploadTime)
-            //     .Where(t => (t.PersonalInformation.Contains(query) || t.WorkExperience.Contains(query) || t.ProjectExperience.Contains(query) || t.Education.Contains(query)));
-
-            var comments = bll.QueryResumeByPage(
+            var resumes = bll.QueryResumeByPage(
                 r => r.PersonalInformation.Contains(query) || r.WorkExperience.Contains(query) || r.ProjectExperience.Contains(query) || r.Education.Contains(query),
                 R => R.UploadTime.ToString(),
                 out totalCount,
                 out pageCount,
                 0);
             ViewData["query"] = query;
-            return View("index", comments);
+
+            return View("index", ChangeResumeModelToViewModel(resumes.ToList()));
         }
+        
         // GET: Resume/Delete/5
         public string Delete(string[] ids)
         {
@@ -253,6 +272,7 @@ namespace InspurOA.Controllers
                 if (resume != null)
                 {
                     bll.DeleteResume(resume);
+                    ResumeHelper.DeleteResumeFileFromServerFolder(resume.FilePath);
                 }
 
                 var comments = commentBll.FindResumeCommentsByResumeId(id);
@@ -265,7 +285,6 @@ namespace InspurOA.Controllers
             return "{ 'result':true }";
         }
 
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -273,6 +292,88 @@ namespace InspurOA.Controllers
             }
 
             base.Dispose(disposing);
+        }
+
+
+        public ResumeViewModel ChangeResumeModelToViewModel(Resume data)
+        {
+            if (data != null)
+            {
+                return new ResumeViewModel
+                {
+                    Id = data.Id,
+                    PersonalInformation = data.PersonalInformation,
+                    CareerObjective = data.CareerObjective,
+                    SelfAssessment = data.SelfAssessment,
+                    WorkExperience = data.WorkExperience,
+                    ProjectExperience = data.ProjectExperience,
+                    Education = data.Education,
+                    Certificates = data.Certificates,
+                    HonorsandAwards = data.HonorsandAwards,
+                    SchoolPractice = data.SchoolPractice,
+                    LanguageSkills = data.LanguageSkills,
+                    Training = data.Training,
+                    ProfessionalSkills = data.ProfessionalSkills,
+                    FilePath = data.FilePath,
+                    UploadTime = data.UploadTime,
+                    SourceSite = data.SourceSite,
+                    LanguageType = data.LanguageType,
+                    ProjectName = data.ProjectName
+                };
+            }
+
+            return null;
+        }
+        public List<ResumeViewModel> ChangeResumeModelToViewModel(List<Resume> data)
+        {
+            var ListData = new List<ResumeViewModel>();
+
+            if (data != null && data.Count > 0)
+            {
+                foreach (var item in data)
+                {
+                    ListData.Add(
+                        new ResumeViewModel
+                        {
+                            Id = item.Id,
+                            PersonalInformation = item.PersonalInformation,
+                            CareerObjective = item.CareerObjective,
+                            SelfAssessment = item.SelfAssessment,
+                            WorkExperience = item.WorkExperience,
+                            ProjectExperience = item.ProjectExperience,
+                            Education = item.Education,
+                            Certificates = item.Certificates,
+                            HonorsandAwards = item.HonorsandAwards,
+                            SchoolPractice = item.SchoolPractice,
+                            LanguageSkills = item.LanguageSkills,
+                            Training = item.Training,
+                            ProfessionalSkills = item.ProfessionalSkills,
+                            FilePath = item.FilePath,
+                            UploadTime = item.UploadTime,
+                            SourceSite = item.SourceSite,
+                            LanguageType = item.LanguageType,
+                            ProjectName = item.ProjectName
+                        }
+                    );
+                }
+            }
+
+            return ListData;
+        }
+
+        public List<ProjectViewModel> ChangeProjectModelToViewModel(List<ProjectModel> data)
+        {
+            var ListData = new List<ProjectViewModel>();
+
+            if (data != null && data.Count > 0)
+            {
+                foreach (var item in data)
+                {
+                    ListData.Add(new ProjectViewModel { Id = item.Id, ProjectName = item.ProjectName });
+                }
+            }
+
+            return ListData;
         }
     }
 }

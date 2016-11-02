@@ -58,9 +58,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationDbContext.cs" />
-    <Compile Include="Migrations\201610211219524_UpdateDb3.cs" />
-    <Compile Include="Migrations\201610211219524_UpdateDb3.Designer.cs">
-      <DependentUpon>201610211219524_UpdateDb3.cs</DependentUpon>
+    <Compile Include="Migrations\201611010218139_InitialCreate.cs" />
+    <Compile Include="Migrations\201611010218139_InitialCreate.Designer.cs">
+      <DependentUpon>201611010218139_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611010634071_B.cs" />
+    <Compile Include="Migrations\201611010634071_B.Designer.cs">
+      <DependentUpon>201611010634071_B.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,8 +85,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610211219524_UpdateDb3.resx">
-      <DependentUpon>201610211219524_UpdateDb3.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201611010218139_InitialCreate.resx">
+      <DependentUpon>201611010218139_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611010634071_B.resx">
+      <DependentUpon>201611010634071_B.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

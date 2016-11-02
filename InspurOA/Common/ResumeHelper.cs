@@ -1,6 +1,8 @@
 ﻿using InspurOA.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,7 +102,6 @@ namespace InspurOA.Common
             return resume;
         }
 
-
         public static void setResumePropertyValue(ref Resume resume, string propertyName, string propertyValue)
         {
             switch (propertyName)
@@ -162,6 +163,29 @@ namespace InspurOA.Common
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// 从Server的备份文件夹删除简历文件
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns></returns>
+        public static bool DeleteResumeFileFromServerFolder(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return false;
+            }
+
+            string localResumeFolderPath = ConfigurationManager.AppSettings["LocalResumeFolderPath"].ToString();
+            if (!Directory.Exists(localResumeFolderPath))
+            {
+                return false;
+            }
+
+            string filePath = Path.Combine(localResumeFolderPath, fileName);
+            File.Delete(filePath);
+            return true;
         }
     }
 }

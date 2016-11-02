@@ -1,5 +1,6 @@
 ﻿using InspurOA.BLL;
 using InspurOA.Models;
+using InspurOA.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace InspurOA.Web.Controllers
             ViewData["CurrentPageIndex"] = pageIndex;
             ViewData["Limit"] = limit;
 
-            return View(comments);
+            return View(ChangeProjectModelToViewModel(comments.ToList()));
         }
 
         // GET: Project/Create
@@ -73,9 +74,10 @@ namespace InspurOA.Web.Controllers
                 return RedirectToAction("index");
             }
 
-            var model = bll.Find(id);
-            if (model != null)
+            var p = bll.Find(id);
+            if (p != null)
             {
+                ProjectViewModel model = new ProjectViewModel { Id = p.Id, ProjectName = p.ProjectName };
                 return View(model);
             }
 
@@ -84,12 +86,14 @@ namespace InspurOA.Web.Controllers
 
         // POST: Project/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(string id, FormCollection collection)
         {
             try
             {
-                // TODO: Add update logic here
-
+                ProjectModel p = new ProjectModel();
+                p.Id = id;
+                p.ProjectName = collection.Get("ProjectName");
+                bll.UpdateProject(p);
                 return RedirectToAction("Index");
             }
             catch
@@ -117,6 +121,21 @@ namespace InspurOA.Web.Controllers
             }
 
             return "{ 'result':true }";
+        }
+
+        public List<ProjectViewModel> ChangeProjectModelToViewModel(List<ProjectModel> data)
+        {
+            var ListData = new List<ProjectViewModel>();
+
+            if (data != null && data.Count > 0)
+            {
+                foreach (var item in data)
+                {
+                    ListData.Add(new ProjectViewModel { Id = item.Id, ProjectName = item.ProjectName });
+                }
+            }
+
+            return ListData;
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿@model InspurOA.Models.Resume
-@using InspurOA.Models
+﻿@model InspurOA.Web.Models.ResumeViewModel
+@using InspurOA.Web.Models
 @{
     ViewBag.Title = "上传简历";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -86,7 +86,7 @@
                     @{
                         if (ViewData["Projects"] != null)
                         {
-                            var projects = ViewData["Projects"] as List<ProjectModel>;
+                            var projects = ViewData["Projects"] as List<ProjectViewModel>;
                             foreach (var item in projects)
                             {
                                 <option value="@item.ProjectName">@item.ProjectName</option>

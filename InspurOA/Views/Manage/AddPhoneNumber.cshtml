@@ -1,4 +1,4 @@
-﻿@model InspurOA.Models.AddPhoneNumberViewModel
+﻿@model InspurOA.Web.Models.AddPhoneNumberViewModel
 @{
     ViewBag.Title = "电话号码";
 }
@@ -15,13 +15,13 @@
     <div class="form-group">
         @Html.LabelFor(m => m.Number, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Number, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Number, new { @class = "common-control col-md-4" })
             @Html.ValidationMessageFor(m => m.Number, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default form-control" value="保存" />
+            <input type="submit" class="btn btn-default common-control  col-md-4" value="保存" />
         </div>
     </div>
 }

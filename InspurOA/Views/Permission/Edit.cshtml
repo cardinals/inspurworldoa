@@ -1,4 +1,4 @@
-﻿@model InspurOA.Models.PermissionViewModel
+﻿@model InspurOA.Web.Models.PermissionViewModel
 
 @{
     ViewBag.Title = "修改权限";
@@ -15,7 +15,7 @@
 </div>
 <hr />
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Permission", FormMethod.Post, new { @class = "form-horizontal form-md", role = "form" }))
 {
     @Html.AntiForgeryToken()
 

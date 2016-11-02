@@ -53,7 +53,7 @@ namespace InspurOA.Identity.EntityFramework
         public Task<TPermission> FindByCodeAsync(string permissionCode)
         {
             ThrowIfDisposed();
-            return _permissionStore.EntitySet.FirstOrDefaultAsync(p => permissionCode.ToUpper() == permissionCode.ToUpper());
+            return _permissionStore.EntitySet.FirstOrDefaultAsync(p => p.PermissionCode.ToUpper() == permissionCode.ToUpper());
         }
 
         public async Task CreateAsync(TPermission permission)

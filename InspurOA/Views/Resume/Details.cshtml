@@ -1,5 +1,5 @@
-﻿@model InspurOA.Models.Resume
-@using InspurOA.Models
+﻿@model InspurOA.Web.Models.ResumeViewModel
+@using InspurOA.Web.Models
 @{
     ViewBag.Title = "简历信息";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -161,11 +161,11 @@
         <dt></dt>
         <dd>
             <div class="row" data-name="ChangeProject" style="display:none;">
-                <select name="projectName" class="common-control col-md-6">
+                <select name="projectName" class="common-control col-md-5">
                     @{
                         if (ViewData["Projects"] != null)
                         {
-                            var projects = ViewData["Projects"] as List<ProjectModel>;
+                            var projects = ViewData["Projects"] as List<ProjectViewModel>;
                             foreach (var item in projects)
                             {
                                 <option value="@item.ProjectName">@item.ProjectName</option>
@@ -205,13 +205,11 @@
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label">面试反馈</label>
-            <div class="col-md-10">
-                <textarea name="InterviewFeedBack" class="common-control col-md-12"></textarea>
+            <div class="col-md-9">
+                <textarea name="InterviewFeedBack" class="common-control col-md-12" rows="2"></textarea>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-12">
-                <input type="button" name="BtnAddComment" value="提交" class="btn btn-default col-md-1 col-md-offset-11" />
+            <div class="col-md-1">
+                <input type="button" name="BtnSaveComment" value="提交" class="btn btn-primary col-md-12" />
             </div>
         </div>
     </div>
@@ -220,8 +218,7 @@
     <table class='table table-bordered table-hover'>
         <thead>
             <tr class="danger">
-                <th>
-                    <input type="checkbox" name="CheckAll" />
+                <th>                    
                 </th>
                 <th>岗位名称</th>
                 <th>面试日期</th>
@@ -256,7 +253,6 @@
                     tbodyInnerHtml += "<thead>";
                     tbodyInnerHtml += "<tr class='danger'>";
                     tbodyInnerHtml += "<th>";
-                    tbodyInnerHtml += "<input type='checkbox' name='CheckAll' />";
                     tbodyInnerHtml += "</th>";
                     tbodyInnerHtml += "<th>";
                     tbodyInnerHtml += "岗位名称";
@@ -356,7 +352,7 @@
             }
         });
 
-        $("input[name='BtnAddComment']").click(function () {
+        $("input[name='BtnSaveComment']").click(function () {
             var resumeId = $("input[name='ResumeId']").val();
             var postName = $("input[name='PostName']").val();
             var interviewDate = $("input[name='InterviewDate']").val();
@@ -391,7 +387,7 @@
                 dataType: "json",
                 success: function (result) {
                     $("input[name='PostName']").val("");
-                    $("input[name='InterviewDate']").val("");
+                    //$("input[name='InterviewDate']").val("");
                     $("textarea[name='InterviewFeedBack']").val("");
                     $("div[data-name='CreatePart']").toggle();
                     $("input[name='AddComment']").toggle();

@@ -241,6 +241,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PermissionItemViewModel.cs" />
+    <Compile Include="Models\PermissionViewModel.cs" />
+    <Compile Include="Models\ProjectViewModel.cs" />
+    <Compile Include="Models\ResumeViewModel.cs" />
+    <Compile Include="Models\RoleViewModel.cs" />
+    <Compile Include="Models\UserCreateViewModel.cs" />
     <Compile Include="Principal\IInspurPrincipal .cs" />
     <Compile Include="Principal\InspurPrincipal .cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -332,6 +340,7 @@
     <Content Include="Views\Project\Create.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
+    <Content Include="Views\Shared\CommonError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

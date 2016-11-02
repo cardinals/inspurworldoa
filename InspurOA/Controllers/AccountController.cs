@@ -8,12 +8,13 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 //using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using InspurOA.Models;
+using InspurOA.Web.Models;
 using System.Collections.Generic;
 using InspurOA.Identity.Owin;
 using InspurOA.Identity.Owin.Extensions;
 using Microsoft.AspNet.Identity.Owin;
 using InspurOA.Attributes;
+using InspurOA.Models;
 
 namespace InspurOA.Controllers
 {
@@ -81,22 +82,22 @@ namespace InspurOA.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, change to shouldLockout: true
-                var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+                var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
                 switch (result)
                 {
                     case InspurSignInStatus.Success:
                         return RedirectToLocal(returnUrl);
-                    case InspurSignInStatus.LockedOut:
-                        return View("Lockout");
-                    case InspurSignInStatus.RequiresVerification:
-                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    //case InspurSignInStatus.LockedOut:
+                    //    return View("Lockout");
+                    //case InspurSignInStatus.RequiresVerification:
+                    //    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                     case InspurSignInStatus.Failure:
                     default:
                         ModelState.AddModelError("", "用户名或密码错误，请重试。");
                         return View(model);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return View(model);
             }

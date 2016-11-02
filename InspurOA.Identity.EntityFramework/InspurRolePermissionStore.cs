@@ -337,15 +337,17 @@ namespace InspurOA.Identity.EntityFramework
             var roleEntity = await _roleStore.DbEntitySet.SingleOrDefaultAsync(r => r.RoleCode.ToUpper() == roleCode.ToUpper()).WithCurrentCulture();
             if (roleEntity == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", roleCode));
+                //throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
+                //    "RoleNotFound", roleCode));
+                return false;
             }
 
             var permissionEntity = await _permissionStore.EntitySet.SingleOrDefaultAsync(p => p.PermissionCode == permissionCode).WithCurrentCulture();
             if (permissionEntity == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                    "RoleNotFound", permissionCode));
+                //throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
+                //    "RoleNotFound", permissionCode));
+                return false;
             }
 
             return await _rolePermissionStore.EntitySet.AnyAsync(rp => rp.RoleId == roleEntity.RoleId && rp.PermissionId == permissionEntity.PermissionId);

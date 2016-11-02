@@ -72,7 +72,7 @@ namespace InspurOA.Identity.Core
                 }
                 else                //Update
                 {
-                    if (item2 != null && EqualityComparer<TKey>.Default.Equals(item2.RoleId, role.RoleId))
+                    if (item2 != null && !EqualityComparer<TKey>.Default.Equals(item2.RoleId, role.RoleId))
                     {
                         errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.DuplicateCode, role.RoleCode));
                     }

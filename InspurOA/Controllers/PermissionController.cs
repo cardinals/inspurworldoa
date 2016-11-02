@@ -15,10 +15,12 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using InspurOA.BLL;
+using InspurOA.Models;
+using InspurOA.Web.Models;
 
 namespace InspurOA.Controllers
 {
-    [InspurAuthorize(Roles = "Admin", Permissions = "ControlPermission")]
+    [InspurAuthorize(Roles = "Admin")]//, Permissions = "ControlPermission"
     public class PermissionController : Controller
     {
         private ApplicationPermissionManager _permissionManager;
@@ -91,7 +93,7 @@ namespace InspurOA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(PermissionViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -136,13 +138,12 @@ namespace InspurOA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(PermissionViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var p = new InspurIdentityPermission();
-            p.PermissionId = model.PermissionId;
+            var p = await PermissionManager.FindByIdAsync(model.PermissionId);
             p.PermissionCode = model.PermissionCode;
             p.PermissionDescription = model.PermissionDescription;
 

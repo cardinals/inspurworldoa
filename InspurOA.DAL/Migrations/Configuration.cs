@@ -10,6 +10,7 @@ namespace InspurOA.DAL.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+            ContextKey = "InspurOA.DAL.InspurDbContext";
         }
 
         protected override void Seed(InspurOA.DAL.InspurDbContext context)

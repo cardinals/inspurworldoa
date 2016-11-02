@@ -1,11 +1,8 @@
-﻿@model IEnumerable<InspurOA.Models.Resume>
+﻿@model IEnumerable<InspurOA.Web.Models.ResumeViewModel>
 
 @{
     ViewBag.Title = "简历管理";
 }
-
-@*<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
-<link href="~/Content/Checkbox/checkbox.css" rel="stylesheet" />*@
 
 <div class="row top-row">
     <div class="col-md-4 left" style="float:left;">
@@ -219,11 +216,6 @@
             var itemId = $("input[name='ID']", $(this).parent("tr")).val();
             window.location.href = "../Resume/Details?id=" + itemId;
         });
-
-        //$(".active").click(function () {
-        //    var itemId = $("input[type='checkbox']", $(this)).val();
-        //    window.location.href = "../Resume/Details?id=" + itemId;
-        //});
 
         $("input[name='DeleteResume']").click(function () {
             var checkedList = $("input[name='ID']");

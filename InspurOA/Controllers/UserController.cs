@@ -1,19 +1,15 @@
 ﻿using InspurOA.Attributes;
+using InspurOA.BLL;
 using InspurOA.Common;
-using InspurOA.DAL;
-using InspurOA.Identity.Core;
 using InspurOA.Models;
+using InspurOA.Web.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using InspurOA.Identity.Owin.Extensions;
-using InspurOA.BLL;
 
 namespace InspurOA.Controllers
 {
@@ -74,30 +70,34 @@ namespace InspurOA.Controllers
             return View(list);
         }
 
-        // GET: UserController/Details/5
-        public async Task<ActionResult> Details(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return RedirectToAction("index");
-            }
+        //// GET: UserController/Details/5
+        //public async Task<ActionResult> Details(string id)
+        //{
+        //    if (string.IsNullOrWhiteSpace(id))
+        //    {
+        //        return RedirectToAction("index");
+        //    }
 
-            UserDetailViewModel userDetailViewModel = new UserDetailViewModel();
-            var user = await UserManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                userDetailViewModel.Id = id;
-                userDetailViewModel.UserName = user.UserName;
-                userDetailViewModel.Email = user.Email;
-                userDetailViewModel.PhoneNumber = user.PhoneNumber;
-            }
+        //    UserDetailViewModel userDetailViewModel = new UserDetailViewModel();
+        //    var user = await UserManager.FindByIdAsync(id);
+        //    if (user != null)
+        //    {
+        //        userDetailViewModel.Id = id;
+        //        userDetailViewModel.UserName = user.UserName;
+        //        userDetailViewModel.Email = user.Email;
+        //        userDetailViewModel.PhoneNumber = user.PhoneNumber;
+        //    }
 
-            userDetailViewModel.RoleCode = RoleHelper.GetRoleNameByUserId(id);
+        //    userDetailViewModel.RoleCode = RoleHelper.GetRoleCodeByUserId(id);
 
-            return View(userDetailViewModel);
-        }
+        //    return View(userDetailViewModel);
+        //}
 
-        // GET: UserController/Create
+        ///GET: UserController/Create
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Create()
         {
             List<SelectListItem> Roles = new List<SelectListItem>();
@@ -115,7 +115,12 @@ namespace InspurOA.Controllers
             return View();
         }
 
-        // POST: UserController/Create
+        /// POST: UserController/Create
+        /// <summary>
+        /// Creates the specified model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> Create(UserCreateViewModel model)
         {
@@ -167,7 +172,12 @@ namespace InspurOA.Controllers
             return View(model);
         }
 
-        // GET: UserController/Edit/5
+        /// GET: UserController/Edit/5
+        /// <summary>
+        /// Edits the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         public ActionResult Edit(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -202,15 +212,21 @@ namespace InspurOA.Controllers
             return View(model);
         }
 
-        // POST: UserController/Edit/5
+        /// POST: UserController/Edit/5
+        /// <summary>
+        /// Edits the specified collection.
+        /// </summary>
+        /// <param name="collection">The collection.</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> Edit(string id, FormCollection collection)
+        public async Task<ActionResult> Edit(FormCollection collection)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
+            string id = collection.Get("UserId");
             if (!string.IsNullOrWhiteSpace(id))
             {
                 var user = await UserManager.FindByIdAsync(id);
@@ -252,6 +268,10 @@ namespace InspurOA.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds the errors.
+        /// </summary>
+        /// <param name="result">The result.</param>
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)

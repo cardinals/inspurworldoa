@@ -12,7 +12,6 @@ namespace InspurOA.Models
         [Key]
         public string Id { get; set; }
 
-        [Display(Name = "项目名称")]
         public string ProjectName { get; set; }
     }
 }

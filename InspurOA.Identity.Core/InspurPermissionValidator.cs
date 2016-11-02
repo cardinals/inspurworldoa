@@ -66,7 +66,7 @@ namespace InspurOA.Identity.Core
                 }
                 else                 //Update
                 {
-                    if (item2 != null && EqualityComparer<TKey>.Default.Equals(item2.PermissionId, permission.PermissionId))
+                    if (item2 != null && !EqualityComparer<TKey>.Default.Equals(item2.PermissionId, permission.PermissionId))
                     {
                         errors.Add(String.Format(CultureInfo.CurrentCulture, InspurResources.DuplicateCode, permission.PermissionCode));
                     }

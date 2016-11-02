@@ -235,17 +235,23 @@ namespace InspurOA.Identity.Owin
         /// <param name="isPersistent"></param>
         /// <param name="shouldLockout"></param>
         /// <returns></returns>
-        public virtual async Task<InspurSignInStatus> PasswordSignInAsync(string userName, string password, bool isPersistent, bool shouldLockout)
+        public virtual async Task<InspurSignInStatus> PasswordSignInAsync(string email, string password, bool isPersistent, bool shouldLockout)
         {
             if (InspurUserManager == null)
             {
                 return InspurSignInStatus.Failure;
             }
-            var user = await InspurUserManager.FindByNameAsync(userName).WithCurrentCulture();
+            //var user = await InspurUserManager.FindByNameAsync(userName).WithCurrentCulture();
+            //if (user == null)
+            //{
+            //}
+
+            var user = await InspurUserManager.FindByEmailAsync(email).WithCurrentCulture();
             if (user == null)
             {
                 return InspurSignInStatus.Failure;
             }
+
             //if (await InspurUserManager.IsLockedOutAsync(user.Id).WithCurrentCulture())
             //{
             //    return InspurSignInStatus.LockedOut;

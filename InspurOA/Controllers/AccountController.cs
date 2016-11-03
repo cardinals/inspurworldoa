@@ -97,7 +97,7 @@ namespace InspurOA.Controllers
                         return View(model);
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 return View(model);
             }

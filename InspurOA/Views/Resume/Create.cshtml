@@ -1,11 +1,9 @@
-﻿@model InspurOA.Web.Models.ResumeViewModel
-@using InspurOA.Web.Models
+﻿@model ResumeViewModel
 @{
     ViewBag.Title = "上传简历";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@*<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>*@
 <style type="text/css">
     .div-group {
         position: relative;
@@ -82,46 +80,60 @@
         <div class="form-group">
             <label class="col-md-4 control-label">所属项目：</label>
             <div class="col-md-8">
-                <select name="projectName" class="form-control">
-                    @{
-                        if (ViewData["Projects"] != null)
-                        {
-                            var projects = ViewData["Projects"] as List<ProjectViewModel>;
-                            foreach (var item in projects)
-                            {
-                                <option value="@item.ProjectName">@item.ProjectName</option>
+                @if (ViewData["Projects"] != null)
+                {
+                    var projects = ViewData["Projects"] as List<ProjectViewModel>;
+                    if (projects.Count > 0)
+                    {
+                        <select name="projectName" class="form-control">
+                            @{
+                                foreach (var item in projects)
+                                {
+                                    <option value="@item.ProjectName">@item.ProjectName</option>
+                                }
                             }
-                        }
-                    }
-                </select>
+                        </select>
+                     }
+                     else
+                     {
+                        <span class="form-control danger">请先添加项目</span>
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                $("input[type='submit']").attr("disabled", true);
+                                $("#btnSelectDoc").attr("disabled", true);
+                                alert("请在【项目管理】中添加项目信息！");
+                            });
+                        </script>
+                     }
+                  }
+                  else
+                  {
+                    <label class="danger">请先添加项目</label>
+                    <script type="text/javascript">
+                            $(document).ready(function () {
+                                $("input[type='submit']").attr("disabled", true);
+                                $("#btnSelectDoc").attr("disabled", true);
+                                alert("请在【项目管理】中添加项目信息！");
+                            });
+                    </script>
+                  }
             </div>
         </div>
-        @*<div class="form-group">
-                <label class="col-md-4 control-label">岗位名称：</label>
-                <div class="col-md-8">
-                    <select name="postName" class="form-control">
-                        <option value=".Net Web开发">.Net Web开发</option>
-                        <option value="Java开发">Java开发</option>
-                        <option value="软件测试">软件测试</option>
-                        <option value="软件开发测试">软件开发测试</option>
-                    </select>
-                </div>
-            </div>*@
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">文档：</label>
-                            <div class="col-md-8">
-                                <input type="button" id="btnSelectDoc" value="选择简历..." class="form-control" />
-                                <input type="file" name="file" style="height:30px;width:100%;float:right;display:none;" multiple="multiple" /> @**@
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div name="fileList" class="col-md-8 col-md-offset-4" style="max-height:200PX;overflow:auto;">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <input type="submit" id="BtnUpload" class="form-control btn btn-primary" value="上传" />
-                            </div>
-                        </div>
-                        }
+        <div class="form-group">
+            <label class="col-md-4 control-label">文档：</label>
+            <div class="col-md-8">
+                <input type="button" id="btnSelectDoc" value="选择简历..." class="form-control" />
+                <input type="file" name="file" style="height:30px;width:100%;float:right;display:none;" multiple="multiple" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div name="fileList" class="col-md-8 col-md-offset-4" style="max-height:200PX;overflow:auto;">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-4">
+                <input type="submit" id="BtnUpload" class="form-control btn btn-primary" value="上传" />
+            </div>
+        </div>
+    }
 </div>

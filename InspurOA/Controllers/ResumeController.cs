@@ -116,14 +116,14 @@ namespace InspurOA.Controllers
             if (string.IsNullOrWhiteSpace(sourceSite) || string.IsNullOrWhiteSpace(languageType) || string.IsNullOrWhiteSpace(projectName))// || string.IsNullOrWhiteSpace(postName)
             {
                 var projects = proBll.GetAllProjects();
-                ViewData["Projects"] = projects;
+                ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
                 return View("Create");
             }
 
             if (!sourceSite.Equals("ZL") && !sourceSite.Equals("WY"))
             {
                 var projects = proBll.GetAllProjects();
-                ViewData["Projects"] = projects;
+                ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
                 return View("Create");
             }
 

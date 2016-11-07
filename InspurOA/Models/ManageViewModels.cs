@@ -49,7 +49,7 @@ namespace InspurOA.Web.Models
 
     public class ChangePasswordViewModel
     {
-        [Required(ErrorMessage = "必填字段")]
+        [Required(ErrorMessage = "'{0}'是必填项。")]
         [DataType(DataType.Password)]
         [Display(Name = "当前密码")]
         public string OldPassword { get; set; }

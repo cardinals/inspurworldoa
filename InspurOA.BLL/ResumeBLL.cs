@@ -11,7 +11,7 @@ namespace InspurOA.BLL
 {
     public class ResumeBLL
     {
-        InspurDbContext dal = new InspurDbContext();
+        ApplicationDbContext dal = new ApplicationDbContext();
 
         public List<Resume> GetResumeList()
         {

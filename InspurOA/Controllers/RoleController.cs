@@ -92,6 +92,8 @@ namespace InspurOA.Controllers
             }
 
             ViewData["Permissions"] = PermissionList;
+
+            //ViewBag.Permissions = new MultiSelectList(PermissionManager.Permissions, "PermissionCode", "PermissionDescription");
             return View();
         }
 

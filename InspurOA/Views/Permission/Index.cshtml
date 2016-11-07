@@ -2,7 +2,6 @@
 
 @{
     ViewBag.Title = "权限管理";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row top-row">
@@ -51,7 +50,7 @@
     $(document).ready(function () {
         $("td[data-content='content']").click(function () {
             var itemId = $("input[name='ID']", $(this).parent("tr")).val();
-            window.location.href = "Permission/Edit?id=" + itemId;
+            window.location.href = "Permission/Edit/" + itemId;
         });
 
         $("input[name='BtnDelete']").click(function () {

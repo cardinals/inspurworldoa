@@ -242,6 +242,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\InspurDropCreateDatabaseIfModelChanges.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PermissionItemViewModel.cs" />
     <Compile Include="Models\PermissionViewModel.cs" />

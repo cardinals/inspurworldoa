@@ -7,13 +7,13 @@ namespace InspurOA.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class InitialCreate : IMigrationMetadata
+    public sealed partial class DB : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(DB));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611010218139_InitialCreate"; }
+            get { return "201611040243452_DB"; }
         }
         
         string IMigrationMetadata.Source

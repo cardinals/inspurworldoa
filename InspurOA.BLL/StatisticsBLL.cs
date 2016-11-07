@@ -10,7 +10,7 @@ namespace InspurOA.BLL
 {
     public class StatisticsBLL
     {
-        InspurDbContext dal = new InspurDbContext();
+        ApplicationDbContext dal = new ApplicationDbContext();
 
         public int GetResumeTotalCount()
         {

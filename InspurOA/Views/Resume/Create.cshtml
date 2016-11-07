@@ -1,7 +1,6 @@
 ﻿@model ResumeViewModel
 @{
     ViewBag.Title = "上传简历";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style type="text/css">
@@ -80,43 +79,48 @@
         <div class="form-group">
             <label class="col-md-4 control-label">所属项目：</label>
             <div class="col-md-8">
-                @if (ViewData["Projects"] != null)
-                {
-                    var projects = ViewData["Projects"] as List<ProjectViewModel>;
-                    if (projects.Count > 0)
+                @*@if (ViewData["Projects"] != null)
                     {
-                        <select name="projectName" class="form-control">
-                            @{
-                                foreach (var item in projects)
-                                {
-                                    <option value="@item.ProjectName">@item.ProjectName</option>
+                        var projects = ViewData["Projects"] as List<ProjectViewModel>;
+                        if (projects.Count > 0)
+                        {
+                            <select name="projectName" class="form-control">
+                                @{
+                                    foreach (var item in projects)
+                                    {
+                                        <option value="@item.ProjectName">@item.ProjectName</option>
+                                    }
                                 }
-                            }
-                        </select>
-                     }
-                     else
-                     {
-                        <span class="form-control danger">请先添加项目</span>
+                            </select>
+                         }
+                         else
+                         {
+                            <span class="form-control danger">请先添加项目</span>
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    $("input[type='submit']").attr("disabled", true);
+                                    $("#btnSelectDoc").attr("disabled", true);
+                                    alert("请在【项目管理】中添加项目信息！");
+                                });
+                            </script>
+                         }
+                      }
+                      else
+                      {
+                        <label class="danger">请先添加项目</label>
                         <script type="text/javascript">
-                            $(document).ready(function () {
-                                $("input[type='submit']").attr("disabled", true);
-                                $("#btnSelectDoc").attr("disabled", true);
-                                alert("请在【项目管理】中添加项目信息！");
-                            });
+                                $(document).ready(function () {
+                                    $("input[type='submit']").attr("disabled", true);
+                                    $("#btnSelectDoc").attr("disabled", true);
+                                    alert("请在【项目管理】中添加项目信息！");
+                                });
                         </script>
-                     }
-                  }
-                  else
-                  {
-                    <label class="danger">请先添加项目</label>
-                    <script type="text/javascript">
-                            $(document).ready(function () {
-                                $("input[type='submit']").attr("disabled", true);
-                                $("#btnSelectDoc").attr("disabled", true);
-                                alert("请在【项目管理】中添加项目信息！");
-                            });
-                    </script>
-                  }
+                      }*@
+
+                @if (ViewBag.Projects != null)
+                {
+                    @Html.DropDownList("projectName", ViewBag.Projects as IEnumerable<SelectListItem>, new { @class = "form-control" });
+                }
             </div>
         </div>
         <div class="form-group">

@@ -1,7 +1,6 @@
 ﻿@model RoleViewModel
 @{
     ViewBag.Title = "添加角色";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row top-row">
@@ -19,7 +18,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal form-md">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.RoleCode, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -42,32 +41,45 @@
             </div>
         </div>
         @if (ViewData["Permissions"] != null)
-        {
-            var PermissionList = ViewData["Permissions"] as List<PermissionItemViewModel>;
-            <div class="form-group">
-                @Html.LabelFor(model => model.Permissions, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10 limit-div">
-                    @Html.ValidationMessageFor(model => model.Permissions, "", new { @class = "text-danger" })
-                    <table class="table-responsive">
-                        @foreach (var item in PermissionList)
-                        {
-                            <tr>
-                                <td>
-                                    @if (item.IsChecked)
-                                    {
-                                        <input type="checkbox" name="Permissions" checked="checked" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
-                                    }
-                                    else
-                                    {
-                                        <input type="checkbox" name="Permissions" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </table>
+            {
+                var PermissionList = ViewData["Permissions"] as List<PermissionItemViewModel>;
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Permissions, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 limit-div">
+                        @Html.ValidationMessageFor(model => model.Permissions, "", new { @class = "text-danger" })
+                        <table class="table-responsive">
+                            @foreach (var item in PermissionList)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.IsChecked)
+                                        {
+                                            <input type="checkbox" name="Permissions" checked="checked" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="Permissions" value="@Html.DisplayFor(modelItem=>item.Permission.PermissionId)" />@Html.DisplayFor(modelItem => item.Permission.PermissionDescription)
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
                 </div>
+            }
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.Permissions, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 limit-div">
+                @if (ViewBag.Permissions != null)
+                {
+                    @Html.ListBox("Permissions", ViewBag.Permissions as IEnumerable<SelectListItem>, new {@class="form-control", @multiple = "multiple" });
+                }
             </div>
-        }
+        </div>*@
+
+
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="添加" class="btn btn-default form-control" />

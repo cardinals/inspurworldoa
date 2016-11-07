@@ -230,6 +230,7 @@ namespace InspurOA.Controllers
             if (!string.IsNullOrWhiteSpace(id))
             {
                 var user = await UserManager.FindByIdAsync(id);
+                TryUpdateModel(user);
 
                 if (user != null)
                 {

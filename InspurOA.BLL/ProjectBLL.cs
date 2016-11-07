@@ -12,7 +12,7 @@ namespace InspurOA.BLL
 {
     public class ProjectBLL
     {
-        InspurDbContext db = new InspurDbContext();
+        ApplicationDbContext db = new ApplicationDbContext();
 
         public bool CreateProject(ProjectModel project)
         {

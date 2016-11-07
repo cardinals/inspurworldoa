@@ -62,6 +62,10 @@
       <Project>{e670b00b-0d58-49a2-a2a0-f52a5d18ab92}</Project>
       <Name>InspurOA.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InspurOA.Identity.EntityFramework\InspurOA.Identity.EntityFramework.csproj">
+      <Project>{d03de150-3fbc-4967-86a5-658ce83fb54e}</Project>
+      <Name>InspurOA.Identity.EntityFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InspurOA.Models\InspurOA.Models.csproj">
       <Project>{d0189ae5-c1b4-4885-94f7-7cd879949323}</Project>
       <Name>InspurOA.Models</Name>

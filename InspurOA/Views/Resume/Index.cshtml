@@ -134,87 +134,9 @@
             $("[data-toggle='popover']").popover();
         });
 
-        $("button[name='search']").click(function () {
-            var queryText = $("input[name='queryText']").val();
-            if (queryText != undefined && queryText != null && queryText != "") {
-                $.ajax({
-                    type: "post",
-                    url: "../Resume/search",
-                    data: { "query": queryText },
-                    dataType: "json",
-                    success: function (result) {
-                        if (result != undefined && result != null) {
-                            $("#GridList tbody").html("");
-                            var tbodyHtml = "";
-                            for (var i = 0; i < result.length; i++) {
-                                tbodyHtml += "<tr  class='active'>";
-                                tbodyHtml += "<td data-content='content'>";
-                                tbodyHtml += "<input type='checkbox' value='" + result[i].Id + "' />";
-                                tbodyHtml += "</td>";
-                                tbodyHtml += "<td data-content='content'>";
-                                if (result[i].PersonalInformation.length > 50) {
-                                    tbodyHtml += result[i].PersonalInformation.substr(0, 50) + "...";
-                                }
-                                else {
-                                    tbodyHtml += result[i].PersonalInformation;
-                                }
-                                tbodyHtml += "</td>";
-                                tbodyHtml += "<td data-content='content'>";
-                                if (result[i].CareerObjective.length > 50) {
-                                    tbodyHtml += result[i].CareerObjective.substr(0, 50) + "...";
-                                }
-                                else {
-                                    tbodyHtml += result[i].CareerObjective;
-                                }
-                                tbodyHtml += "</td>";
-                                tbodyHtml += "<td data-content='content'>";
-                                if (result[i].SelfAssessment.length > 50) {
-                                    tbodyHtml += result[i].SelfAssessment.substr(0, 50) + "...";
-                                }
-                                else {
-                                    tbodyHtml += result[i].SelfAssessment;
-                                }
-                                tbodyHtml += "</td>";
-                                tbodyHtml += "<td data-content='content'>";
-                                if (result[i].WorkExperience.length > 50) {
-                                    tbodyHtml += result[i].WorkExperience.substr(0, 50) + "...";
-                                }
-                                else {
-                                    tbodyHtml += result[i].WorkExperience;
-                                }
-                                tbodyHtml += "</td>";
-                                tbodyHtml += "<td data-content='content'>";
-                                if (result[i].ProjectExperience.length > 50) {
-                                    tbodyHtml += result[i].ProjectExperience.substr(0, 50) + "...";
-                                }
-                                else {
-                                    tbodyHtml += result[i].ProjectExperience;
-                                }
-                                tbodyHtml += "</td>";
-                                tbodyHtml += "<td data-content='content'>";
-                                if (result[i].Education.length > 50) {
-                                    tbodyHtml += result[i].Education.substr(0, 50) + "...";
-                                }
-                                else {
-                                    tbodyHtml += result[i].Education;
-                                }
-                                tbodyHtml += "</td>";
-                                tbodyHtml += "</tr>";
-                            }
-
-                            $("#GridList tbody").html(tbodyHtml);
-                        }
-                    },
-                    error: function (e) {
-                        alert(e.responseText);
-                    }
-                });
-            }
-        });
-
         $("td[data-type='content']").click(function () {
             var itemId = $("input[name='ID']", $(this).parent("tr")).val();
-            window.location.href = "../Resume/Details?id=" + itemId;
+            window.location.href = "../Resume/Details/" + itemId;
         });
 
         $("input[name='DeleteResume']").click(function () {

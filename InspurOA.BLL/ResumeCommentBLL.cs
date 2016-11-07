@@ -10,7 +10,7 @@ namespace InspurOA.BLL
 {
     public class ResumeCommentBLL
     {
-        InspurDbContext db = new InspurDbContext();
+        ApplicationDbContext db = new ApplicationDbContext();
 
         public List<ResumeComment> GetResumeCommentList()
         {

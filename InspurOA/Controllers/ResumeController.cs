@@ -24,7 +24,7 @@ namespace InspurOA.Controllers
         private Document doc = null;
         private object unknow = Type.Missing;
         private string localResumeFolderPath = ConfigurationManager.AppSettings["LocalResumeFolderPath"].ToString();
-        
+
         private ResumeBLL bll = new ResumeBLL();
         private ResumeCommentBLL commentBll = new ResumeCommentBLL();
         private ProjectBLL proBll = new ProjectBLL();
@@ -87,18 +87,19 @@ namespace InspurOA.Controllers
         {
             if (id == null)
             {
-                return Redirect("idnex");
+                return Redirect("index");
                 //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             Resume resume = bll.FindResume(id);
             if (resume == null)
             {
-                return Redirect("idnex");
+                return Redirect("index");
             }
 
             var projects = proBll.GetAllProjects().ToList();
-            ViewData["Projects"] = ChangeProjectModelToViewModel(projects);
+            //ViewData["Projects"] = ChangeProjectModelToViewModel(projects);
+            ViewBag.Projects = new SelectList(projects, "ProjectName", "ProjectName", resume.ProjectName);
 
             return View(ChangeResumeModelToViewModel(resume));
         }
@@ -107,7 +108,9 @@ namespace InspurOA.Controllers
         public ActionResult Create()
         {
             var projects = proBll.GetAllProjects();
-            ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
+            //ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
+            ViewBag.Projects = new SelectList(projects, "ProjectName", "ProjectName");
+
             return View();
         }
 
@@ -116,14 +119,18 @@ namespace InspurOA.Controllers
             if (string.IsNullOrWhiteSpace(sourceSite) || string.IsNullOrWhiteSpace(languageType) || string.IsNullOrWhiteSpace(projectName))// || string.IsNullOrWhiteSpace(postName)
             {
                 var projects = proBll.GetAllProjects();
-                ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
+                //ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
+                ViewBag.Projects = new SelectList(projects, "ProjectName", "ProjectName");
+
                 return View("Create");
             }
 
             if (!sourceSite.Equals("ZL") && !sourceSite.Equals("WY"))
             {
                 var projects = proBll.GetAllProjects();
-                ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
+                //ViewData["Projects"] = ChangeProjectModelToViewModel(projects.ToList());
+                ViewBag.Projects = new SelectList(projects, "ProjectName", "ProjectName");
+
                 return View("Create");
             }
 
@@ -257,7 +264,7 @@ namespace InspurOA.Controllers
 
             return View("index", ChangeResumeModelToViewModel(resumes.ToList()));
         }
-        
+
         // GET: Resume/Delete/5
         public string Delete(string[] ids)
         {
@@ -324,6 +331,7 @@ namespace InspurOA.Controllers
 
             return null;
         }
+
         public List<ResumeViewModel> ChangeResumeModelToViewModel(List<Resume> data)
         {
             var ListData = new List<ResumeViewModel>();

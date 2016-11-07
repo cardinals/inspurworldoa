@@ -1,7 +1,6 @@
 ﻿@model ResumeViewModel
 @{
     ViewBag.Title = "简历信息";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style type="text/css">
@@ -160,18 +159,22 @@
         <dt></dt>
         <dd>
             <div class="row" data-name="ChangeProject" style="display:none;">
-                <select name="projectName" class="common-control col-md-5">
-                    @{
-                        if (ViewData["Projects"] != null)
-                        {
-                            var projects = ViewData["Projects"] as List<ProjectViewModel>;
-                            foreach (var item in projects)
+                @*<select name="projectName" class="common-control col-md-5">
+                        @{
+                            if (ViewData["Projects"] != null)
                             {
-                                <option value="@item.ProjectName">@item.ProjectName</option>
+                                var projects = ViewData["Projects"] as List<ProjectViewModel>;
+                                foreach (var item in projects)
+                                {
+                                    <option value="@item.ProjectName">@item.ProjectName</option>
+                                }
                             }
                         }
-                    }
-                </select>
+                    </select>*@
+                @if (ViewBag.Projects != null)
+                {
+                    @Html.DropDownList("projectName", ViewBag.Projects as IEnumerable<SelectListItem>, new { @class = "common-control col-md-5" })
+                }
                 <input type="button" name="BtnSaveProject" value="保存" class="btn-sm btn-primary" />
                 <input type="button" name="BtnCancelProject" value="取消" class="btn-sm btn-primary" />
             </div>
@@ -217,7 +220,7 @@
     <table class='table table-bordered table-hover'>
         <thead>
             <tr class="danger">
-                <th>                    
+                <th>
                 </th>
                 <th>岗位名称</th>
                 <th>面试日期</th>
@@ -243,7 +246,7 @@
             $("#ListComment").html("");
             $.ajax({
                 type: "post",
-                url: "../ResumeComment/ListResumeComments",
+                url: "../../ResumeComment/ListResumeComments",
                 data: data,
                 dataType: "json",
                 success: function (result) {
@@ -271,7 +274,7 @@
                     tbodyInnerHtml += "</tr>";
                     tbodyInnerHtml += "</thead>";
                     tbodyInnerHtml += "<tbody>";
-                    if (result != undefined && result.length > 0) {                     
+                    if (result != undefined && result.length > 0) {
                         for (var i = 0; i < result.length; i++) {
                             tbodyInnerHtml += "<tr>";
                             tbodyInnerHtml += "<td>";
@@ -333,7 +336,7 @@
                 if (confirm("确认删除?")) {
                     $.ajax({
                         type: "post",
-                        url: "../ResumeComment/Delete",
+                        url: "../../ResumeComment/Delete",
                         data: { 'ids': selectedIds },
                         dataType: "json",
                         success: function (result) {
@@ -381,7 +384,7 @@
             var data = { "ResumeId": resumeId, "postName": postName, "interviewDate": interviewDate, "interviewFeedBack": interviewFeedBack };
             $.ajax({
                 type: "post",
-                url: "../ResumeComment/Create",
+                url: "../../ResumeComment/Create",
                 data: data,
                 dataType: "json",
                 success: function (result) {
@@ -394,7 +397,7 @@
                     LoadComment();
                 },
                 error: function (errorMessage) {
-                    alert(ex.responseText);
+                    alert(errorMessage.responseText);
                 }
             });
         });
@@ -416,7 +419,7 @@
 
             $.ajax({
                 type: "post",
-                url: "../Resume/ChangeProjectName",
+                url: "../../Resume/ChangeProjectName",
                 data: data,
                 dataType: "json",
                 success: function (result) {

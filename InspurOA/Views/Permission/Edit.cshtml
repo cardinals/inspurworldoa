@@ -2,7 +2,6 @@
 
 @{
     ViewBag.Title = "修改权限";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row top-row">
@@ -20,11 +19,10 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">        
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.PermissionId)
         <div class="form-group">
             @Html.LabelFor(model => model.PermissionCode, htmlAttributes: new { @class = "control-label col-md-2" })
-            @*<label class="control-label col-md-2" for="PermissionDescription">权限描述</label>*@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.PermissionCode, new { htmlAttributes = new { @class = "common-control col-md-4" } })
                 @Html.ValidationMessageFor(model => model.PermissionCode, "", new { @class = "text-danger" })
@@ -33,7 +31,6 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.PermissionDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-            @*<label class="control-label col-md-2" for="PermissionDescription">权限描述</label>*@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.PermissionDescription, new { htmlAttributes = new { @class = "form-control", @style = "max-width:100%;" } })
                 @Html.ValidationMessageFor(model => model.PermissionDescription, "", new { @class = "text-danger" })

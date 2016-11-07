@@ -2,7 +2,6 @@
 
 @{
     ViewBag.Title = "项目管理";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row top-row">
@@ -47,7 +46,7 @@
     $(document).ready(function () {
         $("td[data-type='content']").click(function () {
             var itemId = $("input[name='ID']", $(this).parent("tr")).val();
-            window.location.href = "Project/Edit?id=" + itemId;
+            window.location.href = "Project/Edit/" + itemId;
         });
 
         $("input[name='BtnDelete']").click(function () {
